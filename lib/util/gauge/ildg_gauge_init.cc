@@ -13,14 +13,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, ILDGGaugeInitEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, ILDGGaugeInitEnv::Params& param)
   {
     ILDGGaugeInitEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const ILDGGaugeInitEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const ILDGGaugeInitEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -43,9 +43,9 @@ namespace Chroma
     static bool registered = false;
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	success &= Chroma::TheGaugeInitFactory::Instance().registerObject(name, createSource);
@@ -56,7 +56,7 @@ namespace Chroma
 
 
     // Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -65,23 +65,23 @@ namespace Chroma
       cfg_pario = QDPIO_SERIAL;
 
       bool pario;
-      if ( paramtop.count("ParallelIO") > 0 ) { 
+      if ( paramtop.count("ParallelIO") > 0 ) {
         read(paramtop, "ParallelIO", pario);
-        if( pario ) { 
+        if( pario ) {
 	  cfg_pario = QDPIO_PARALLEL;;
         }
       }
     }
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
-    
+
       int version = 1;
       write(xml, "cfg_type", ILDGGaugeInitEnv::name);
       write(xml, "cfg_file", cfg_file);
-      if ( cfg_pario == QDPIO_PARALLEL ) { 
+      if ( cfg_pario == QDPIO_PARALLEL ) {
 	bool pario = true;
 	write(xml, "ParallelIO", pario);
       }
@@ -111,7 +111,7 @@ namespace Chroma
 			    multi1d<LatticeColorMatrix>& u) const
     {
       u.resize(Nd);
-      if( params.cfg_pario == QDPIO_PARALLEL ) { 
+      if( params.cfg_pario == QDPIO_PARALLEL ) {
 	QDP_error_exit("Parallel IO read on ILDG not supported");
       }
       readGaugeILDG(gauge_file_xml, gauge_xml, u, params.cfg_file, params.cfg_pario);

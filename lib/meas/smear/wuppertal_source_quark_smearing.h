@@ -17,7 +17,7 @@ namespace QDP
 	void initTimeSliceSet();
 }
 
-namespace Chroma 
+namespace Chroma
 {
   //! Name and registration
   /*! @ingroup smear */
@@ -35,7 +35,7 @@ namespace Chroma
       Params () {}
       Params (XMLReader& in, const std::string& path);
       void writeXML (XMLWriter& in, const std::string& path) const;
-    
+
       Real wvf_param;                   /*!< Smearing width */
       int  wvfIntPar;                   /*!< Number of smearing hits */
       int  no_smear_dir;		/*!< No smearing in this direction */
@@ -59,7 +59,7 @@ namespace Chroma
       	registerQDPGlobals();
       	tslice = params.smearSingleTimeslice ? QDP::TimeSliceSetQCDSF[params.t_source] : QDP::all ;
       }
-      
+
       //! Smear the quark
       void operator() (T& quark, const multi1d<LatticeColorMatrix>& u) const;
 
@@ -76,11 +76,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup smear */
-  void read (XMLReader& xml, const string& path, WuppertalSourceQuarkSmearingEnv::Params& param);
+  void read (XMLReader& xml, const std::string& path, WuppertalSourceQuarkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write (XMLWriter& xml, const string& path, const WuppertalSourceQuarkSmearingEnv::Params& param);
+  void write (XMLWriter& xml, const std::string& path, const WuppertalSourceQuarkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

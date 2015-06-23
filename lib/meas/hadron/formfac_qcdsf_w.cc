@@ -1,6 +1,6 @@
 // $Id: formfac_w.cc,v 3.1 2006/05/05 03:07:20 edwards Exp $
 /*! \file
- *  \brief Form-factors 
+ *  \brief Form-factors
  *
  *  Form factors constructed from a quark and a sequential quark propagator
  */
@@ -11,7 +11,7 @@
 #include "meas/smear/displace.h"
 
 
-namespace Chroma 
+namespace Chroma
 {
 
   /*!
@@ -28,7 +28,7 @@ namespace Chroma
   //   read(bin, mom.magic);
   //   if (mom.magic != 20301)
   //   {
-  //     QDPIO::cerr << "read(FormFac_momenta_t): magic number invalid" << endl;
+  //     QDPIO::cerr << "read(FormFac_momenta_t): magic number invalid" << std::endl;
   //     QDP_abort(1);
   //   }
   //   read(bin, mom.inser_mom);
@@ -87,9 +87,9 @@ namespace Chroma
    */
 
   void FormFacQCDSF(FormFac_insertionsQCDSF_t& form,
-	       const multi1d<LatticeColorMatrix>& u, 
+	       const multi1d<LatticeColorMatrix>& u,
 	       const LatticePropagator& quark_propagator,
-	       const LatticePropagator& seq_quark_prop, 
+	       const LatticePropagator& seq_quark_prop,
 	       int gamma_insertion,
 	       const SftMom& phases,
 	       int t0)
@@ -100,7 +100,7 @@ namespace Chroma
     int length = phases.numSubsets();
 
     int G5 = Ns*Ns-1;
-  
+
     // Construct the anti-quark propagator from the seq. quark prop.
     LatticePropagator anti_quark_prop = Gamma(G5) * seq_quark_prop * Gamma(G5);
 
@@ -150,14 +150,14 @@ namespace Chroma
 	compute_nonlocal = false;
       }
 
-      // The local non-conserved vector-current matrix element 
+      // The local non-conserved vector-current matrix element
       LatticeComplex corr_local_fn =
 	trace(adj(anti_quark_prop) * Gamma(gamma_value) * quark_propagator * Gamma(gamma_insertion));
 
       multi2d<DComplex> hsum, hsum_nonlocal;
       hsum = phases.sft(corr_local_fn);
 
-      // Construct the non-local current matrix element 
+      // Construct the non-local current matrix element
       //
       // The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
       //                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
@@ -175,12 +175,12 @@ namespace Chroma
 	hsum_nonlocal = phases.sft(corr_nonlocal_fn);
       }
 
-  
+
       form.formFac[gamma_value].gamma_value = gamma_value;
       form.formFac[gamma_value].momenta.resize(phases.numMom());  // hold momenta output
 
       // Loop over insertion momenta and print out results
-      for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num) 
+      for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num)
       {
 	form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
 
@@ -189,7 +189,7 @@ namespace Chroma
 	if (compute_nonlocal)
 	  nonlocal_cur3ptfn.resize(length);      // possibly compute
 
-	for (int t=0; t < length; ++t) 
+	for (int t=0; t < length; ++t)
 	{
 	  int t_eff = (t - t0 + length) % length;
 
@@ -204,7 +204,7 @@ namespace Chroma
 
       } // end for(inser_mom_num)
     } // end for(gamma_value)
-                            
+
     END_CODE();
   }
 
@@ -216,14 +216,14 @@ namespace Chroma
 
 
   void FormFac1DQCDSF(FormFac_insertionsQCDSF_t& form,
-		 const multi1d<LatticeColorMatrix>& u, 
+		 const multi1d<LatticeColorMatrix>& u,
 		 const LatticePropagator& quark_propagator,
-		 const LatticePropagator& seq_quark_prop, 
+		 const LatticePropagator& seq_quark_prop,
 		 int gamma_insertion,
 		 const SftMom& phases,
 		 int t0)
   {
-    QDPIO::cout << "FormFac1DQCDSF" << endl;
+    QDPIO::cout << "FormFac1DQCDSF" << std::endl;
 
     START_CODE();
 
@@ -231,7 +231,7 @@ namespace Chroma
     int length = phases.numSubsets();
 
     int G5 = Ns*Ns-1;
-  
+
     // Construct the anti-quark propagator from the seq. quark prop.
     LatticePropagator seq_src = Gamma(G5) * adj(seq_quark_prop) * Gamma(G5);
     LatticePropagator seq_src_dagger = Gamma(G5) * seq_quark_prop * Gamma(G5);
@@ -246,7 +246,7 @@ namespace Chroma
     // Loop over gamma matrices of the insertion current of insertion current
     for(int nu = 0 ; nu < 4 ; ++nu ) {
 
-      QDPIO::cout << "nu = " << nu << endl;
+      QDPIO::cout << "nu = " << nu << std::endl;
 
       LatticePropagator quark_prop_der = rightNabla( quark_propagator , u , nu , 1 );
       LatticePropagator seq_src_dagger_der = adj( rightNabla( seq_src_dagger , u , nu , 1 ) );
@@ -254,7 +254,7 @@ namespace Chroma
       for(int gamma_value = 0; gamma_value < Nd*Nd; ++gamma_value)
 	{
 	  int store = nu*Nd*Nd + gamma_value;
-	  QDPIO::cout << "gamma = " << gamma_value << " store = " << store << endl;
+	  QDPIO::cout << "gamma = " << gamma_value << " store = " << store << std::endl;
 
 	  //  For the case where the gamma value indicates we are evaluating either
 	  //  the vector or axial vector currents, we will also evaluate
@@ -264,7 +264,7 @@ namespace Chroma
 	  //  mu = corresponding direction.  In all other cases, we will set mu = -1.
 
 
-	  // The local non-conserved vector-current matrix element 
+	  // The local non-conserved vector-current matrix element
 	  //       LatticeComplex corr_local_fn =
 	  // 	trace(adj(anti_quark_prop) * Gamma(gamma_value) * quark_propagator * Gamma(gamma_insertion));
 
@@ -275,24 +275,24 @@ namespace Chroma
 	  multi2d<DComplex> hsum, hsum_nonlocal;
 	  hsum = phases.sft(corr_local_fn);
 
-	  // Construct the non-local current matrix element 
+	  // Construct the non-local current matrix element
 	  //
 	  // The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
 	  //                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
 	  // NOTE: the 1/2  is included down below in the sumMulti stuff
-	  
-  
+
+
 	  form.formFac[ store ].gamma_value = store;
 	  form.formFac[ store ].momenta.resize(phases.numMom());  // hold momenta output
 
 	  // Loop over insertion momenta and print out results
-	  for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num) 
+	  for(int inser_mom_num=0; inser_mom_num<phases.numMom(); ++inser_mom_num)
 	    {
 	      form.formFac[ store ].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
 
 	      multi1d<Complex> local_cur3ptfn(length); // always compute
 
-	      for (int t=0; t < length; ++t) 
+	      for (int t=0; t < length; ++t)
 		{
 		  int t_eff = (t - t0 + length) % length;
 
@@ -306,7 +306,7 @@ namespace Chroma
 	    } // end for(inser_mom_num)
 	} // end for(gamma_value)
     }
-                            
+
     END_CODE();
   }
 
@@ -316,39 +316,39 @@ namespace Chroma
       for (int q=0;q<4;q++)
 	for (int i2=0;i2<3;i2++)
 	  for (int q2=0;q2<3;q2++)
-	    QDPIO::cout << t1.elem(i,q).elem(i2,q2) << "  " << t2.elem(i,q).elem(i2,q2) << endl;
+	    QDPIO::cout << t1.elem(i,q).elem(i2,q2) << "  " << t2.elem(i,q).elem(i2,q2) << std::endl;
   }
 
   template<typename T>
-  T DmuDnu(const multi1d<LatticeColorMatrix>& u, const T& psi0,const T& psi1,int g,int mu,int nu) 
+  T DmuDnu(const multi1d<LatticeColorMatrix>& u, const T& psi0,const T& psi1,int g,int mu,int nu)
   {
-    T term1 = -psi0 * Gamma(g) * 
-      adj(shift(u[mu],BACKWARD,mu)) * shift(u[nu],BACKWARD,mu) * 
+    T term1 = -psi0 * Gamma(g) *
+      adj(shift(u[mu],BACKWARD,mu)) * shift(u[nu],BACKWARD,mu) *
       shift(shift(psi1,BACKWARD,mu),FORWARD,nu);
 
-    T term2 = +psi0 * Gamma(g) * 
-      adj(shift(u[mu],BACKWARD,mu)) * 
-      adj(shift(shift(u[nu],BACKWARD,mu),BACKWARD,nu)) * 
+    T term2 = +psi0 * Gamma(g) *
+      adj(shift(u[mu],BACKWARD,mu)) *
+      adj(shift(shift(u[nu],BACKWARD,mu),BACKWARD,nu)) *
       shift(shift(psi1,BACKWARD,mu),BACKWARD,nu);
 
-    T term3 = +psi0 * Gamma(g) * 
-      u[mu] * shift(u[nu],FORWARD,mu) * 
+    T term3 = +psi0 * Gamma(g) *
+      u[mu] * shift(u[nu],FORWARD,mu) *
       shift(shift(psi1,FORWARD,mu),FORWARD,nu);
 
-    T term4 = -psi0 * Gamma(g) * 
-      u[mu] * adj(shift(shift(u[nu],FORWARD,mu),BACKWARD,nu)) * 
+    T term4 = -psi0 * Gamma(g) *
+      u[mu] * adj(shift(shift(u[nu],FORWARD,mu),BACKWARD,nu)) *
       shift(shift(psi1,FORWARD,mu),BACKWARD,nu);
 
     T tmp;
-    tmp = 0.25 * ( 
+    tmp = 0.25 * (
 		  term1 + term2 + term3 + term4 +
-		  
-		  shift(term1,FORWARD,mu) + shift(term2,FORWARD,mu) + 
+
+		  shift(term1,FORWARD,mu) + shift(term2,FORWARD,mu) +
 		  shift(term3,BACKWARD,mu) + shift(term4,BACKWARD,mu) +
-		  
-		  shift(term1,BACKWARD,nu) + shift(term2,FORWARD,nu) + 
+
+		  shift(term1,BACKWARD,nu) + shift(term2,FORWARD,nu) +
 		  shift(term3,BACKWARD,nu) + shift(term4,FORWARD,nu) +
-		  
+
 		  shift(shift(term1,FORWARD,mu),BACKWARD,nu) +
 		  shift(shift(term1,FORWARD,mu),FORWARD,nu) +
 		  shift(shift(term1,BACKWARD,mu),BACKWARD,nu) +
@@ -367,14 +367,14 @@ namespace Chroma
     // 		if ( ( t1.elem(s).elem(i,q).elem(i2,q2).real() - t2.elem(s).elem(i,q).elem(i2,q2).real() > 0.001 ) ||
     // 		     ( t1.elem(s).elem(i,q).elem(i2,q2).imag() - t2.elem(s).elem(i,q).elem(i2,q2).imag() > 0.001 ) ) {
     // 		  mis++;
-    // 		  QDPIO::cout << t1.elem(s).elem(i,q).elem(i2,q2) << " != " <<  t2.elem(s).elem(i,q).elem(i2,q2) << endl;
+    // 		  QDPIO::cout << t1.elem(s).elem(i,q).elem(i2,q2) << " != " <<  t2.elem(s).elem(i,q).elem(i2,q2) << std::endl;
     // 		}
-    //   QDPIO::cout << "term1 mismatch = " << mis << endl;
+    //   QDPIO::cout << "term1 mismatch = " << mis << std::endl;
     // }
 
     // {
-    //   T t1 = 
-    // 	shift(term1,FORWARD,mu) + shift(term2,FORWARD,mu) + 
+    //   T t1 =
+    // 	shift(term1,FORWARD,mu) + shift(term2,FORWARD,mu) +
     // 	shift(term3,BACKWARD,mu) + shift(term4,BACKWARD,mu);
     //   T t2 =  adj(rightNabla( psi0 , u , mu , 1 )) * Gamma(g) * rightNabla( psi1 , u , nu , 1 );
     //   int mis=0;
@@ -386,13 +386,13 @@ namespace Chroma
     // 		if ( ( t1.elem(s).elem(i,q).elem(i2,q2).real() - t2.elem(s).elem(i,q).elem(i2,q2).real() > 0.001 ) ||
     // 		     ( t1.elem(s).elem(i,q).elem(i2,q2).imag() - t2.elem(s).elem(i,q).elem(i2,q2).imag() > 0.001 ) ) {
     // 		  mis++;
-    // 		  QDPIO::cout << t1.elem(s).elem(i,q).elem(i2,q2) << " != " <<  t2.elem(s).elem(i,q).elem(i2,q2) << endl;
+    // 		  QDPIO::cout << t1.elem(s).elem(i,q).elem(i2,q2) << " != " <<  t2.elem(s).elem(i,q).elem(i2,q2) << std::endl;
     // 		}
-    //   QDPIO::cout << "term2 mismatch = " << mis << endl;
+    //   QDPIO::cout << "term2 mismatch = " << mis << std::endl;
     // }
 
     // {
-    //   T t1 = 
+    //   T t1 =
     // 	shift(shift(term1,FORWARD,mu),BACKWARD,nu) +
     // 	shift(shift(term1,FORWARD,mu),FORWARD,nu) +
     // 	shift(shift(term1,BACKWARD,mu),BACKWARD,nu) +
@@ -409,9 +409,9 @@ namespace Chroma
     // 		if ( ( t1.elem(s).elem(i,q).elem(i2,q2).real() - t2.elem(s).elem(i,q).elem(i2,q2).real() > 0.001 ) ||
     // 		     ( t1.elem(s).elem(i,q).elem(i2,q2).imag() - t2.elem(s).elem(i,q).elem(i2,q2).imag() > 0.001 ) ) {
     // 		  mis++;
-    // 		  QDPIO::cout << t1.elem(s).elem(i,q).elem(i2,q2) << " != " <<  t2.elem(s).elem(i,q).elem(i2,q2) << endl;
+    // 		  QDPIO::cout << t1.elem(s).elem(i,q).elem(i2,q2) << " != " <<  t2.elem(s).elem(i,q).elem(i2,q2) << std::endl;
     // 		}
-    //   QDPIO::cout << "term4 mismatch = " << mis << endl;
+    //   QDPIO::cout << "term4 mismatch = " << mis << std::endl;
     // }
 
 
@@ -424,9 +424,9 @@ namespace Chroma
     // // 2nd term
     // leftNabla( quark_propagator , u , mu , 1 ) * rightNabla( quark_propagator , u , nu , 1 );
     // leftNabla( quark_propagator , u , mu , 1 ) = adj(rightNabla( quark_propagator , u , mu , 1 ));
-    
+
     // // 3rd term more tricky
-    
+
     // // 4th term
     // leftNabla( leftNabla( quark_propagator , u , mu , 1 ) , u , nu , 1 );
 
@@ -436,17 +436,17 @@ namespace Chroma
 
 
 
-  
+
 
   void FormFac2DQCDSF(FormFac_insertionsQCDSF_t& form,
-		      const multi1d<LatticeColorMatrix>& u, 
+		      const multi1d<LatticeColorMatrix>& u,
 		      const LatticePropagator& quark_propagator,
-		      const LatticePropagator& seq_quark_prop, 
+		      const LatticePropagator& seq_quark_prop,
 		      int gamma_insertion,
 		      const SftMom& phases,
 		      int t0)
   {
-    QDPIO::cout << "FormFac2DQCDSF" << endl;
+    QDPIO::cout << "FormFac2DQCDSF" << std::endl;
 
     START_CODE();
 
@@ -454,7 +454,7 @@ namespace Chroma
     int length = phases.numSubsets();
 
     int G5 = Ns*Ns-1;
-  
+
     // Construct the anti-quark propagator from the seq. quark prop.
     // LatticePropagator seq_src = Gamma(G5) * adj(seq_quark_prop) * Gamma(G5);
     // LatticePropagator seq_src_dagger = Gamma(G5) * seq_quark_prop * Gamma(G5);
@@ -469,20 +469,20 @@ namespace Chroma
     form.formFac.resize(Nd*Nd*4*4);
 
     // Loop over gamma matrices of the insertion current of insertion current
-    for(int nu = 0 ; nu < 4 ; ++nu ) 
+    for(int nu = 0 ; nu < 4 ; ++nu )
       {
-	for(int mu = 0 ; mu < 4 ; ++mu ) 
+	for(int mu = 0 ; mu < 4 ; ++mu )
 	  {
 
-	    QDPIO::cout << "nu = " << nu << ",  mu = " << mu << endl;
+	    QDPIO::cout << "nu = " << nu << ",  mu = " << mu << std::endl;
 
 	    for(int gamma_value = 0; gamma_value < Nd*Nd; ++gamma_value)
 	      {
-		LatticePropagator deriv2D = DmuDnu( u , anti_quark_prop , quark_propagator , gamma_value , mu , nu ) * 
+		LatticePropagator deriv2D = DmuDnu( u , anti_quark_prop , quark_propagator , gamma_value , mu , nu ) *
 		  Gamma(gamma_insertion);
-	    
+
 		int store = nu*Nd*Nd*4 + mu*Nd*Nd + gamma_value;
-		QDPIO::cout << "gamma = " << gamma_value << " store = " << store << endl;
+		QDPIO::cout << "gamma = " << gamma_value << " store = " << store << std::endl;
 
 		LatticeComplex corr_local_fn = trace( deriv2D );
 
@@ -500,18 +500,18 @@ namespace Chroma
 		      {
 			int t_eff = (t - t0 + length) % length;
 			local_cur3ptfn[t_eff] = Complex(hsum[inser_mom_num][t]);
-		      } 
+		      }
 		    form.formFac[ store ].momenta[inser_mom_num].local_current    = local_cur3ptfn;
-		  } 
-	      } 
+		  }
+	      }
 	  }
-      }                            
+      }
     END_CODE();
   }
 
 
 
-  
+
 
 
 

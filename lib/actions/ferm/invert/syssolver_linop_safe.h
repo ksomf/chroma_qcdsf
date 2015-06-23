@@ -40,8 +40,8 @@ namespace Chroma
      * \param invParam  inverter parameters ( Read )
      */
     LinOpSysSolverSafe(Handle< LinearOperator<T> > A_,
-       const SysSolverSafeParams& invParam_) : 
-      A(A_), invParam(invParam_) 
+       const SysSolverSafeParams& invParam_) :
+      A(A_), invParam(invParam_)
       { numNonConverged = new int;
         *numNonConverged = 0;
       }
@@ -62,26 +62,26 @@ namespace Chroma
      */
     SystemSolverResults_t operator() (T& psi, const T& chi) const
       {
-   START_CODE();  
+   START_CODE();
    SystemSolverResults_t res;  // initialized by a constructor
    StopWatch swatch;
    swatch.reset();
    swatch.start();
 
    bool didnot_compute_res=true;
-//    QDPIO::cout << *numNonConverged << endl;
-   
+//    QDPIO::cout << *numNonConverged << std::endl;
+
    try {
       if( *numNonConverged > 0 and invParam.Strategy==0 )
        throw( std::string("Try slow CG muahaha.") );
 
-            res = InvBiCGStab(*A, 
-         chi, 
-         psi, 
-         invParam.RsdBiCGStab, 
-         invParam.MaxBiCGStab, 
+            res = InvBiCGStab(*A,
+         chi,
+         psi,
+         invParam.RsdBiCGStab,
+         invParam.MaxBiCGStab,
          PLUS);
-         { 
+         {
             T r;
             r[A->subset()]=chi;
             T tmp;
@@ -92,12 +92,12 @@ namespace Chroma
            didnot_compute_res=false;
          if(toBool(res.resid/sqrt(norm2(chi,A->subset())) > invParam.max_BiCG_relative_Res)){
             didnot_compute_res=true;
-            QDPIO::cout << "SAFE_SOLVER: Relative residual too high -> Restart with CG"<<endl;
+            QDPIO::cout << "SAFE_SOLVER: Relative residual too high -> Restart with CG"<<std::endl;
             throw( std::string("Relative residual too high -> Try slow CG muahaha.") );
          }
    }
    catch ( const std::string& err ) {
-      QDPIO::cout <<"Caught "<<err<<endl;
+      QDPIO::cout <<"Caught "<<err<<std::endl;
       ++(*numNonConverged);
       T chi_tmp;
       (*A)(chi_tmp, chi, MINUS);
@@ -113,12 +113,12 @@ namespace Chroma
 #endif
    }
 
-//    QDPIO::cout << *numNonConverged << endl;
+//    QDPIO::cout << *numNonConverged << std::endl;
 
    swatch.stop();
    double time = swatch.getTimeInSeconds();
 
-   if(didnot_compute_res){ 
+   if(didnot_compute_res){
      T r;
      r[A->subset()]=chi;
      T tmp;
@@ -126,10 +126,10 @@ namespace Chroma
      r[A->subset()] -= tmp;
      res.resid = sqrt(norm2(r, A->subset()));
    }
-   QDPIO::cout << "SAFE_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
-      QDPIO::cout << "SAFE_SOLVER_TIME: "<<time<< " sec" << endl;
+   QDPIO::cout << "SAFE_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << std::endl;
+      QDPIO::cout << "SAFE_SOLVER_TIME: "<<time<< " sec" << std::endl;
 
-   
+
 
    END_CODE();
 
@@ -148,5 +148,4 @@ namespace Chroma
 
 } // End namespace
 
-#endif 
-
+#endif

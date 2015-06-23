@@ -25,9 +25,9 @@ namespace Chroma
 				       const CloverFermActParams& param_,
 				       const SLRCFeynHellFermActParams& fhparam_)
   {
-    QDPIO::cout << "Creating UnprecSlrcFeynHellDumbFLinOpQCDSF" << endl;
+    QDPIO::cout << "Creating UnprecSlrcFeynHellDumbFLinOpQCDSF" << std::endl;
 
-    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
 
     param = param_;
     fhparam = fhparam_;
@@ -39,9 +39,9 @@ namespace Chroma
     A.create(thin_fs, param);
     D.create(fs, param.anisoParam);
 
-    QDPIO::cout << "Done creating UnprecSlrcFeynHellDumbFLinOpQCDSF" << endl;
+    QDPIO::cout << "Done creating UnprecSlrcFeynHellDumbFLinOpQCDSF" << std::endl;
 
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
   }
 
 
@@ -60,7 +60,7 @@ namespace Chroma
   {
     LatticeFermionF tmp; moveToFastMemoryHint(tmp);
     Real mhalf = -0.5;
-    Real phalf = 0.5
+    Real phalf = 0.5;
 
     A(chi, psi, isign);
     D(tmp, psi, isign);
@@ -71,8 +71,7 @@ namespace Chroma
 		chi += phalf
 			* fhparam.FHparam[i].lambda
 			* fhparam.FHparam[i].phases
-			* Gamma(fhparam.FHparam[i].op)
-			* psi;
+			* (Gamma(fhparam.FHparam[i].op) * psi);
 	}
 
     getFermBC().modifyF(chi);
@@ -113,9 +112,9 @@ namespace Chroma
 				       const CloverFermActParams& param_,
 				       const SLRCFeynHellFermActParams& fhparam_)
   {
-    QDPIO::cout << "Creating UnprecSlrcFeynHellDumbDLinOpQCDSF" << endl;
+    QDPIO::cout << "Creating UnprecSlrcFeynHellDumbDLinOpQCDSF" << std::endl;
 
-    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
 
     param = param_;
     fhparam = fhparam_;
@@ -127,7 +126,7 @@ namespace Chroma
     A.create(thin_fs, param);
     D.create(fs, param.anisoParam);
 
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
   }
 
 
@@ -146,7 +145,7 @@ namespace Chroma
   {
     LatticeFermionD tmp; moveToFastMemoryHint(tmp);
     Real mhalf = -0.5;
-    Real phalf = 0.5
+    Real phalf = 0.5;
 
     A(chi, psi, isign);
     D(tmp, psi, isign);
@@ -157,8 +156,7 @@ namespace Chroma
 		chi += phalf
 			* fhparam.FHparam[i].lambda
 			* fhparam.FHparam[i].phases
-			* Gamma(fhparam.FHparam[i].op)
-			* psi;
+			* (Gamma(fhparam.FHparam[i].op) * psi);
 	}
 
     getFermBC().modifyF(chi);

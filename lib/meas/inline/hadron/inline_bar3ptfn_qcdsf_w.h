@@ -12,8 +12,8 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 
-namespace Chroma 
-{ 
+namespace Chroma
+{
   /*! \ingroup inlinehadron */
   namespace InlineBar3ptfnEnvQCDSF
   {
@@ -24,7 +24,7 @@ namespace Chroma
 
   //! Parameter structure
   /*! \ingroup inlinehadron */
-  struct InlineBar3ptfnParamsQCDSF 
+  struct InlineBar3ptfnParamsQCDSF
   {
     InlineBar3ptfnParamsQCDSF();
     InlineBar3ptfnParamsQCDSF(XMLReader& xml_in, const std::string& path);
@@ -56,12 +56,12 @@ namespace Chroma
     } named_obj;
   };
 
-  void read(XMLReader& xml, const string& path, InlineBar3ptfnParamsQCDSF::Param_t& param);
+  void read(XMLReader& xml, const std::string& path, InlineBar3ptfnParamsQCDSF::Param_t& param);
 
 
   //! Inline measurement of 3pt functions
   /*! \ingroup inlinehadron */
-  class InlineBar3ptfnQCDSF : public AbsInlineMeasurement 
+  class InlineBar3ptfnQCDSF : public AbsInlineMeasurement
   {
   public:
     ~InlineBar3ptfnQCDSF() {}
@@ -72,7 +72,7 @@ namespace Chroma
 
     //! Do the measurement
     void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
+		    XMLWriter& xml_out);
 
   private:
     InlineBar3ptfnParamsQCDSF params;

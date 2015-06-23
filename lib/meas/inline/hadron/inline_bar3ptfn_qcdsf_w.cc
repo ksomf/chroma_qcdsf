@@ -16,14 +16,14 @@
 
 #include "meas/inline/io/named_objmap.h"
 
-namespace Chroma 
-{ 
-  namespace InlineBar3ptfnEnvQCDSF         
-  { 
+namespace Chroma
+{
+  namespace InlineBar3ptfnEnvQCDSF
+  {
     namespace
     {
-      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					      const std::string& path) 
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in,
+					      const std::string& path)
       {
 	return new InlineBar3ptfnQCDSF(InlineBar3ptfnParamsQCDSF(xml_in, path));
       }
@@ -35,9 +35,9 @@ namespace Chroma
     const std::string name = "BAR3PTFN-QCDSF";
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
 	{
 	  success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
@@ -49,7 +49,7 @@ namespace Chroma
 
 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineBar3ptfnParamsQCDSF::SeqProp_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineBar3ptfnParamsQCDSF::SeqProp_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -58,7 +58,7 @@ namespace Chroma
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParamsQCDSF::SeqProp_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineBar3ptfnParamsQCDSF::SeqProp_t& input)
   {
     push(xml, path);
 
@@ -70,7 +70,7 @@ namespace Chroma
 
 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineBar3ptfnParamsQCDSF::NamedObject_t& input , InlineBar3ptfnParamsQCDSF::Param_t& param )
+  void read(XMLReader& xml, const std::string& path, InlineBar3ptfnParamsQCDSF::NamedObject_t& input , InlineBar3ptfnParamsQCDSF::Param_t& param )
   {
     XMLReader inputtop(xml, path);
 
@@ -87,7 +87,7 @@ namespace Chroma
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParamsQCDSF::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineBar3ptfnParamsQCDSF::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -101,14 +101,14 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, InlineBar3ptfnParamsQCDSF::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineBar3ptfnParamsQCDSF::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
     int version;
     read(paramtop, "version", version);
 
-    switch (version) 
+    switch (version)
       {
       case 6:
 	// Uggh, assume j_decay = Nd-1 here. This could come from source.
@@ -127,7 +127,7 @@ namespace Chroma
       default :
 	/**************************************************************************/
 
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -136,7 +136,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  /*  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParamsQCDSF::Param_t& param)
+  /*  void write(XMLWriter& xml, const std::string& path, const InlineBar3ptfnParamsQCDSF::Param_t& param)
   {
     push(xml, path);
 
@@ -148,7 +148,7 @@ namespace Chroma
     pop(xml);
     }*/
 
-  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParamsQCDSF::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineBar3ptfnParamsQCDSF::Param_t& param)
   {
     push(xml, path);
     int version = 8;
@@ -163,13 +163,13 @@ namespace Chroma
 
   // Param stuff
   InlineBar3ptfnParamsQCDSF::InlineBar3ptfnParamsQCDSF()
-  { 
-    frequency = 0; 
+  {
+    frequency = 0;
   }
 
-  InlineBar3ptfnParamsQCDSF::InlineBar3ptfnParamsQCDSF(XMLReader& xml_in, const std::string& path) 
+  InlineBar3ptfnParamsQCDSF::InlineBar3ptfnParamsQCDSF(XMLReader& xml_in, const std::string& path)
   {
-    try 
+    try
       {
 	XMLReader paramtop(xml_in, path);
 
@@ -184,19 +184,19 @@ namespace Chroma
 	// Read in the output propagator/source configuration info
 	read(paramtop, "NamedObject", named_obj, param);
       }
-    catch(const std::string& e) 
+    catch(const std::string& e)
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
   }
 
 
   void
-  InlineBar3ptfnParamsQCDSF::write(XMLWriter& xml_out, const std::string& path) 
+  InlineBar3ptfnParamsQCDSF::write(XMLWriter& xml_out, const std::string& path)
   {
     push(xml_out, path);
-    
+
     // Parameters for source construction
     Chroma::write(xml_out, "Param", param);
 
@@ -216,7 +216,7 @@ namespace Chroma
 
   struct FormFac_sequential_sourceQCDSF_t
   {
-    string            seqsrc_type;
+	  std::string            seqsrc_type;
     int               t_source;
     int               t_sink;
     multi1d<int>      sink_mom;
@@ -263,7 +263,7 @@ namespace Chroma
 
 
 
-  void write(XMLWriter& xml, const string& path, const FormFac_momentaQCDSF_t& mom)
+  void write(XMLWriter& xml, const std::string& path, const FormFac_momentaQCDSF_t& mom)
   {
     int magic = 20301;
     push(xml, path);
@@ -273,27 +273,27 @@ namespace Chroma
     //write(xml, mom.nonlocal_current);
     pop(xml);
   }
-  void write(XMLWriter& xml, const string& path, const FormFac_insertionQCDSF_t& mes)
+  void write(XMLWriter& xml, const std::string& path, const FormFac_insertionQCDSF_t& mes)
   {
     push(xml, path);
     write(xml, "gamma_value",mes.gamma_value);
     write(xml, "momenta",mes.momenta);
     pop(xml);
   }
-  void write(XMLWriter& xml, const string& path, const FormFac_insertionsQCDSF_t& form)
+  void write(XMLWriter& xml, const std::string& path, const FormFac_insertionsQCDSF_t& form)
   {
     push(xml, path);
     write(xml, "output_version",form.output_version);
     write(xml, "formFac",form.formFac);
     pop(xml);
   }
-  void write(XMLWriter& xml, const string& path, const Output_versionQCDSF_t& ver)
+  void write(XMLWriter& xml, const std::string& path, const Output_versionQCDSF_t& ver)
   {
     push(xml, path);
     write(xml, "out_version",ver.out_version);
     pop(xml);
   }
-  void write(XMLWriter& xml, const string& path, const FormFac_sequential_sourceQCDSF_t& src)
+  void write(XMLWriter& xml, const std::string& path, const FormFac_sequential_sourceQCDSF_t& src)
   {
     push(xml, path);
     write(xml, "seqsrc_type",src.seqsrc_type);
@@ -304,14 +304,14 @@ namespace Chroma
     write(xml, "formFacs",src.formFacs);
     pop(xml);
   }
-  void write(XMLWriter& xml, const string& path, const FormFac_Wilson_3Pt_fn_measurementsQCDSF_t& had)
+  void write(XMLWriter& xml, const std::string& path, const FormFac_Wilson_3Pt_fn_measurementsQCDSF_t& had)
   {
     push(xml, path);
     write(xml, "output_version", had.output_version);
     write(xml, "seqsrc",had.seqsrc);
     pop(xml);
   }
-  void write(XMLWriter& xml, const string& path, const Bar3ptfnQCDSF_t& bar)
+  void write(XMLWriter& xml, const std::string& path, const Bar3ptfnQCDSF_t& bar)
   {
     push(xml, path);
     write(xml, "output_version", bar.output_version);
@@ -325,27 +325,27 @@ namespace Chroma
     XMLReader  fermacttop(xml_s);
     XMLReader  top(fermacttop, fermact.path);
 
-    string bc_type;
+	std::string bc_type;
     read( top, "descendant::FermBC[1]", bc_type );
 
     if ( bc_type != "SIMPLE_FERMBC" ) {
-      QDPIO::cerr << __func__ << ": Currently bar3ptfn_qcsdf only supports SIMPLE_FERMBC.\nThis error might be unnecessary, if it is called because of information of propagators used to construct the sequential source,\n anyway check what you or the code is doing!" << endl;
+      QDPIO::cerr << __func__ << ": Currently bar3ptfn_qcsdf only supports SIMPLE_FERMBC.\nThis error might be unnecessary, if it is called because of information of propagators used to construct the sequential source,\n anyway check what you or the code is doing!" << std::endl;
       QDP_abort(1);
     }
 
     multi1d<int> bc_2 = getFermActBoundary( fermact );
     for( int mu=0; mu<Nd; ++mu )
         if ( bc[mu] != bc_2[mu] ) {
-            QDPIO::cerr << __func__ << ": Currently bar3ptfn_qcsdf only supports matching boundary conditions.\nThis error might be unnecessary, if it is called because of information of propagators used to construct the sequential source,\n anyway check what you or the code is doing!" << endl;
+            QDPIO::cerr << __func__ << ": Currently bar3ptfn_qcsdf only supports matching boundary conditions.\nThis error might be unnecessary, if it is called because of information of propagators used to construct the sequential source,\n anyway check what you or the code is doing!" << std::endl;
             QDP_abort(1);
         }
   }
 
 
   // Function call
-  void 
+  void
   InlineBar3ptfnQCDSF::operator()(unsigned long update_no,
-				  XMLWriter& xml_out) 
+				  XMLWriter& xml_out)
   {
     START_CODE();
 
@@ -367,19 +367,19 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
       }
-    catch( std::bad_cast ) 
+    catch( std::bad_cast )
       {
-	QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": caught dynamic cast error" 
-		    << endl;
+	QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": caught dynamic cast error"
+		    << std::endl;
 	QDP_abort(1);
       }
-    catch (const string& e) 
+    catch (const std::string& e)
       {
-	QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": map call failed: " << e
+		    << std::endl;
 	QDP_abort(1);
       }
-    const multi1d<LatticeColorMatrix>& u = 
+    const multi1d<LatticeColorMatrix>& u =
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     push(xml_out, "bar3ptfn");
@@ -387,7 +387,7 @@ namespace Chroma
     push(xml_qcdsf, "bar3ptfn");
     write(xml_qcdsf, "update_no", update_no);
 
-    QDPIO::cout << InlineBar3ptfnEnvQCDSF::name << ": Baryon form factors for Wilson fermions" << endl;
+    QDPIO::cout << InlineBar3ptfnEnvQCDSF::name << ": Baryon form factors for Wilson fermions" << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
     proginfo(xml_qcdsf);    // Print out basic program info
@@ -419,17 +419,17 @@ namespace Chroma
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSourceConst_t source_header;
-    QDPIO::cout << "Attempt to parse forward propagator" << endl;
+    QDPIO::cout << "Attempt to parse forward propagator" << std::endl;
     try
       {
 	// Snarf the forward prop
 	quark_propagator =
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
-	
+
 	// Snarf the source info. This is will throw if the source_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
-   
+
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	{
@@ -443,19 +443,19 @@ namespace Chroma
 	write(xml_qcdsf, "Propagator_file_info", prop_file_xml);
 	write(xml_qcdsf, "Propagator_record_info", prop_record_xml);
       }
-    catch( std::bad_cast ) 
+    catch( std::bad_cast )
       {
-	QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": caught dynamic cast error" 
-		    << endl;
+	QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": caught dynamic cast error"
+		    << std::endl;
 	QDP_abort(1);
       }
-    catch (const string& e) 
+    catch (const std::string& e)
       {
-	QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": error message: " << e 
-		    << endl;
+	QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": error message: " << e
+		    << std::endl;
 	QDP_abort(1);
       }
-    QDPIO::cout << "Forward propagator successfully parsed" << endl;
+    QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
 
     // Derived from input prop
     multi1d<int> t_srce = source_header.getTSrce();
@@ -470,7 +470,7 @@ namespace Chroma
       // Initialize the slow Fourier transform phases
       SftMom phases(0, true, j_decay);
 
-      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator), 
+      multi1d<Double> forward_prop_corr = sumMulti(localNorm2(quark_propagator),
 						   phases.getSet());
 
       push(xml_out, "Forward_prop_correlator");
@@ -525,7 +525,7 @@ namespace Chroma
 	// Read the quark propagator and extract headers
 	LatticePropagator seq_quark_prop;
 	SeqSource_t seqsource_header;
-	QDPIO::cout << "Attempt to parse sequential propagator" << endl;
+	QDPIO::cout << "Attempt to parse sequential propagator" << std::endl;
 	try
 	  {
 	    std::string seqprop_id = params.named_obj.seqprops[seq_src_ctr].seqprop_id;
@@ -533,12 +533,12 @@ namespace Chroma
 	    // Snarf the backward prop
 	    seq_quark_prop =
 	      TheNamedObjMap::Instance().getData<LatticePropagator>(seqprop_id);
-	
+
 	    // Snarf the source info. This is will throw if the source_id is not there
 	    XMLReader seqprop_file_xml, seqprop_record_xml;
 	    TheNamedObjMap::Instance().get(seqprop_id).getFileXML(seqprop_file_xml);
 	    TheNamedObjMap::Instance().get(seqprop_id).getRecordXML(seqprop_record_xml);
-   
+
 	    // Try to invert this record XML into a ChromaProp struct
 	    // Also pull out the id of this source
 	    // NEED SECURITY HERE - need a way to cross check props. Use the ID.
@@ -552,7 +552,7 @@ namespace Chroma
 
               // - absolutely necessary!
               assertFermBC( bc, seq_header.seqprop_header.fermact );
-              
+
               // - this might be physically ok, in the unlikely case that it happens
               //   the corresponding person should better check it again
               for( int j=0; j<seq_header.forward_props.size(); ++j )
@@ -565,29 +565,29 @@ namespace Chroma
 	    write(xml_seq_src_qcdsf, "SequentialProp_file_info", seqprop_file_xml);
 	    write(xml_seq_src_qcdsf, "SequentialProp_record_info", seqprop_record_xml);
 	  }
-	catch( std::bad_cast ) 
+	catch( std::bad_cast )
 	  {
-	    QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": caught dynamic cast error" 
-			<< endl;
+	    QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": caught dynamic cast error"
+			<< std::endl;
 	    QDP_abort(1);
 	  }
-	catch (const string& e) 
+	catch (const std::string& e)
 	  {
-	    QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": map call failed: " << e 
-			<< endl;
+	    QDPIO::cerr << InlineBar3ptfnEnvQCDSF::name << ": map call failed: " << e
+			<< std::endl;
 	    QDP_abort(1);
 	  }
-	QDPIO::cout << "Sequential propagator successfully parsed" << endl;
+	QDPIO::cout << "Sequential propagator successfully parsed" << std::endl;
 
 	// Sanity check - write out the norm2 of the forward prop in the j_decay direction
 	// Use this for any possible verification
 	{
 	  // Initialize the slow Fourier transform phases
 	  SftMom phases(0, true, Nd-1);
-      
-	  multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_quark_prop), 
+
+	  multi1d<Double> backward_prop_corr = sumMulti(localNorm2(seq_quark_prop),
 							phases.getSet());
-      
+
 	  push(xml_seq_src, "Backward_prop_correlator");
 	  write(xml_seq_src, "backward_prop_corr", backward_prop_corr);
 	  pop(xml_seq_src);
@@ -601,7 +601,7 @@ namespace Chroma
 
 	// Derived from input seqprop
 	std::string   seqsrc_type = seqsource_header.seqsrc.id;
-	QDPIO::cout << "Seqsource name = " << seqsrc_type  << endl;
+	QDPIO::cout << "Seqsource name = " << seqsrc_type  << std::endl;
 	int           t_sink   = seqsource_header.t_sink;
 	multi1d<int>  sink_mom = seqsource_header.sink_mom;
 
@@ -636,15 +636,15 @@ namespace Chroma
 	bar3pt_2D.bar.seqsrc[seq_src_ctr].t_sink        = t_sink;
 	bar3pt_2D.bar.seqsrc[seq_src_ctr].sink_mom      = sink_mom;
 	bar3pt_2D.bar.seqsrc[seq_src_ctr].gamma_insertion = gamma_insertion;
-	
+
         multi1d <LatticeColorMatrix> u_deriv=u; //! To correct the Nabla BUG
         for ( int dir=0; dir<Nd; ++dir ) {
             if( bc[dir]!=1 ) {
-                QDPIO::cout << "Applying BC " << bc[dir] 
-                            << " on gauge field_" << dir << " for Nabla"<< endl;
-                u_deriv[dir] *= where( 
+                QDPIO::cout << "Applying BC " << bc[dir]
+                            << " on gauge field_" << dir << " for Nabla"<< std::endl;
+                u_deriv[dir] *= where(
                         Layout::latticeCoordinate(dir)==Layout::lattSize()[dir]-1,
-                        Double(bc[dir]), 
+                        Double(bc[dir]),
                         Double(1.) );
             }
         }
@@ -652,18 +652,18 @@ namespace Chroma
 	// Now the 3pt contractions
 	SftMom phases(params.param.mom2_max, t_srce, sink_mom, false, j_decay);
 
-	FormFacQCDSF(bar3pt.bar.seqsrc[seq_src_ctr].formFacs, 
+	FormFacQCDSF(bar3pt.bar.seqsrc[seq_src_ctr].formFacs,
 		     u_deriv, quark_propagator, seq_quark_prop, gamma_insertion,
 		     phases, t_source);
 
 	if (params.param.deriv >= 1) {
-	  FormFac1DQCDSF(bar3pt_1D.bar.seqsrc[seq_src_ctr].formFacs, 
+	  FormFac1DQCDSF(bar3pt_1D.bar.seqsrc[seq_src_ctr].formFacs,
 			 u_deriv, quark_propagator, seq_quark_prop, gamma_insertion,
 			 phases, t_source);
 	}
 
 	if (params.param.deriv >= 2) {
-	  FormFac2DQCDSF(bar3pt_2D.bar.seqsrc[seq_src_ctr].formFacs, 
+	  FormFac2DQCDSF(bar3pt_2D.bar.seqsrc[seq_src_ctr].formFacs,
 			 u_deriv, quark_propagator, seq_quark_prop, gamma_insertion,
 			 phases, t_source);
 	}
@@ -774,12 +774,12 @@ namespace Chroma
 
     snoop.stop();
     QDPIO::cout << InlineBar3ptfnEnvQCDSF::name << ": total time = "
-		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< snoop.getTimeInSeconds()
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineBar3ptfnEnvQCDSF::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineBar3ptfnEnvQCDSF::name << ": ran successfully" << std::endl;
 
     END_CODE();
-  } 
+  }
 
 };

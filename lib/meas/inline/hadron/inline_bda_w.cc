@@ -10,14 +10,14 @@
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
 
-namespace Chroma 
-{ 
-  namespace InlineBDAEnv 
-  { 
+namespace Chroma
+{
+  namespace InlineBDAEnv
+  {
     namespace
     {
-      AbsInlineMeasurement* createMeasurement (XMLReader& xml_in, 
-					       const std::string& path) 
+      AbsInlineMeasurement* createMeasurement (XMLReader& xml_in,
+					       const std::string& path)
       {
 	return new InlineBDA (InlineBDAParams (xml_in, path));
       }
@@ -29,9 +29,9 @@ namespace Chroma
     const std::string name = "BDA";
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance ().registerObject (name, createMeasurement);
@@ -44,13 +44,13 @@ namespace Chroma
 
 
   //! Reader for parameters
-  void read (XMLReader& xml, const string& path, InlineBDAParams::Param_t& param)
+  void read (XMLReader& xml, const std::string& path, InlineBDAParams::Param_t& param)
   {
     XMLReader paramtop (xml, path);
 
     read (paramtop, "version", param.version);
 
-    switch (param.version) 
+    switch (param.version)
     {
     case 2:
       read (paramtop, "mom2_max", param.mom2_max);
@@ -65,14 +65,14 @@ namespace Chroma
       }
       break;
     default:
-      QDPIO::cerr << "Input parameter version " << param.version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << param.version << " unsupported." << std::endl;
       QDP_abort(1);
     }
     read (paramtop, "gam_diquark", param.gam_diquark);
   }
 
   //! Writer for parameters
-  void write (XMLWriter& xml, const string& path, const InlineBDAParams::Param_t& param)
+  void write (XMLWriter& xml, const std::string& path, const InlineBDAParams::Param_t& param)
   {
     push (xml, path);
 
@@ -100,7 +100,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read (XMLReader& xml, const string& path, InlineBDAParams::NamedObject_t& input)
+  void read (XMLReader& xml, const std::string& path, InlineBDAParams::NamedObject_t& input)
   {
     XMLReader inputtop (xml, path);
 
@@ -109,7 +109,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write (XMLWriter& xml, const string& path, const InlineBDAParams::NamedObject_t& input)
+  void write (XMLWriter& xml, const std::string& path, const InlineBDAParams::NamedObject_t& input)
   {
     push (xml, path);
 
@@ -124,9 +124,9 @@ namespace Chroma
   // Param stuff
   InlineBDAParams::InlineBDAParams () {frequency = 0;}
 
-  InlineBDAParams::InlineBDAParams (XMLReader& xml_in, const std::string& path) 
+  InlineBDAParams::InlineBDAParams (XMLReader& xml_in, const std::string& path)
   {
-    try 
+    try
     {
         XMLReader paramtop (xml_in, path);
 
@@ -142,24 +142,24 @@ namespace Chroma
         read (paramtop, "NamedObject", named_obj);
 
         // Possible alternate qqq output file
-        if (paramtop.count ("bda_file") != 0) 
+        if (paramtop.count ("bda_file") != 0)
           read (paramtop, "bda_file", bda_file);
 
         // Possible alternate XML file pattern
-        if (paramtop.count ("xml_file") != 0) 
+        if (paramtop.count ("xml_file") != 0)
           read (paramtop, "xml_file", xml_file);
 
     }
-    catch (const std::string& e) 
+    catch (const std::string& e)
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort (1);
     }
   }
 
 
   void
-  InlineBDAParams::write (XMLWriter& xml_out, const std::string& path) 
+  InlineBDAParams::write (XMLWriter& xml_out, const std::string& path)
   {
     push (xml_out, path);
 
@@ -174,13 +174,13 @@ namespace Chroma
 
 
   // Function call
-  void 
+  void
   InlineBDA::operator() (unsigned long update_no,
-                         XMLWriter& xml_out) 
+                         XMLWriter& xml_out)
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != ""){
-      string xml_file = makeXMLFileName (params.xml_file, update_no);
+		std::string xml_file = makeXMLFileName (params.xml_file, update_no);
 
       push (xml_out, "BDA_w");
       write (xml_out, "update_no", update_no);
@@ -197,7 +197,7 @@ namespace Chroma
 
   // Real work done here
   void InlineBDA::func(unsigned long update_no,
-		       XMLWriter& xml_out) 
+		       XMLWriter& xml_out)
   {
     START_CODE ();
 
@@ -213,24 +213,24 @@ namespace Chroma
       TheNamedObjMap::Instance ().getData<multi1d<LatticeColorMatrix> > (params.named_obj.gauge_id);
       TheNamedObjMap::Instance ().get (params.named_obj.gauge_id).getRecordXML (gauge_xml);
     }
-    catch (std::bad_cast) 
+    catch (std::bad_cast)
     {
-      QDPIO::cerr << InlineBDAEnv::name << ": caught dynamic cast error" 
-		  << endl;
+      QDPIO::cerr << InlineBDAEnv::name << ": caught dynamic cast error"
+		  << std::endl;
       QDP_abort (1);
     }
-    catch (const string& e) 
+    catch (const std::string& e)
     {
-      QDPIO::cerr << InlineBDAEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineBDAEnv::name << ": map call failed: " << e
+		  << std::endl;
       QDP_abort(1);
     }
-    const multi1d<LatticeColorMatrix>& u = 
+    const multi1d<LatticeColorMatrix>& u =
       TheNamedObjMap::Instance ().getData<multi1d<LatticeColorMatrix> > (params.named_obj.gauge_id);
 
     push (xml_out, "BDA");
     write (xml_out, "update_no", update_no);
-    QDPIO::cout << " BDA: Baryon distribution amplitudes for Wilson fermions" << endl;
+    QDPIO::cout << " BDA: Baryon distribution amplitudes for Wilson fermions" << std::endl;
 
     // Write out the input
     params.write (xml_out, "Input");
@@ -239,7 +239,7 @@ namespace Chroma
 
     // Write out the input
     params.write (xml_out, "Input");
-    
+
 
     // Write out the config info
     write (xml_out, "Config_info", gauge_xml);
@@ -254,8 +254,8 @@ namespace Chroma
     multi1d<ForwardProp_t> quark_header (params.named_obj.prop_ids.size ());
     multi1d<LatticePropagator> qprop (params.named_obj.prop_ids.size ());
     multi1d<Real> Mass (params.named_obj.prop_ids.size ());
-    multi1d<string> sink_types (params.named_obj.prop_ids.size ());
-    multi2d<int> bc (params.named_obj.prop_ids.size (), 4); 
+    multi1d<std::string> sink_types (params.named_obj.prop_ids.size ());
+    multi2d<int> bc (params.named_obj.prop_ids.size (), 4);
 
     // Now read the propagators we need
     for (int loop = 0; loop < params.named_obj.prop_ids.size (); loop++)
@@ -263,8 +263,8 @@ namespace Chroma
       // Snarf the data into a copy
       qprop [loop] =
 	TheNamedObjMap::Instance ().getData<LatticePropagator> (params.named_obj.prop_ids [loop]);
-	
-      // Snarf the source info. 
+
+      // Snarf the source info.
       // This is will throw if the source_id is not there
       XMLReader prop_file_xml, prop_xml ;
       TheNamedObjMap::Instance ().get (params.named_obj.prop_ids [loop]).getFileXML (prop_file_xml);
@@ -276,23 +276,23 @@ namespace Chroma
 	read (prop_xml, "/SinkSmear", quark_header [loop]);
 	read (prop_xml, "/SinkSmear/PropSink/Sink/SinkType", sink_types [loop]);
       }
-      catch (const string& e) 
+      catch (const std::string& e)
       {
-	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+	QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
 	QDP_abort (1);
       }
 
-      QDPIO::cout << "Try action and mass" << endl;
+      QDPIO::cout << "Try action and mass" << std::endl;
       Mass [loop] = getMass (quark_header [loop].prop_header.fermact);
       bc [loop]   = getFermActBoundary (quark_header [loop].prop_header.fermact);
-	
-      QDPIO::cout << "FermAct = " << quark_header [loop].prop_header.fermact.path << endl;
-      QDPIO::cout << "Mass = " << Mass [loop] << endl;
+
+      QDPIO::cout << "FermAct = " << quark_header [loop].prop_header.fermact.path << std::endl;
+      QDPIO::cout << "Mass = " << Mass [loop] << std::endl;
       QDPIO::cout << "boundary = "
 		  << bc [loop][0] << " "
 		  << bc [loop][1] << " "
 		  << bc [loop][2] << " "
-		  << bc [loop][3] << endl;
+		  << bc [loop][3] << std::endl;
     }
 
 
@@ -304,16 +304,16 @@ namespace Chroma
     for (int loop = 0; loop < params.named_obj.prop_ids.size (); loop++)
     {
       if (quark_header [loop].source_header.j_decay != j_decay){
-	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	QDP_abort(1);
       }
       if (bc [loop][j_decay] != bc_spec){
-	QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	QDPIO::cerr << "Error!! bc must be the same for all propagators " << std::endl;
 	QDP_abort(1);
       }
       for (int d = 0; d < Nd; d++)
 	if (quark_header [loop].source_header.t_source != t_source){
-	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
+	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << std::endl;
 	  QDP_abort (1);
 	}
     }
@@ -332,7 +332,7 @@ namespace Chroma
     // Write everything in binary. Maybe at some point one should switch to QDP.
     BinaryFileWriter bda_out (params.bda_file);
 
-    multi2d<BaryonDA> qqq (phases->numMom (), phases->numSubsets ()); 
+    multi2d<BaryonDA> qqq (phases->numMom (), phases->numSubsets ());
 
     // This routine computes the BaryonDAs.
     bdacomp (qqq, qprop [0], qprop [1], qprop [2], *phases, t_source, bc_spec, params.param.gam_diquark);
@@ -343,13 +343,12 @@ namespace Chroma
 
     snoop.stop ();
     QDPIO::cout << InlineBDAEnv::name << ": total time = "
-		<< snoop.getTimeInSeconds () 
-		<< " secs" << endl;
+		<< snoop.getTimeInSeconds ()
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineBDAEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineBDAEnv::name << ": ran successfully" << std::endl;
 
     END_CODE ();
   }
 
 }
-

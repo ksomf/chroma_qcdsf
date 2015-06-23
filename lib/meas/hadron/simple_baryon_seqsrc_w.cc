@@ -1073,73 +1073,73 @@ namespace Chroma
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_UNPOL"),
 										      barNuclUUnpol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_UNPOL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_UD_UNPOL"),
 										      barNuclUDUnpol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_UNPOL"),
 										      barNuclDUnpol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POLX"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POLX"),
 										      barNuclUPolx);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POLY"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POLY"),
 										      barNuclUPoly);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POL"),
 										      barNuclUPol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POLX"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_UD_POLX"),
 										      barNuclUDPolx);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POLY"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_UD_POLY"),
 										      barNuclUDPoly);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_UD_POL"),
 										      barNuclUDPol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POLX"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POLX"),
 										      barNuclDPolx);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POLY"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POLY"),
 										      barNuclDPoly);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POL"),
 										      barNuclDPol);
 
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_UNPOL_NONREL"),
 										      barNuclUUnpolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_UNPOL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_UD_UNPOL_NONREL"),
 										      barNuclUDUnpolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_UNPOL_NONREL"),
 										      barNuclDUnpolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POLX_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POLX_NONREL"),
 										      barNuclUPolxNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POLY_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POLY_NONREL"),
 										      barNuclUPolyNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POL_NONREL"),
 										      barNuclUPolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POLX_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_UD_POLX_NONREL"),
 										      barNuclUDPolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POLY_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_UD_POLY_NONREL"),
 										      barNuclUDPolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_UD_POL_NONREL"),
 										      barNuclUDPolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POLX_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POLX_NONREL"),
 										      barNuclDPolxNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POLY_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POLY_NONREL"),
 										      barNuclDPolyNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POL_NONREL"),
 										      barNuclDPolNR);
 
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_MIXED_NONREL"),

@@ -3,7 +3,7 @@
 #include "util/ferm/transf.h"
 #include <set>
 
-namespace Chroma 
+namespace Chroma
 {
 
   //so far distance defined from the origin
@@ -16,7 +16,7 @@ namespace Chroma
       srcloc = sloc;
       gen_dists();
     }
-    
+
     int operator()(const multi1d<int>& coord) const
     {
       const multi1d<int>& latt_size = Layout::lattSize();
@@ -32,51 +32,51 @@ namespace Chroma
 
       return dist;
     }
-    
+
     // The number of subsets is the length of the lattice
     // in direction mu
     int numSubsets()const {return max+1;}
-    
+
     int numDists()const {return dist_num.size();}
-    
+
     int max;
     multi1d<int> lat_dir;
     multi1d<int> srcloc;
-    map<int,int> dist_num;
-    
+	std::map<int,int> dist_num;
+
     void gen_dists(){
-      
+
       const multi1d<int>& latt_size = Layout::lattSize();
-      
+
       max= 3*(latt_size[lat_dir[0]]/2)*(latt_size[lat_dir[0]]/2);
-      
+
       for (int d1 = -latt_size[lat_dir[0]]/2 ; d1 < latt_size[lat_dir[0]]/2 ; d1++){
 	for (int d2 = -latt_size[lat_dir[1]]/2 ; d2 < latt_size[lat_dir[1]]/2 ; d2++){
 	  for (int d3 = -latt_size[lat_dir[2]]/2 ; d3 < latt_size[lat_dir[2]]/2 ; d3++){
 	    int d = d1*d1+d2*d2+d3*d3;
 	    if(dist_num.count(d)==0){
-	      dist_num.insert(pair<int,int>(d,1));
+	      dist_num.insert(std::pair<int,int>(d,1));
 	    }else{
 	      int num = dist_num[d];
 	      num++;
 	      dist_num.erase(d);
-	      dist_num.insert(pair<int,int>(d,num));
+	      dist_num.insert(std::pair<int,int>(d,num));
 	    }
 	  }
 	}
       }
     }
-    
-    
+
+
   };
 
-  void write(XMLWriter &xml_out, const string xml_group, DistanceFunc &dist_func,
+  void write(XMLWriter &xml_out, const std::string xml_group, DistanceFunc &dist_func,
 	     multi1d<Real> & wave){
 
     push(xml_out,xml_group);
-    
+
     int cnt = 0;
-    map<int,int>::iterator it;
+	std::map<int,int>::iterator it;
     for(it=dist_func.dist_num.begin(); it != dist_func.dist_num.end(); it++){
       int dist = (*it).first;
       Double r = sqrt(Double(dist));
@@ -90,7 +90,7 @@ namespace Chroma
 
   void norm_dist(DistanceFunc &dist_func, multi1d<Real> & wave){
     int cnt = 0;
-    map<int,int>::iterator it;
+	std::map<int,int>::iterator it;
     for(it=dist_func.dist_num.begin(); it != dist_func.dist_num.end(); it++){
       int dist = (*it).first;
       wave[cnt] = wave[cnt]/Double((*it).second);
@@ -98,16 +98,16 @@ namespace Chroma
     }
   }
 
-  
-  void rms(const LatticePropagator& propagator, const int j_decay, 
+
+  void rms(const LatticePropagator& propagator, const int j_decay,
 	   multi1d<int>& srcloc, const bool psi, const bool psi_dagger_psi,
-	   XMLWriter& xml_out, const string& xml_group){
-    
+	   XMLWriter& xml_out, const std::string& xml_group){
+
     START_CODE();
 
 
     const multi1d<int>& latt_size = Layout::lattSize();
-    
+
     int cnt = 0;
     multi1d<int> lat_dir(Nd-1);
     for(int mu=0; mu < Nd; mu++){
@@ -116,20 +116,20 @@ namespace Chroma
 	cnt++;
       }
     }
-    
+
     DistanceFunc dist_func(lat_dir, srcloc);
-    
+
     Set distance;
     distance.make(dist_func);
-    
+
     LatticeComplex psi_wave = zero;
     LatticeComplex qdens = zero;
-    
+
     for (int color_source = 0; color_source < Nc; color_source++){
       int spin_source = 0;
 
       LatticeFermion chi;
-	
+
       PropToFerm(propagator, chi, color_source, spin_source);
 
       int spin_sink = 0;
@@ -157,7 +157,7 @@ namespace Chroma
     Real ms = zero;
 
     cnt = 0;
-    map<int,int>::iterator it;
+	std::map<int,int>::iterator it;
 
     for(it=dist_func.dist_num.begin(); it != dist_func.dist_num.end(); it++){
       Subset s = distance[(*it).first];
@@ -166,7 +166,7 @@ namespace Chroma
       cnt++;
     }
 
-    QDPIO::cout << "RMS: " << sqrt(ms) << endl;
+    QDPIO::cout << "RMS: " << sqrt(ms) << std::endl;
     write(xml_out, "rm_x2", sqrt(ms));
 
     if(psi_dagger_psi){
@@ -189,7 +189,7 @@ namespace Chroma
       wave_p = 0.;
 
       cnt = 0;
-      map<int,int>::iterator it;
+	  std::map<int,int>::iterator it;
 
       for(it=dist_func.dist_num.begin(); it != dist_func.dist_num.end(); it++){
 	Subset s = distance[(*it).first];
@@ -208,11 +208,11 @@ namespace Chroma
 
       write(xml_out,"psi",dist_func,wave_p);
     }
-    
+
     pop(xml_out);
 
     END_CODE();
-    
+
   }
-  
+
 }

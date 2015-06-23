@@ -36,12 +36,12 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup fermacts */
-  void read(XMLReader& xml, const string& path, SLRCFeynHellFermActParams& param);
-  void read(XMLReader& xml, const string& path, SLRCFeynHellFermActParams::FHParam& param);
+  void read(XMLReader& xml, const std::string& path, SLRCFeynHellFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, SLRCFeynHellFermActParams::FHParam& param);
 
   /*! \ingroup fermacts */
-  void write(XMLWriter& xml, const string& path, const SLRCFeynHellFermActParams& param);
-  void write(XMLWriter& xml, const string& path, const SLRCFeynHellFermActParams::FHParam& param);
+  void write(XMLWriter& xml, const std::string& path, const SLRCFeynHellFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const SLRCFeynHellFermActParams::FHParam& param);
 }
 
 #endif

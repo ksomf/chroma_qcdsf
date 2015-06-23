@@ -24,7 +24,7 @@
 namespace Chroma {
 
     //! Propagator input
-    void read( XMLReader& xml, const string& path, InlineResmearSinkEnvQCDSF::Params::NamedObject_t& input ) {
+    void read( XMLReader& xml, const std::string& path, InlineResmearSinkEnvQCDSF::Params::NamedObject_t& input ) {
         XMLReader inputtop( xml, path );
 
         read( inputtop, "smeared_gauge_id", input.gauge_id );
@@ -33,7 +33,7 @@ namespace Chroma {
     }
 
     //! Propagator output
-    void write( XMLWriter& xml, const string& path, const InlineResmearSinkEnvQCDSF::Params::NamedObject_t& input ) {
+    void write( XMLWriter& xml, const std::string& path, const InlineResmearSinkEnvQCDSF::Params::NamedObject_t& input ) {
         push( xml, path );
 
         write( xml, "smeared_gauge_id", input.gauge_id );
@@ -44,7 +44,7 @@ namespace Chroma {
     }
 
     //! Propagator input
-    void read( XMLReader& xml, const string& path, InlineResmearSinkEnvQCDSF::Params::ResmearParam_t& input ) {
+    void read( XMLReader& xml, const std::string& path, InlineResmearSinkEnvQCDSF::Params::ResmearParam_t& input ) {
         XMLReader inputtop( xml, path );
 
         read( inputtop, "version", input.version );
@@ -58,13 +58,13 @@ namespace Chroma {
 
                 /**************************************************************************/
             default:
-                QDPIO::cerr << "Resmear parameter version " << input.version << " unsupported." << endl;
+                QDPIO::cerr << "Resmear parameter version " << input.version << " unsupported." << std::endl;
                 QDP_abort( 1 );
         }
     }
 
     //! Propagator output
-    void write( XMLWriter& xml, const string& path, const InlineResmearSinkEnvQCDSF::Params::ResmearParam_t& input ) {
+    void write( XMLWriter& xml, const std::string& path, const InlineResmearSinkEnvQCDSF::Params::ResmearParam_t& input ) {
         push( xml, path );
 
         int version = 1;
@@ -124,7 +124,7 @@ namespace Chroma {
                 read( paramtop, "NamedObject", named_obj );
             }
             catch ( const std::string& e ) {
-                QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+                QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
                 QDP_abort( 1 );
             }
         }
@@ -149,7 +149,7 @@ namespace Chroma {
                                 XMLWriter& xml_out ) {
             START_CODE();
 
-            QDPIO::cout << name << ": resmearing for (propagator) sinks" << endl;
+            QDPIO::cout << name << ": resmearing for (propagator) sinks" << std::endl;
 
             StopWatch snoop;
             snoop.reset();
@@ -164,12 +164,12 @@ namespace Chroma {
             }
             catch ( std::bad_cast ) {
                 QDPIO::cerr << name << ": caught dynamic cast error"
-                            << endl;
+                            << std::endl;
                 QDP_abort( 1 );
             }
-            catch ( const string& e ) {
+            catch ( const std::string& e ) {
                 QDPIO::cerr << name << ": map call failed: " << e
-                            << endl;
+                            << std::endl;
                 QDP_abort( 1 );
             }
 
@@ -198,7 +198,7 @@ namespace Chroma {
 
             int j_decay;   // need this for diagnostics
 
-            QDPIO::cout << "Attempt to read forward propagator" << endl;
+            QDPIO::cout << "Attempt to read forward propagator" << std::endl;
 
             try {
                 // Grab a copy of the propagator. Will modify it later.
@@ -218,11 +218,11 @@ namespace Chroma {
             }
             catch ( std::bad_cast ) {
                 QDPIO::cerr << name << ": caught dynamic cast error"
-                            << endl;
+                            << std::endl;
                 QDP_abort( 1 );
             }
-            catch ( const string& e ) {
-                QDPIO::cerr << name << ": error extracting prop_header: " << e << endl;
+            catch ( const std::string& e ) {
+                QDPIO::cerr << name << ": error extracting prop_header: " << e << std::endl;
                 QDP_abort( 1 );
             }
 
@@ -244,7 +244,7 @@ namespace Chroma {
             // resmear the SINK
             //
             try {
-                //  QDPIO::cout << "Smearing_xml = " << params.param.quark_smearing.xml << endl;
+                //  QDPIO::cout << "Smearing_xml = " << params.param.quark_smearing.xml << std::endl;
                 std::istringstream  xml_s( params.param.quark_smearing.xml );
                 XMLReader smeartop( xml_s );
 
@@ -258,7 +258,7 @@ namespace Chroma {
 
                 /*          std::istringstream  xml_s(params.param.source.xml);
                             XMLReader  sourcetop(xml_s);
-                            QDPIO::cout << "Smearing = " << params.param.source.id << endl;
+                            QDPIO::cout << "Smearing = " << params.param.source.id << std::endl;
 
                             Handle< QuarkSmearing<LatticePropagator> >
                                 sourceSmearing(ThePropSourceSmearingFactory::Instance().createObject(params.param.source.id,
@@ -267,7 +267,7 @@ namespace Chroma {
                                                                                                     u)); */
             }
             catch ( const std::string& e )    {
-                QDPIO::cerr << name << ": Caught Exception Resmearing source: " << e << endl;
+                QDPIO::cerr << name << ": Caught Exception Resmearing source: " << e << std::endl;
                 QDP_abort( 1 );
             }
 
@@ -321,15 +321,15 @@ namespace Chroma {
                 TheNamedObjMap::Instance().get( params.named_obj.output_prop_id ).setFileXML( file_xml );
                 TheNamedObjMap::Instance().get( params.named_obj.output_prop_id ).setRecordXML( record_xml );
 
-                QDPIO::cout << "Sink successfully updated" << endl;
+                QDPIO::cout << "Sink successfully updated" << std::endl;
             }
             catch ( std::bad_cast ) {
                 QDPIO::cerr << name << ": dynamic cast error"
-                            << endl;
+                            << std::endl;
                 QDP_abort( 1 );
             }
-            catch ( const string& e ) {
-                QDPIO::cerr << name << ": error message: " << e << endl;
+            catch ( const std::string& e ) {
+                QDPIO::cerr << name << ": error message: " << e << std::endl;
                 QDP_abort( 1 );
             }
 
@@ -339,9 +339,9 @@ namespace Chroma {
             snoop.stop();
             QDPIO::cout << name << ": total time = "
                         << snoop.getTimeInSeconds()
-                        << " secs" << endl;
+                        << " secs" << std::endl;
 
-            QDPIO::cout << name << ": ran successfully" << endl;
+            QDPIO::cout << name << ": ran successfully" << std::endl;
 
             END_CODE();
         }
@@ -353,4 +353,3 @@ namespace Chroma {
 #ifdef DEBUG_INLINE_RESMEAR_SINK_QCSF_W
 #undef DEBUG_INLINE_RESMEAR_SINK_QCSF_W
 #endif
-

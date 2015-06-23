@@ -12,8 +12,8 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 
-namespace Chroma 
-{ 
+namespace Chroma
+{
   /*! \ingroup inlinehadron */
   namespace InlineMesSpecEnvQCDSF
   {
@@ -56,11 +56,11 @@ namespace Chroma
     std::string xml_file;  // Alternate XML file pattern
   };
 
-  void read(XMLReader& xml, const string& path, InlineMesSpecParamsQCDSF::Param_t& param);
+  void read(XMLReader& xml, const std::string& path, InlineMesSpecParamsQCDSF::Param_t& param);
 
   //! Inline measurement of hadron spectrum
   /*! \ingroup inlinehadron */
-  class InlineMesSpecQCDSF : public AbsInlineMeasurement 
+  class InlineMesSpecQCDSF : public AbsInlineMeasurement
   {
   public:
     ~InlineMesSpecQCDSF() {}
@@ -71,15 +71,15 @@ namespace Chroma
 
     //! Do the measurement
     void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
+		    XMLWriter& xml_out);
 
   protected:
     //! Do the measurement
     void func_xml(const unsigned long update_no,
-		  XMLWriter& xml_out); 
+		  XMLWriter& xml_out);
 
     void func_lime(const unsigned long update_no,
-		   string& lime_file); 
+		   std::string& lime_file);
 
   private:
     InlineMesSpecParamsQCDSF params;

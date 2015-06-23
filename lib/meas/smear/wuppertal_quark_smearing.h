@@ -9,7 +9,7 @@
 
 #include "meas/smear/quark_smearing.h"
 
-namespace Chroma 
+namespace Chroma
 {
   //! Name and registration
   /*! @ingroup smear */
@@ -26,7 +26,7 @@ namespace Chroma
       Params () {}
       Params (XMLReader& in, const std::string& path);
       void writeXML (XMLWriter& in, const std::string& path) const;
-    
+
       Real wvf_param;                   /*!< Smearing width */
       int  wvfIntPar;                   /*!< Number of smearing hits */
       int  no_smear_dir;		/*!< No smearing in this direction */
@@ -44,7 +44,7 @@ namespace Chroma
     public:
       //! Full constructor
       QuarkSmear (const Params& p) : params (p) {}
-      
+
       //! Smear the quark
       void operator() (T& quark, const multi1d<LatticeColorMatrix>& u) const;
 
@@ -60,11 +60,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup smear */
-  void read (XMLReader& xml, const string& path, WuppertalQuarkSmearingEnv::Params& param);
+  void read (XMLReader& xml, const std::string& path, WuppertalQuarkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write (XMLWriter& xml, const string& path, const WuppertalQuarkSmearingEnv::Params& param);
+  void write (XMLWriter& xml, const std::string& path, const WuppertalQuarkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

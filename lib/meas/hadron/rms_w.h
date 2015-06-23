@@ -8,15 +8,15 @@
 
 #include "chromabase.h"
 
-namespace Chroma 
+namespace Chroma
 {
 
 
-  void rms(const LatticePropagator& propagator, const int j_decay, 
+  void rms(const LatticePropagator& propagator, const int j_decay,
 	   multi1d<int>& srcloc, const bool psi_wavefn,const bool psi_psi_wavefn,
-	   XMLWriter& xml, const string& xml_group);
+	   XMLWriter& xml, const std::string& xml_group);
 
-}  
+}
 
 
 #endif

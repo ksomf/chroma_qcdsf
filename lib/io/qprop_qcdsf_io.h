@@ -10,7 +10,7 @@
 #include "chromabase.h"
 #include "io/qprop_io.h"
 
-namespace Chroma { 
+namespace Chroma {
 
 	// HACK !!!!
 	// "extern" somewhere in io/qprop_io.cc
@@ -25,7 +25,7 @@ namespace Chroma {
 
 		std::string					gauge_header;
 	};
-	
+
 	struct ResmearForwardPropQCDSF_t {
 	//	PropSinkSmear_t		sink_header; // not necessary since a new one is constructed automatically
 		PropSinkSmear_t		orig_sink_header;
@@ -37,27 +37,27 @@ namespace Chroma {
 		std::string			gauge_header;
 	};
 
-	/*	
+	/*
 	struct LinCombinationSourcePropQCDSF_t { 	// not used yet!!
 		PropSourceConst_t	source_header;
-		std::string			gauge_header;	
+		std::string			gauge_header;
 	};
 
 	struct LinCombinationSourcePropQCDSF_t { 	// not used yet!!
 		ChromaProp_t		prop_header;
 		PropSourceConst_t	source_header;
 		PropSinkSmear_t		sink_header;
-		std::string			gauge_header;	
+		std::string			gauge_header;
 	};
 	*/
 
-	void readSmearingArray(XMLReader& xml, const string& path, multi1d<GroupXML_t>& arr );
-	void read(XMLReader& xml, const string& path, ResmearSourcePropQCDSF_t& param);
-	void read(XMLReader& xml, const string& path, ResmearForwardPropQCDSF_t& param);
+	void readSmearingArray(XMLReader& xml, const std::string& path, multi1d<GroupXML_t>& arr );
+	void read(XMLReader& xml, const std::string& path, ResmearSourcePropQCDSF_t& param);
+	void read(XMLReader& xml, const std::string& path, ResmearForwardPropQCDSF_t& param);
 
-	void writeSmearingArray(XMLWriter& xml, const string& path, const multi1d<GroupXML_t>& arr );
-	void write(XMLWriter& xml, const string& path, const ResmearSourcePropQCDSF_t& param);
-	void write(XMLWriter& xml, const string& path, const ResmearForwardPropQCDSF_t& param);	
+	void writeSmearingArray(XMLWriter& xml, const std::string& path, const multi1d<GroupXML_t>& arr );
+	void write(XMLWriter& xml, const std::string& path, const ResmearSourcePropQCDSF_t& param);
+	void write(XMLWriter& xml, const std::string& path, const ResmearForwardPropQCDSF_t& param);
 }
 
 #endif

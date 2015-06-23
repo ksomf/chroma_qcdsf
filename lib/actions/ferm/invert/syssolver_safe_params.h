@@ -19,7 +19,7 @@ namespace Chroma
   {
     SysSolverSafeParams();
     SysSolverSafeParams(XMLReader& in, const std::string& path);
-    
+
     Real          RsdCG;           /*!< CG residual */
     Real          RsdBiCGStab;           /*!< CG residual */
     int           MaxCG;           /*!< Maximum CG iterations */
@@ -31,19 +31,18 @@ namespace Chroma
     Real          RsdCGRestart;    /*!< CG residual for a possibly double precision restart. Only valid for some solvers eg CG-DWF */
 
     int           MaxCGRestart;    /*!< Max no of CG iterations for a possibly double precision restart. Only valid for some solvers, eg CG-DWF */
-    
+
     Real max_BiCG_relative_Res; /*!< In test for real convergence: Discard solves with higher relative residual than this */
   };
 
 
   // Reader/writers
   /*! \ingroup invert */
-  void read(XMLReader& xml, const string& path, SysSolverSafeParams& param);
+  void read(XMLReader& xml, const std::string& path, SysSolverSafeParams& param);
 
   /*! \ingroup invert */
-  void write(XMLWriter& xml, const string& path, const SysSolverSafeParams& param);
+  void write(XMLWriter& xml, const std::string& path, const SysSolverSafeParams& param);
 
 } // End namespace
 
-#endif 
-
+#endif

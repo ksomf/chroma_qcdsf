@@ -14,14 +14,14 @@
 #include "meas/hadron/rms_w.h"
 #include "io/qprop_io.h"
 
-namespace Chroma 
-{ 
-  namespace InlineRMSEnv 
-  { 
+namespace Chroma
+{
+  namespace InlineRMSEnv
+  {
     namespace
     {
-      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					      const std::string& path) 
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in,
+					      const std::string& path)
       {
 	return new InlineRMS(InlineRMSParams(xml_in, path));
       }
@@ -33,9 +33,9 @@ namespace Chroma
     const std::string name = "RMS";
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
@@ -47,7 +47,7 @@ namespace Chroma
 
 
   //! RMS input
-  void read(XMLReader& xml, const string& path, InlineRMSParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineRMSParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -55,7 +55,7 @@ namespace Chroma
     read(inputtop, "source_id", input.source_id);
   }
   //! RMS input
-  void read(XMLReader& xml, const string& path, InlineRMSParams::Param_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineRMSParams::Param_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -65,7 +65,7 @@ namespace Chroma
   }
 
   //! RMS output
-  void write(XMLWriter& xml, const string& path, const InlineRMSParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineRMSParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -75,7 +75,7 @@ namespace Chroma
     pop(xml);
   }
   //! RMS output
-  void write(XMLWriter& xml, const string& path, const InlineRMSParams::Param_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineRMSParams::Param_t& input)
   {
     push(xml, path);
 
@@ -90,9 +90,9 @@ namespace Chroma
   // Param stuff
   InlineRMSParams::InlineRMSParams() { frequency = 0; }
 
-  InlineRMSParams::InlineRMSParams(XMLReader& xml_in, const std::string& path) 
+  InlineRMSParams::InlineRMSParams(XMLReader& xml_in, const std::string& path)
   {
-    try 
+    try
     {
       XMLReader paramtop(xml_in, path);
 
@@ -107,24 +107,24 @@ namespace Chroma
       read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
-      if (paramtop.count("xml_file") != 0) 
+      if (paramtop.count("xml_file") != 0)
       {
 	read(paramtop, "xml_file", xml_file);
       }
     }
-    catch(const std::string& e) 
+    catch(const std::string& e)
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
 
 
   void
-  InlineRMSParams::writeXML(XMLWriter& xml_out, const std::string& path) 
+  InlineRMSParams::writeXML(XMLWriter& xml_out, const std::string& path)
   {
     push(xml_out, path);
-    
+
     write(xml_out, "Param", param);
     write(xml_out, "NamedObject", named_obj);
 
@@ -133,14 +133,14 @@ namespace Chroma
 
 
   // Function call
-  void 
+  void
   InlineRMS::operator()(unsigned long update_no,
-			       XMLWriter& xml_out) 
+			       XMLWriter& xml_out)
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+		std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "rms");
       write(xml_out, "update_no", update_no);
@@ -158,13 +158,13 @@ namespace Chroma
 
 
   // Real work done here
-  void 
+  void
   InlineRMS::func(unsigned long update_no,
-			 XMLWriter& xml_out) 
+			 XMLWriter& xml_out)
   {
     START_CODE();
 
-    QDPIO::cout << InlineRMSEnv::name << ": calculation of the RMS of a wavefunction" << endl;
+    QDPIO::cout << InlineRMSEnv::name << ": calculation of the RMS of a wavefunction" << std::endl;
 
     StopWatch snoop;
     snoop.reset();
@@ -177,19 +177,19 @@ namespace Chroma
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
       TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
     }
-    catch( std::bad_cast ) 
+    catch( std::bad_cast )
     {
-      QDPIO::cerr << InlineRMSEnv::name << ": caught dynamic cast error" 
-		  << endl;
+      QDPIO::cerr << InlineRMSEnv::name << ": caught dynamic cast error"
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e)
     {
-      QDPIO::cerr << InlineRMSEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineRMSEnv::name << ": map call failed: " << e
+		  << std::endl;
       QDP_abort(1);
     }
-    const multi1d<LatticeColorMatrix>& u = 
+    const multi1d<LatticeColorMatrix>& u =
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     push(xml_out, "rms");
@@ -212,7 +212,7 @@ namespace Chroma
 
     //
     // Read in the source along with relevant information.
-    // 
+    //
     XMLReader source_file_xml, source_record_xml;
 
     // Record the type of header
@@ -221,11 +221,11 @@ namespace Chroma
     multi1d<int> srcloc(Nd);
 
 
-    QDPIO::cout << "Snarf the source from a named buffer" << endl;
+    QDPIO::cout << "Snarf the source from a named buffer" << std::endl;
     try
     {
       // Try the cast to see if this is a valid source
-      LatticePropagator& source_tmp = 
+      LatticePropagator& source_tmp =
 	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_id);
 
       // Snarf the source info. This is will throw if the source_id is not there
@@ -250,24 +250,24 @@ namespace Chroma
       // Write out the source header
       write(xml_out, "Source_file_info", source_file_xml);
       write(xml_out, "Source_record_info", source_record_xml);
-    }    
+    }
     catch (std::bad_cast)
     {
-      QDPIO::cerr << InlineRMSEnv::name << ": caught dynamic cast error" 
-		  << endl;
+      QDPIO::cerr << InlineRMSEnv::name << ": caught dynamic cast error"
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e)
     {
-      QDPIO::cerr << InlineRMSEnv::name << ": error extracting source_header: " << e << endl;
+      QDPIO::cerr << InlineRMSEnv::name << ": error extracting source_header: " << e << std::endl;
       QDP_abort(1);
     }
 
     // Should be a valid cast now
-    const LatticePropagator& quark_prop_source = 
+    const LatticePropagator& quark_prop_source =
       TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_id);
- 
-    QDPIO::cout << "Source successfully read and parsed" << endl;
+
+    QDPIO::cout << "Source successfully read and parsed" << std::endl;
 
     // Sanity check - write out the norm2 of the source in the Nd-1 direction
     // Use this for any possible verification
@@ -275,7 +275,7 @@ namespace Chroma
       // Initialize the slow Fourier transform phases
       SftMom phases(0, true, Nd-1);
 
-      multi1d<Double> source_corr = sumMulti(localNorm2(quark_prop_source), 
+      multi1d<Double> source_corr = sumMulti(localNorm2(quark_prop_source),
 					     phases.getSet());
 
       push(xml_out, "Source_correlator");
@@ -288,12 +288,12 @@ namespace Chroma
 
     snoop.stop();
     QDPIO::cout << InlineRMSEnv::name << ": total time = "
-		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< snoop.getTimeInSeconds()
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineRMSEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineRMSEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
-  } 
+  }
 
 }

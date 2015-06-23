@@ -11,7 +11,7 @@
 #include "util/ft/sftmom.h"
 #include "meas/hadron/barhqlq_w.h"
 
-namespace Chroma 
+namespace Chroma
 {
 
 
@@ -20,7 +20,7 @@ namespace Chroma
     //    multi1d<int>     insert_mom;
     multi1d<Complex>       correlator;
   };
-  
+
   struct Baryons_N_QCDSF_t
   {
     multi1d<Baryons_corr_QCDSF_t >     momentum;
@@ -39,18 +39,18 @@ namespace Chroma
 
 
 
-  void barhqlq_qcdsf_xml(const LatticePropagator& propagator_1, 
-			 const LatticePropagator& propagator_2, 
+  void barhqlq_qcdsf_xml(const LatticePropagator& propagator_1,
+			 const LatticePropagator& propagator_2,
 			 const LatticePropagator& propagator_3,
 			 const bool & haveThird,
 			 const SftMom& phases,
 			 int t0, int bc_spec, bool time_rev, bool fwdbwd_average,
 			 XMLWriter& xml,
-			 const string& xml_group);
+			 const std::string& xml_group);
 
 
-  void barhqlq_qcdsf_lime(const LatticePropagator& propagator_1, 
-			  const LatticePropagator& propagator_2, 
+  void barhqlq_qcdsf_lime(const LatticePropagator& propagator_1,
+			  const LatticePropagator& propagator_2,
 			  const LatticePropagator& propagator_3,
 			  const bool & haveThird,
 			  const SftMom& phases,
@@ -65,7 +65,7 @@ namespace Chroma
 		     const SftMom& phases,
 		     multi3d<DComplex>& barprop);
 
-  
+
 }
 
 

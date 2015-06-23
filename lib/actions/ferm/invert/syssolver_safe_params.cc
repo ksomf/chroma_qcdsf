@@ -9,7 +9,7 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SysSolverSafeParams& param)
+  void read(XMLReader& xml, const std::string& path, SysSolverSafeParams& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -19,14 +19,14 @@ namespace Chroma
     read(paramtop, "MaxCG", param.MaxCG);
     read(paramtop, "Strategy", param.Strategy);
 
-    if( paramtop.count("RsdCGRestart") > 0 ) { 
+    if( paramtop.count("RsdCGRestart") > 0 ) {
       read(paramtop, "RsdCGRestart", param.RsdCGRestart);
     }
     else {
       param.RsdCGRestart = param.RsdCG;
     }
 
-    if( paramtop.count("MaxCGRestart") > 0 ) { 
+    if( paramtop.count("MaxCGRestart") > 0 ) {
       read(paramtop, "MaxCGRestart", param.MaxCGRestart);
     }
     else {
@@ -35,21 +35,21 @@ namespace Chroma
 
 
     int aa = paramtop.count("MinCG") ;
-    if( aa  > 0 ) { 
+    if( aa  > 0 ) {
       read(paramtop,"MinCG",param.MinCG);
     }
     else {
-      param.MinCG = 0 ; 
+      param.MinCG = 0 ;
     }
-    
-    if( paramtop.count("max_BiCG_relative_Res") > 0 ) { 
+
+    if( paramtop.count("max_BiCG_relative_Res") > 0 ) {
     read(paramtop, "max_BiCG_relative_Res",param.max_BiCG_relative_Res);
     }
     else param.max_BiCG_relative_Res=1e-4;
   }
 
   // Writer parameters
-  void write(XMLWriter& xml, const string& path, const SysSolverSafeParams& param)
+  void write(XMLWriter& xml, const std::string& path, const SysSolverSafeParams& param)
   {
     push(xml, path);
 
@@ -79,7 +79,7 @@ namespace Chroma
   }
 
   //! Read parameters
-  SysSolverSafeParams::SysSolverSafeParams(XMLReader& xml, const string& path)
+  SysSolverSafeParams::SysSolverSafeParams(XMLReader& xml, const std::string& path)
   {
     read(xml, path, *this);
   }

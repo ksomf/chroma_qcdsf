@@ -12,22 +12,22 @@
 #include "meas/smear/simple_quark_displacement.h"
 #include "meas/smear/ape_link_smearing.h"
 
-namespace Chroma { 
-	
-	void readSmearingArray(XMLReader& xml, const string& path, multi1d<GroupXML_t>& arr ) {
+namespace Chroma {
+
+	void readSmearingArray(XMLReader& xml, const std::string& path, multi1d<GroupXML_t>& arr ) {
 		XMLReader paramtop(xml, path);
-		
+
 		int num_smearings= paramtop.count( "elem" );
 		arr.resize( num_smearings );
 
 		for( int k=0; k<num_smearings; ++k ) {
-			stringstream sstr;
+			std::stringstream sstr;
 			sstr << "elem[" << k+1 << "]/SmearingParam";
 			arr[k] = readXMLGroup( paramtop, sstr.str(), "wvf_kind" );
 		}
 	}
 
-	void writeSmearingArray(XMLWriter& xml, const string& path, const multi1d<GroupXML_t>& arr ) {
+	void writeSmearingArray(XMLWriter& xml, const std::string& path, const multi1d<GroupXML_t>& arr ) {
 		push( xml, path );
 		for( int k=0; k<arr.size(); ++k ) {
 			push( xml, "elem" );
@@ -38,21 +38,21 @@ namespace Chroma {
 	}
 
 	// ResmearSourcePropQCDSF_t reader
-	void read(XMLReader& xml, const string& path, ResmearSourcePropQCDSF_t& param) {
+	void read(XMLReader& xml, const std::string& path, ResmearSourcePropQCDSF_t& param) {
 		XMLReader paramtop(xml, path);
 
-		string source_type;
+		std::string source_type;
 		read( paramtop, "PropSource/Source/SourceType", source_type );
-		
+
 		if( source_type=="RESMEAR_SOURCE-QCDSF" ) {
-			QDPIO::cout << __func__ << " ResmearSourcePropQCDSF_t: resmearing RESMEAR_SOURCE-QCDSF" << endl;
+			QDPIO::cout << __func__ << " ResmearSourcePropQCDSF_t: resmearing RESMEAR_SOURCE-QCDSF" << std::endl;
 			read(paramtop, "PropSource/Source/OriginalSource", param.orig_source_header );
 
 			readSmearingArray(paramtop, "PropSource/Source/SmearingHeaders", param.smearing_headers );
 			param.fake_smear_header = readXMLGroup(paramtop, "PropSource/Source/SmearingParam", "wvf_kind");
 		}
-		else {		
-			QDPIO::cout << __func__ << " ResmearSourcePropQCDSF_t: resmearing MAKE_SOURCE" << endl;
+		else {
+			QDPIO::cout << __func__ << " ResmearSourcePropQCDSF_t: resmearing MAKE_SOURCE" << std::endl;
 
 		//	Reading in Previous MAKE_SOURCE object
 			read(paramtop, "PropSource", param.orig_source_header );
@@ -63,34 +63,34 @@ namespace Chroma {
 			//	param.smearing_headers[0] = param.fake_smear_header; // use as initial
 			}
 			else
-				QDPIO::cout << __func__ << " ResmearSourcePropQCDSF_t: No previous smearing found" << endl;
+				QDPIO::cout << __func__ << " ResmearSourcePropQCDSF_t: No previous smearing found" << std::endl;
 		}
 
 		readGaugeHeader(paramtop, "Config_info", param.gauge_header);
 
 #ifdef DEBUG_QPROP_QCDSF_IO
-		QDPIO::cout << "XX" << param.orig_source_header.source.xml << "XX" << endl;
-		QDPIO::cout << "XX" << param.fake_smear_header.xml << "XX" << endl;
-		QDPIO::cout << "XX" << param.smearing_headers.size() << "XX" << endl;
-		QDPIO::cout << "XX" << param.smearing_headers[0].xml << "XX" << endl;
-		QDPIO::cout << "XX" << param.gauge_header << "XX" << endl;
+		QDPIO::cout << "XX" << param.orig_source_header.source.xml << "XX" << std::endl;
+		QDPIO::cout << "XX" << param.fake_smear_header.xml << "XX" << std::endl;
+		QDPIO::cout << "XX" << param.smearing_headers.size() << "XX" << std::endl;
+		QDPIO::cout << "XX" << param.smearing_headers[0].xml << "XX" << std::endl;
+		QDPIO::cout << "XX" << param.gauge_header << "XX" << std::endl;
 #endif
 	}
 
 	// ResmearSourcePropQCDSF_t writer
-	void write(XMLWriter& xml, const string& path, const ResmearSourcePropQCDSF_t& param) {
+	void write(XMLWriter& xml, const std::string& path, const ResmearSourcePropQCDSF_t& param) {
 		push(xml, path);
 
 		push(xml, "PropSource");
-		
+
 		int version = 6; // faking a proper Chroma XML structure version 6
 		write(xml, "version", version);
-		
+
 		push(xml, "Source");
 
 		version = 1; // RESMEAR Version
-	//	string source_type = "SHELL_SOURCE";
-		string source_type = "RESMEAR_SOURCE-QCDSF";
+	//	std::string source_type = "SHELL_SOURCE";
+		std::string source_type = "RESMEAR_SOURCE-QCDSF";
 		write(xml, "version", version );
 		write(xml, "SourceType", source_type );
 		write(xml, "t_source", param.orig_source_header.t_source );
@@ -133,19 +133,19 @@ namespace Chroma {
 				read(smeartop,"wvf_param", wvf_param_1 );
 				read(smeartop,"no_smear_dir", no_smear_dir_1 );
 			}
-			
-			string wvf_kind = "MIXED_QUARK_SMEARING";
+
+			std::string wvf_kind = "MIXED_QUARK_SMEARING";
 			int wvfIntPar = wvfIntPar_1 + wvfIntPar_2;
 			Real wvf_param = ( wvfIntPar_1*wvf_param_1 + wvfIntPar_2*wvf_param_2 ) / Real(wvfIntPar);
 			int no_smear_dir = ( no_smear_dir_1 == no_smear_dir_2 ? no_smear_dir_1 : -2 );
 
 			push(xml, "SmearingParam" );
-		
+
 			write(xml, "wvf_kind", wvf_kind );
 			write(xml, "wvf_param", wvf_param );
 			write(xml, "wvfIntPar", wvfIntPar );
 			write(xml, "no_smear_dir", no_smear_dir );
-		
+
 			pop(xml); // SmearingParam
 		}
 
@@ -157,25 +157,25 @@ namespace Chroma {
 	//	write(xml, "SmearingHeaders", param.smearing_headers);
 		write(xml, "Config_info", param.gauge_header);
 
-		pop(xml);		
+		pop(xml);
 	}
 
 	// ResmearForwardPropQCDSF_t reader
-	void read(XMLReader& xml, const string& path, ResmearForwardPropQCDSF_t& param) {
+	void read(XMLReader& xml, const std::string& path, ResmearForwardPropQCDSF_t& param) {
 		XMLReader paramtop(xml, path);
 
-		string sink_type;
+		std::string sink_type;
 		read( paramtop, "PropSink/Sink/SinkType", sink_type );
 
 		if( sink_type=="RESMEAR_SINK-QCDSF" ) {
-			QDPIO::cout << __func__ << " ResmearForwardPropQCDSF_t: resmearing RESMEAR_SINK-QCDSF" << endl;
+			QDPIO::cout << __func__ << " ResmearForwardPropQCDSF_t: resmearing RESMEAR_SINK-QCDSF" << std::endl;
 			read(paramtop, "PropSink/Sink/OriginalSink", param.orig_sink_header );
 
 			readSmearingArray(paramtop, "PropSink/Sink/SmearingHeaders", param.smearing_headers );
 			param.fake_smear_header = readXMLGroup(paramtop, "PropSink/Sink/SmearingParam", "wvf_kind");
 		}
-		else {		
-			QDPIO::cout << __func__ << " ResmearForwardPropQCDSF_t: resmearing SINK_SMEAR" << endl;
+		else {
+			QDPIO::cout << __func__ << " ResmearForwardPropQCDSF_t: resmearing SINK_SMEAR" << std::endl;
 
 		//	Reading in Previous SINK_SMEAR object
 			read(paramtop, "PropSink", param.orig_sink_header );
@@ -186,7 +186,7 @@ namespace Chroma {
 			//	param.smearing_headers[0] = param.fake_smear_header; // use as initial
 			}
 			else
-				QDPIO::cout << __func__ << " ResmearForwardPropQCDSF_t: No previous smearing found" << endl;
+				QDPIO::cout << __func__ << " ResmearForwardPropQCDSF_t: No previous smearing found" << std::endl;
 		}
 
 		read(paramtop, "ForwardProp", param.prop_header);
@@ -195,7 +195,7 @@ namespace Chroma {
 	}
 
 	// ForwardPropQCDSFt writer
-	void write(XMLWriter& xml, const string& path, const ResmearForwardPropQCDSF_t& param) {
+	void write(XMLWriter& xml, const std::string& path, const ResmearForwardPropQCDSF_t& param) {
 		// if( path != "." )
 		push(xml, path);
 
@@ -203,15 +203,15 @@ namespace Chroma {
 //		write(xml, "version", version);
 
 		push(xml, "PropSink");
-		
+
 		int version = 5; // faking a proper Chroma XML structure version ???
 		write(xml, "version", version);
-		
+
 		push(xml, "Sink");
 
 		version = 1; // RESMEAR Version
-	//	string source_type = "SHELL_SINK";
-		string source_type = "RESMEAR_SINK-QCDSF";
+	//	std::string source_type = "SHELL_SINK";
+		std::string source_type = "RESMEAR_SINK-QCDSF";
 		write(xml, "version", version );
 		write(xml, "SinkType", source_type );
 		write(xml, "j_decay", param.orig_sink_header.j_decay );
@@ -253,19 +253,19 @@ namespace Chroma {
 				read(smeartop,"wvf_param", wvf_param_1 );
 				read(smeartop,"no_smear_dir", no_smear_dir_1 );
 			}
-			
-			string wvf_kind = "MIXED_QUARK_SMEARING";
+
+			std::string wvf_kind = "MIXED_QUARK_SMEARING";
 			int wvfIntPar = wvfIntPar_1 + wvfIntPar_2;
 			Real wvf_param = ( wvfIntPar_1*wvf_param_1 + wvfIntPar_2*wvf_param_2 ) / Real(wvfIntPar);
 			int no_smear_dir = ( no_smear_dir_1 == no_smear_dir_2 ? no_smear_dir_1 : -2 );
 
 			push(xml, "SmearingParam" );
-		
+
 			write(xml, "wvf_kind", wvf_kind );
 			write(xml, "wvf_param", wvf_param );
 			write(xml, "wvfIntPar", wvfIntPar );
 			write(xml, "no_smear_dir", no_smear_dir );
-		
+
 			pop(xml); // SmearingParam
 		}
 
@@ -279,6 +279,5 @@ namespace Chroma {
 		//    if( path != "." )
 		pop(xml);
 	}
-	
-}
 
+}

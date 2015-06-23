@@ -14,30 +14,30 @@ namespace Chroma
 
 	SLRCFeynHellFermActParams::SLRCFeynHellFermActParams()
 	{
-		QDPIO::cout << "Creating SLRCFeynHellFermActParams" << endl;
+		QDPIO::cout << "Creating SLRCFeynHellFermActParams" << std::endl;
 	}
 
-	SLRCFeynHellFermActParams::SLRCFeynHellFermActParams(XMLReader& xml, const string& path)
-	{
-		read(xml,path);
-	}
-
-	void read(XMLReader& xml, const string& path, SLRCFeynHellFermActParams& param)
+	SLRCFeynHellFermActParams::SLRCFeynHellFermActParams(XMLReader& xml, const std::string& path)
 	{
 		XMLReader paramtop(xml, path);
 
 		numParam = paramtop.count("FeynHellParam/elem");
-		QDPIO::cout << "Number of FeynHellParam elems is: " << numParam << endl << flush;
+		QDPIO::cout << "Number of FeynHellParam elems is: " << numParam << std::endl << std::flush;
 		if(numParam == 0)
 		{
-			QDPIO::cerr << "ERROR: No FeynHellParam elems found " << endl << flush;
+			QDPIO::cerr << "ERROR: No FeynHellParam elems found " << std::endl << std::flush;
 			QDP_abort(1);
 		}
 		read(paramtop, "FeynHellParam", FHparam);
 
 	}
 
-	void read(XMLReader& xml, const string& path, SLRCFeynHellFermActParams::FHParam& param)
+	void read(XMLReader& xml, const std::string& path, SLRCFeynHellFermActParams& param)
+	{
+		XMLReader paramtop(xml,path);
+	}
+
+	void read(XMLReader& xml, const std::string& path, SLRCFeynHellFermActParams::FHParam& param)
 	{
 		XMLReader paramtop(xml, path);
 
@@ -48,13 +48,14 @@ namespace Chroma
 			read(paramtop, "LambdaReal", lambdaReal);
 		else
 		{
-			QDPIO::cerr << "Real part of lambda not given" << endl << flush;
+			QDPIO::cerr << "Real part of lambda not given" << std::endl << std::flush;
 			QDP_abort(1);
+		}
 		if (paramtop.count("LambdaImag") != 0)
 			read(paramtop, "LambdaImag", lambdaImag);
 		else
 		{
-			QDPIO::cerr << "Imaginary part of lambda not given" << endl << flush;
+			QDPIO::cerr << "Imaginary part of lambda not given" << std::endl << std::flush;
 			QDP_abort(1);
 		}
 		param.lambda = cmplx(lambdaReal,lambdaImag);
@@ -63,7 +64,7 @@ namespace Chroma
 			read(paramtop, "Operator", param.op);
 		else
 		{
-			QDPIO::cerr << "Operator not given" << endl << flush;
+			QDPIO::cerr << "Operator not given" << std::endl << std::flush;
 			QDP_abort(1);
 		}
 
@@ -71,7 +72,7 @@ namespace Chroma
 			read(paramtop, "Source", param.source);
 		else
 		{
-			QDPIO::cerr << "Source not given" << endl << flush;
+			QDPIO::cerr << "Source not given" << std::endl << std::flush;
 			QDP_abort(1);
 		}
 
@@ -79,7 +80,7 @@ namespace Chroma
 			read(paramtop, "Momentum", param.mom);
 		else
 		{
-			QDPIO::cerr << "Momentum not given" << endl << flush;
+			QDPIO::cerr << "Momentum not given" << std::endl << std::flush;
 			QDP_abort(1);
 		}
 		param.phases = SftMom(0,param.source,param.mom,false,Nd-1)[0];
@@ -91,12 +92,11 @@ namespace Chroma
 		//param.noise = cmplx(noiseReal,noiseImag);
 		//
 		QDPIO::cout <<  "Lambda is " << param.lambda << " with op: " << param.op;
-		QDPIO::cout << " mom is " << param.mom[0] << ", " << param.mom[1] << ", " << param.mom[2] << ":" << param.noise << endl << flush;
+		QDPIO::cout << " mom is " << param.mom[0] << ", " << param.mom[1] << ", " << param.mom[2] << ":" << param.noise << std::endl << std::flush;
 
 	}
 
-
-	void write(XMLWriter& xml, const string& path, const SLRCFeynHellFermActParams& param)
+	void write(XMLWriter& xml, const std::string& path, const SLRCFeynHellFermActParams& param)
 	{
 		push(xml, path);
 
@@ -104,7 +104,7 @@ namespace Chroma
 
 		pop(xml);
 	}
-	void write(XMLWriter& xml, const string& path, const SLRCFeynHellFermActParams::FHParam& param)
+	void write(XMLWriter& xml, const std::string& path, const SLRCFeynHellFermActParams::FHParam& param)
 	{
 		push(xml, path);
 

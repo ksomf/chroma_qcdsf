@@ -53,32 +53,32 @@ void readGauge(XMLReader& file_xml,
 void readGaugeILDG(XMLReader& file_xml,
 		   XMLReader& record_xml,
 		   multi1d<LatticeColorMatrix>& u,
-		   const string& file,
+		   const std::string& file,
 		   QDP_serialparallel_t serpar)
 {
-  QLimeReader w(file.c_str());
+	QLimeReader w(file.c_str());
 
   bool found=false;
   while ( !found ) {
-    string recname (w.recordName());
+	  std::string recname (w.recordName());
     QDP::QDPIO::cout << "lime record name=" << recname << ", size=" << w.recordSize() << "\n";
-    found = recname.find("ildg-data-lfn") != string::npos ;
+    found = recname.find("ildg-data-lfn") != std::string::npos ;
     if (!found)
       if ( w.nextRecord() != QLIME_SUCCESS ) {
-	cout << "end of lime file" << endl;
+		  QDP::QDPIO::cout << "end of lime file" << std::endl;
 	break;
       }
   }
 
   if (!found) {
-    QDPIO::cerr << "No ILDG lfn string in gauge file found!" << endl;
+    QDPIO::cerr << "No ILDG lfn string in gauge file found!" << std::endl;
     QDP_abort(1);
   }
 
   uint64_t recsize = w.recordSize();
   char * tmp = new char[ recsize ];
   w.read( (void*)(tmp) , recsize );
-  string strLfn(tmp,recsize);
+  std::string strLfn(tmp,recsize);
   delete[] tmp;
 
   XMLBufferWriter f_xml, r_xml;
@@ -106,7 +106,7 @@ void readGaugeILDG(XMLReader& file_xml,
 
   if (to.bad())
     {
-      QDPIO::cerr << __func__ << ": error reading file " << file << endl;
+      QDPIO::cerr << __func__ << ": error reading file " << file << std::endl;
       QDP_abort(1);
     }
 

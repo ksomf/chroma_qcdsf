@@ -7,11 +7,11 @@
 using namespace QDP;
 
 namespace Chroma {
-  
-  SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF::SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF(XMLReader& xml, 
+
+  SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF::SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF(XMLReader& xml,
 						       const std::string& path)
   {
-    QDPIO::cout << "Creating SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF" << endl;
+    QDPIO::cout << "Creating SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF" << std::endl;
 
     XMLReader paramtop(xml, path);
     read(paramtop, "MaxIter", MaxIter);
@@ -21,19 +21,19 @@ namespace Chroma {
     read(paramtop, "Delta", Delta);
   }
 
-  void read(XMLReader& xml, const std::string& path, 
+  void read(XMLReader& xml, const std::string& path,
 	    SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF& p)
   {
-    QDPIO::cout << "Reading SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF" << endl;
+    QDPIO::cout << "Reading SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF" << std::endl;
 
     SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF tmp(xml, path);
     p = tmp;
   }
 
-  void write(XMLWriter& xml, const std::string& path, 
+  void write(XMLWriter& xml, const std::string& path,
 	     const SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF& p) {
 
-    QDPIO::cout << "Writing SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF" << endl;
+    QDPIO::cout << "Writing SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF" << std::endl;
     push(xml, path);
     write(xml, "MaxIter", p.MaxIter);
     write(xml, "RsdTarget", p.RsdTarget);

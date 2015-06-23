@@ -36,23 +36,23 @@ namespace QDP {
 
 		int dir_decay; // state
 	};
-	
+
 	void initTimeSliceSet() {
 		TimeSliceSetQCDSF.make( TimeSliceFunc(Nd-1) );
 	}
 }
 
-namespace Chroma 
+namespace Chroma
 {
   // Read parameters
-  void read (XMLReader& xml, const string& path, WuppertalSourceQuarkSmearingEnv::Params& param)
+  void read (XMLReader& xml, const std::string& path, WuppertalSourceQuarkSmearingEnv::Params& param)
   {
     WuppertalSourceQuarkSmearingEnv::Params tmp (xml, path);
     param = tmp;
   }
 
   //! Parameters for running code
-  void write (XMLWriter& xml, const string& path, const WuppertalSourceQuarkSmearingEnv::Params& param)
+  void write (XMLWriter& xml, const std::string& path, const WuppertalSourceQuarkSmearingEnv::Params& param)
   {
     param.writeXML (xml, path);
   }
@@ -81,14 +81,14 @@ namespace Chroma
     {
       return new QuarkSmear<LatticeFermion> (Params (xml_in, path));
     }
-    
+
     //! Callback function
     QuarkSmearing<LatticeColorVector>* createColorVec (XMLReader& xml_in,
 						       const std::string& path)
     {
       return new QuarkSmear<LatticeColorVector> (Params (xml_in, path));
     }
-    
+
     //! Name to be used
     const std::string name = "WUPPERTAL_SOURCE_SMEAR";
 
@@ -97,9 +97,9 @@ namespace Chroma
     static bool registeredQDPGlobals = false;
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	success &= Chroma::ThePropSmearingFactory::Instance ().registerObject (name, createProp);
@@ -112,7 +112,7 @@ namespace Chroma
     }
 
     //! Register all the factories
-    void registerQDPGlobals() 
+    void registerQDPGlobals()
     {
       if ( !registeredQDPGlobals ) {
 		QDP::initTimeSliceSet();
@@ -122,7 +122,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    Params::Params (XMLReader& xml, const string& path)
+    Params::Params (XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop (xml, path);
 
@@ -136,10 +136,10 @@ namespace Chroma
 
 
     //! Parameters for running code
-    void Params::writeXML (XMLWriter& xml, const string& path) const
+    void Params::writeXML (XMLWriter& xml, const std::string& path) const
     {
       push (xml, path);
-    
+
       write (xml, "wvf_kind", WuppertalSourceQuarkSmearingEnv::name);
       write (xml, "wvf_param", wvf_param);
       write (xml, "wvfIntPar", wvfIntPar);
@@ -193,4 +193,3 @@ namespace Chroma
 
   }  // end namespace
 }  // end namespace Chroma
-

@@ -17,7 +17,7 @@ namespace Chroma
   {
     extern const std::string name;
     bool registerAll();
-  
+
 
     //! Params for initializing config
     /*! @ingroup gauge */
@@ -26,8 +26,8 @@ namespace Chroma
       Params() {}
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
-    
-      string cfg_file;		/*!< File name */
+
+	  std::string cfg_file;		/*!< File name */
       QDP_serialparallel_t    cfg_pario;  /*!< QIO Parallel IO flag */
     };
 
@@ -65,11 +65,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup gauge */
-  void read(XMLReader& xml, const string& path, ILDGGaugeInitEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, ILDGGaugeInitEnv::Params& param);
 
   //! Writer
   /*! @ingroup gauge */
-  void write(XMLWriter& xml, const string& path, const ILDGGaugeInitEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const ILDGGaugeInitEnv::Params& param);
 
 }  // end namespace Chroma
 

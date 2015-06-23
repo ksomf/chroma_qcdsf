@@ -10,7 +10,7 @@
 
 using namespace Chroma;
 
-namespace Chroma 
+namespace Chroma
 {
 
   void write(BinaryWriter& bin, const Baryons_corr_QCDSF_t& mes)
@@ -28,9 +28,9 @@ namespace Chroma
   }
 
 
-  void barhqlq_qcdsf_lime(const LatticePropagator& propagator_1, 
-			  const LatticePropagator& propagator_2, 
-			  const LatticePropagator& propagator_3, 
+  void barhqlq_qcdsf_lime(const LatticePropagator& propagator_1,
+			  const LatticePropagator& propagator_2,
+			  const LatticePropagator& propagator_3,
 			  const bool & haveThird,
 			  const SftMom& phases,
 			  int t0, int bc_spec, bool time_rev, bool fwdbwd_average,
@@ -58,14 +58,14 @@ namespace Chroma
 	LatticePropagator q1_tmp = - (Gamma(7) * propagator_1 * Gamma(7));
 	LatticePropagator q2_tmp = - (Gamma(7) * propagator_2 * Gamma(7));
 	LatticePropagator q3_tmp = - (Gamma(7) * propagator_3 * Gamma(7));
-	  
+
 	barhqlq_qcdsf(q1_tmp, q2_tmp, q3_tmp, haveThird, phases, bardisp2);
       } else {
 	/* Time-charge reverse the quark propagators */
 	/* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
 	LatticePropagator q1_tmp = - (Gamma(7) * propagator_1 * Gamma(7));
 	LatticePropagator q2_tmp = - (Gamma(7) * propagator_2 * Gamma(7));
-	  
+
 	barhqlq_qcdsf(q1_tmp, q2_tmp, q2_tmp, haveThird, phases, bardisp2);
       }
     }
@@ -103,7 +103,7 @@ namespace Chroma
 	    for(int t = 0; t < length; ++t)
 	      {
 		int t_eff = (t - t0 + length) % length;
-	    
+
 		if ( bc_spec < 0 && (t_eff+t0) >= length)
 		  barprop[t_eff] = -bardisp1[baryons][sink_mom_num][t];
 		else
@@ -111,14 +111,14 @@ namespace Chroma
 	      }
 
 	    multi1d<Complex> barprop_trev(length);
-	
+
 	    if (time_revP)
 	      {
 		/* backward */
 		for(int t = 0; t < length; ++t)
 		  {
 		    int t_eff = (length - t + t0) % length;
-	
+
 		    if ( bc_spec < 0 && (t_eff-t0) > 0)
 		      {
 			barprop_trev[t_eff] = -bardisp2[baryons][sink_mom_num][t];
@@ -141,11 +141,11 @@ namespace Chroma
 
 	    bar.barnum[baryons].momentum[sink_mom_num].correlator = barprop;
 	    bar_trev.barnum[baryons].momentum[sink_mom_num].correlator = barprop_trev;
-	    
+
 	    // write(xml_sink_mom, "barprop", barprop);
 	    // pop(xml_sink_mom);
 	  } // end for(sink_mom_num)
- 
+
 	// pop(xml_sink_mom);
 	// pop(xml_bar);
       } // end for(gamma_value)
@@ -157,14 +157,14 @@ namespace Chroma
 
 
 
-  // Original Chroma code (timerev behaviour) 
+  // Original Chroma code (timerev behaviour)
 	    // multi1d<Complex> barprop(length);
 
 	    // /* forward */
 	    // for(int t = 0; t < length; ++t)
 	    //   {
 	    // 	int t_eff = (t - t0 + length) % length;
-	    
+
 	    // 	if ( bc_spec < 0 && (t_eff+t0) >= length)
 	    // 	  barprop[t_eff] = -bardisp1[baryons][sink_mom_num][t];
 	    // 	else
@@ -177,7 +177,7 @@ namespace Chroma
 	    // 	for(int t = 0; t < length; ++t)
 	    // 	  {
 	    // 	    int t_eff = (length - t + t0) % length;
-	
+
 	    // 	    if ( bc_spec < 0 && (t_eff-t0) > 0)
 	    // 	      {
 	    // 		barprop[t_eff] -= bardisp2[baryons][sink_mom_num][t];
@@ -194,14 +194,14 @@ namespace Chroma
 
 
 
-  void barhqlq_qcdsf_xml(const LatticePropagator& propagator_1, 
-			 const LatticePropagator& propagator_2, 
-			 const LatticePropagator& propagator_3, 
+  void barhqlq_qcdsf_xml(const LatticePropagator& propagator_1,
+			 const LatticePropagator& propagator_2,
+			 const LatticePropagator& propagator_3,
 			 const bool & haveThird,
 			 const SftMom& phases,
 			 int t0, int bc_spec, bool time_rev, bool fwdbwd_average,
 			 XMLWriter& xml,
-			 const string& xml_group)
+			 const std::string& xml_group)
   {
     START_CODE();
 
@@ -224,14 +224,14 @@ namespace Chroma
 	LatticePropagator q1_tmp = - (Gamma(7) * propagator_1 * Gamma(7));
 	LatticePropagator q2_tmp = - (Gamma(7) * propagator_2 * Gamma(7));
 	LatticePropagator q3_tmp = - (Gamma(7) * propagator_3 * Gamma(7));
-	  
+
 	barhqlq_qcdsf(q1_tmp, q2_tmp, q3_tmp, haveThird, phases, bardisp2);
       } else {
 	/* Time-charge reverse the quark propagators */
 	/* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
 	LatticePropagator q1_tmp = - (Gamma(7) * propagator_1 * Gamma(7));
 	LatticePropagator q2_tmp = - (Gamma(7) * propagator_2 * Gamma(7));
-	  
+
 	barhqlq_qcdsf(q1_tmp, q2_tmp, q2_tmp, false, phases, bardisp2);
       }
     }
@@ -266,7 +266,7 @@ namespace Chroma
 	for(int t = 0; t < length; ++t)
 	{
 	  int t_eff = (t - t0 + length) % length;
-	    
+
 	  if ( bc_spec < 0 && (t_eff+t0) >= length)
 	    barprop[t_eff] = -bardisp1[baryons][sink_mom_num][t];
 	  else
@@ -281,7 +281,7 @@ namespace Chroma
 	  for(int t = 0; t < length; ++t)
 	  {
 	    int t_eff = (length - t + t0) % length;
-	
+
 	    if ( bc_spec < 0 && (t_eff-t0) > 0)
 	    {
 	      barprop_trev[t_eff] = -bardisp2[baryons][sink_mom_num][t];
@@ -305,7 +305,7 @@ namespace Chroma
 
 	pop(xml_sink_mom);
       } // end for(sink_mom_num)
- 
+
       pop(xml_sink_mom);
       pop(xml_bar);
     } // end for(gamma_value)
@@ -315,7 +315,7 @@ namespace Chroma
     END_CODE();
   }
 
-  
+
   void barhqlq_qcdsf(const LatticePropagator& quark_propagator_1,
 		     const LatticePropagator& quark_propagator_2,
 		     const LatticePropagator& quark_propagator_3,
@@ -341,27 +341,27 @@ namespace Chroma
     barprop.resize(num_baryons,num_mom,length);
 
 
-    // T_mixed = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+    // T_mixed = (1 + \Sigma_3)*(1 + gamma_4) / 2
     //         = (1 + Gamma(8) - i G(3) - i G(11)) / 2
     SpinMatrix T_mixed = BaryonSpinMats::Tmixed();
 
-    // T_mixed = (1 - \Sigma_3)*(1 + gamma_4) / 2                                                                  
-    //         = (1 + Gamma(8) + i G(3) + i G(11)) / 2                                                             
+    // T_mixed = (1 - \Sigma_3)*(1 + gamma_4) / 2
+    //         = (1 + Gamma(8) + i G(3) + i G(11)) / 2
     SpinMatrix T_mixedminus = BaryonSpinMats::Tmixedminus();
 
     // T_unpol = (1/2)(1 + gamma_4)
     SpinMatrix T_unpol = BaryonSpinMats::Tunpol();
 
-    // T_unpolg5 = (1/2)(1 + gamma_4) * g5                                                                         
+    // T_unpolg5 = (1/2)(1 + gamma_4) * g5
     SpinMatrix T_unpolg5 = BaryonSpinMats::Tunpolg5();
 
-    //! T = \Sigma_1 (1 + gamma_4) / 2 
+    //! T = \Sigma_1 (1 + gamma_4) / 2
     SpinMatrix Tpolx = BaryonSpinMats::Tpolx();
 
     //! T = \Sigma_2 (1 + gamma_4) / 2
     SpinMatrix Tpoly = BaryonSpinMats::Tpoly();
 
-    //! T = \Sigma_3 (1 + gamma_4) / 2 
+    //! T = \Sigma_3 (1 + gamma_4) / 2
     SpinMatrix Tpol = BaryonSpinMats::Tpol();
 
     // C gamma_5 = Gamma(5)
@@ -387,21 +387,21 @@ namespace Chroma
 	// |S_1, s_z=1/2> = (s C gamma_5 u) "u_up"
 	// C gamma_5 = Gamma(5)
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
 						 T_mixed, Cg5);
 	break;
 
       case 1:
 	// Lambda_1
 	// |L_1, s_z=1/2> = 2*(u C gamma_5 d) "s_up" + (s C gamma_5 d) "u_up"
-	//                  + (u C gamma_5 s) "d_up" , see comments at top   
+	//                  + (u C gamma_5 s) "d_up" , see comments at top
 	// C gamma_5 = Gamma(5)
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions_3prop::lambda8_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_2, 
+	b_prop = Baryon2PtContractions_3prop::lambda8_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_2,
 						  T_mixed, Cg5);
 	break;
 
@@ -409,9 +409,9 @@ namespace Chroma
 	// Sigma^{*+}_1
 	// |S*_1, s_z=3/2> = 2*(s C gamma_- u) "u_up" + (u C gamma_- u) "s_up"
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2,
 						   T_mixed, BaryonSpinMats::Cgm());
 	break;
 
@@ -420,9 +420,9 @@ namespace Chroma
 	// |S_2, s_z=1/2> = (s C gamma_4 gamma_5 u) "u_up"
 	// C gamma_5 gamma_4 = - Gamma(13)
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
 						 T_mixed, Cg5g4);
 	break;
 
@@ -432,7 +432,7 @@ namespace Chroma
 	//                  + (s C gamma_4 gamma_5 d) "u_up"
 	//                  + (u C gamma_4 gamma_5 s) "d_up"
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
 	b_prop = Baryon2PtContractions_3prop::lambda8_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_2, T_mixed, Cg5g4);
 	break;
@@ -441,9 +441,9 @@ namespace Chroma
 	// Sigma^{*+}_2
 	// |S*_2, s_z=3/2> = 2*(s C gamma_4 gamma_- u) "u_up" + (u C gamma_4 gamma_- u) "s_up"
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2,
 						   T_mixed, BaryonSpinMats::Cg4m());
 	break;
 
@@ -452,9 +452,9 @@ namespace Chroma
 	// |S_3, s_z=1/2> = (s C (1/2)(1 + gamma_4) gamma_5 u) "u_up"
 	// C gamma_5 gamma_4 = - Gamma(13)
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
 						 T_mixed, Cg5NR);
 	break;
 
@@ -464,21 +464,21 @@ namespace Chroma
 	//                  + (s C (1/2)(1 + gamma_4) gamma_5 d) "u_up"
 	//                  + (u C (1/2)(1 + gamma_4) gamma_5 s) "d_up"
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions_3prop::lambda8_2pt(quark_propagator_1, quark_propagator_2,quark_propagator_2, 
+	b_prop = Baryon2PtContractions_3prop::lambda8_2pt(quark_propagator_1, quark_propagator_2,quark_propagator_2,
 						  T_mixed, Cg5NR);
 	break;
 
       case 8:
 	// Sigma^{*+}_3
-	// |S*_3, s_z=3/2> = 2*(s C (1/2)(1+gamma_4) gamma_- u) "u_up" 
+	// |S*_3, s_z=3/2> = 2*(s C (1/2)(1+gamma_4) gamma_- u) "u_up"
 	//                   + (u C (1/2)(1+gamma_4) gamma_- u) "s_up"
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	// Arrgh, goofy CgmNR normalization again from szin code. 
-	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+	// Arrgh, goofy CgmNR normalization again from szin code.
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2,
 						   T_mixed, BaryonSpinMats::CgmNR());
 
 	// Agghh, we have a goofy factor of 4 normalization factor here. The
@@ -496,7 +496,7 @@ namespace Chroma
 	// C gamma_5 = Gamma(5)
 	// Unpolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
 						 T_unpol, Cg5);
 	break;
 
@@ -506,17 +506,17 @@ namespace Chroma
 	// C gamma_5 gamma_4 = - Gamma(13)
 	// Unpolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
 						 T_unpol, Cg5g4);
 	break;
-    
+
       case 11:
 	// Sigma^+_6
 	// |S_6, s_z=1/2> = (s C (1/2)(1 + gamma_4) gamma_5 u) "u_up", see comments at top
 	// C gamma_5 = Gamma(5)
 	// Unpolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
 						 T_unpol, Cg5NR);
 	break;
 
@@ -526,17 +526,17 @@ namespace Chroma
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = Baryon2PtContractions::lambdaNaive2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::lambdaNaive2pt(quark_propagator_1, quark_propagator_2,
 						       T_unpol, Cg5);
 	break;
-      
+
       case 13:
 	// Xi_1
 	// |X_1 > = (s C gamma_5 u) s
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = Baryon2PtContractions::xi2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::xi2pt(quark_propagator_1, quark_propagator_2,
 					      T_unpol, Cg5);
 	break;
 
@@ -544,21 +544,21 @@ namespace Chroma
 	// Lambda_5 : naive Lambda interpolating field
 	// |L_5 > = (d C gamma_5 u) "s_up"
 	// C gamma_5 = Gamma(5)
-	// UnPolarized: 
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// UnPolarized:
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions::lambdaNaive2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::lambdaNaive2pt(quark_propagator_1, quark_propagator_2,
 						       T_unpol, Cg5);
 	break;
-      
+
       case 15:
 	// Xi_2
 	// |X_2 > = (s C gamma_5 u) "s_up"
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions::xi2pt(quark_propagator_1, quark_propagator_2, 
+	b_prop = Baryon2PtContractions::xi2pt(quark_propagator_1, quark_propagator_2,
 					      T_mixed, Cg5);
 	break;
 
@@ -566,66 +566,66 @@ namespace Chroma
 	// Proton_negpar_3; use also for Lambda_negpar_3!
 	// |P_7, s_z=1/2> = (d C gamma_5 (1/2)(1 - g_4) u) "u_up", see comments at top
 	// C g_5 NR negpar = (1/2)*C gamma_5 * ( 1 - g_4 )
-	// T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
+	// T = (1 + \Sigma_3)*(1 - gamma_4) / 2
 	//   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
-	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
-						 BaryonSpinMats::TmixedNegPar(), 
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
+						 BaryonSpinMats::TmixedNegPar(),
 						 BaryonSpinMats::Cg5NRnegPar());
 	break;
       case 17:
-	// Proton_pol_1; 
+	// Proton_pol_1;
 	// C g_5 = gamma_5
-	// T = \Sigma_1*(1 + gamma_4) / 2 
+	// T = \Sigma_1*(1 + gamma_4) / 2
 	//   = -i(G(6) + G(14)) / 2
 	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, Tpolx, Cg5);
 	break;
       case 18:
-	// Proton_pol_2; 
+	// Proton_pol_2;
 	// C g_5 = gamma_5
-	// T = \Sigma_2*(1 + gamma_4) / 2 
+	// T = \Sigma_2*(1 + gamma_4) / 2
 	//   = -i(G(5) + G(13)) / 2
 	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, Tpoly, Cg5);
 	break;
       case 19:
-	// Proton_pol_3; 
+	// Proton_pol_3;
 	// C g_5 = gamma_5
-	// T = \Sigma_3*(1 + gamma_4) / 2 
+	// T = \Sigma_3*(1 + gamma_4) / 2
 	//   = -i(G(3) + G(11)) / 2
 	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, Tpol, Cg5);
 	break;
-	
+
       case 20:
-	// Sigma^+_1 (or proton); use also for Lambda_1!                                                           
-        // |S_1, s_z=1/2> = (s C gamma_5 u) "u_up"                                                                 
-        // C gamma_5 = Gamma(5)                                                                                    
-        // Unpolarized but with g5:                                                                                
-        // T_unpolg5 = T = gamma_5*(1 + gamma_4) / 2                                                               
-        //             = (Gamma(15) + Gamma(7)) / 2                                                                
+	// Sigma^+_1 (or proton); use also for Lambda_1!
+        // |S_1, s_z=1/2> = (s C gamma_5 u) "u_up"
+        // C gamma_5 = Gamma(5)
+        // Unpolarized but with g5:
+        // T_unpolg5 = T = gamma_5*(1 + gamma_4) / 2
+        //             = (Gamma(15) + Gamma(7)) / 2
         b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
                                                  T_unpolg5, Cg5);
 	break;
 
       case 21:
-	// Sigma^+_2; use also for Lambda_2!                                                                       
-        // This used to be case 0 but my ugly hack above means I have moved it here                                
-        // |S_2, s_z=-1/2> = (s C gamma_5 u) "u_down"                                                              
-        // Polarized:                                                                                              
-        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2                                                     
-        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2                                                
+	// Sigma^+_2; use also for Lambda_2!
+        // This used to be case 0 but my ugly hack above means I have moved it here
+        // |S_2, s_z=-1/2> = (s C gamma_5 u) "u_down"
+        // Polarized:
+        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2
+        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2
         b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2,
                                                  T_mixedminus, Cg5);
 	break;
-	  
-	
+
+
       case 22:
 	// Lambda_1
 	// |L_1, s_z=1/2> = 2*(u C gamma_5 d) "s_down" + (s C gamma_5 d) "u_down"
-	//                  + (u C gamma_5 s) "d_down" , see comments at top   
+	//                  + (u C gamma_5 s) "d_down" , see comments at top
 	// C gamma_5 = Gamma(5)
 	// Polarized:
-        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2                                                     
-        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2                                                
-	b_prop = Baryon2PtContractions_3prop::lambda8_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_2, 
+        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2
+        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2
+	b_prop = Baryon2PtContractions_3prop::lambda8_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_2,
 						  T_mixedminus, Cg5);
 	break;
 
@@ -633,9 +633,9 @@ namespace Chroma
 	// Sigma^{*+}_1
 	// |S*_1, s_z=1/2> = 2*(s C gamma_- u) "u_down" + (u C gamma_- u) "s_down"
 	// Polarized:
-        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2                                                     
-        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2                                                
-	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2
+        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2,
 						   T_mixedminus, BaryonSpinMats::Cgm());
 	break;
 
@@ -643,9 +643,9 @@ namespace Chroma
 	// Sigma^{*+}_1
 	// |S*_1, s_z=-1/2> = 2*(s C gamma_- u) "u_down" + (u C gamma_- u) "s_down"
 	// Polarized:
-        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2                                                     
-        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2                                                
-	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2
+        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2,
 						   T_mixed, BaryonSpinMats::Cgp());
 	break;
 
@@ -653,62 +653,62 @@ namespace Chroma
 	// Sigma^{*+}_1
 	// |S*_1, s_z=-3/2> = 2*(s C gamma_- u) "u_down" + (u C gamma_- u) "s_down"
 	// Polarized:
-        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2                                                     
-        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2                                                
-	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+        // T_mixedminus = T = (1 - \Sigma_3)*(1 + gamma_4) / 2
+        //                  = (1 + Gamma(8) + i G(3) + i G(11)) / 2
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2,
 						   T_mixedminus, BaryonSpinMats::Cgp());
 	break;
 
      case 26:
-	// Sigma_0; 
+	// Sigma_0;
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	
+
 	b_prop = Baryon2PtContractions_3prop::sigma0_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3,
 						  T_unpol, Cg5);
-	
-	
+
+
 	break;
 
 	case 27:
-	// Lambda_octet; 
+	// Lambda_octet;
 	// Lambda_1
 	// |L_1, s_z=1/2> = 2*(u C gamma_5 d) "s_up" + (s C gamma_5 d) "u_up"
-	//                  + (u C gamma_5 s) "d_up" , see comments at top   
+	//                  + (u C gamma_5 s) "d_up" , see comments at top
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
 	b_prop = Baryon2PtContractions_3prop::lambda8_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3,
 						  T_unpol, Cg5);
 	break;
-	
+
 	case 28:
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
 	b_prop = Baryon2PtContractions_3prop::lambda8_to_sigma0_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3,
 						  T_unpol, Cg5);
-	   
+
 	break;
-	
+
 	case 29:
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
 	b_prop = Baryon2PtContractions_3prop::sigma0_lambda8_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3,
-						  T_unpol, Cg5);	  
+						  T_unpol, Cg5);
 	 break;
-	
+
 	case 30:
 	// Sigma^{*+}_3
-	// |S*_3, s_z=3/2> = 2*(s C (1/2)(1+gamma_4) gamma_- u) "u_up" 
+	// |S*_3, s_z=3/2> = 2*(s C (1/2)(1+gamma_4) gamma_- u) "u_up"
 	//                   + (u C (1/2)(1+gamma_4) gamma_- u) "s_up"
 	// Polarized:
-	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	
-	
+
+
     //! C gamma_- = Cgm = (C gamma_-)^T
 //     SpinMatrix Cgm()
 //     {
@@ -722,12 +722,12 @@ namespace Chroma
       default:
 	QDP_error_exit("Unknown baryon", baryons);
       }
-                        
+
       // Project onto zero and if desired non-zero momentum
       multi2d<DComplex> hsum;
       hsum = phases.sft(b_prop);
 
-      for(int sink_mom_num=0; sink_mom_num < num_mom; ++sink_mom_num) 
+      for(int sink_mom_num=0; sink_mom_num < num_mom; ++sink_mom_num)
 	for(int t = 0; t < length; ++t)
 	{
 	  // NOTE: there is NO  1/2  multiplying hsum
@@ -742,5 +742,3 @@ namespace Chroma
 
 
 }
-
-

@@ -24,9 +24,9 @@ namespace Chroma
 				       const CloverFermActParams& param_,
 				       const SLRCFeynHellFermActParams& fhparam_)
   {
-    QDPIO::cout << "Creating UnprecSLRCFeynHellLinOp" << endl;
+    QDPIO::cout << "Creating UnprecSLRCFeynHellLinOp" << std::endl;
 
-    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
 
     param = param_;
     fhparam = fhparam_;
@@ -38,7 +38,7 @@ namespace Chroma
     A.create(thin_fs, param);
     D.create(fs, param.anisoParam);
 
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
   }
 
 
@@ -68,8 +68,7 @@ namespace Chroma
 		chi += phalf
 			* fhparam.FHparam[i].lambda
 			* fhparam.FHparam[i].phases
-			* Gamma(fhparam.FHparam[i].op)
-			* psi;
+			* (Gamma(fhparam.FHparam[i].op) * psi);
 	}
 
     getFermBC().modifyF(chi);

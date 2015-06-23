@@ -12,31 +12,31 @@
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 using namespace QDP::Hints;
 
-namespace Chroma 
-{ 
+namespace Chroma
+{
 
   //! Creation routine with Anisotropy
   /*!
    * \param u_ 	    gauge field     	       (Read)
    * \param param_  fermion kappa   	       (Read)
    */
-  void EvenOddPrecSLRCFeynHellLinOp::create(Handle< FermState<T,P,Q> > fs, 
+  void EvenOddPrecSLRCFeynHellLinOp::create(Handle< FermState<T,P,Q> > fs,
 					    const CloverFermActParams& param_,
 					    const SLRCFeynHellFermActParams& fhparam_)
   {
     START_CODE();
 
     // Alex check
-    QDPIO::cout << "I'm the linear operator Alex made!!" << endl;
+    QDPIO::cout << "I'm the linear operator Alex made!!" << std::endl;
 
     param = param_;
     slrc_fs = fs; // added by I.Kanamori
     fhparam = fhparam_;
-    QDPIO::cout << "(debug info) a local version of create is called!\n"; 
+    QDPIO::cout << "(debug info) a local version of create is called!\n";
 
     // Need to make sure that fs is a stout ferm state
     // We want to have Clover with thin links
-    thin_fs  = new PeriodicFermState<T,P,Q>( 
+    thin_fs  = new PeriodicFermState<T,P,Q>(
 					    	fs.cast< SLICFermState<T, P, Q> >()->getThinLinks());
 
     clov.create(thin_fs, param);
@@ -46,22 +46,23 @@ namespace Chroma
 
     //...and WilsonDslash with stout links
     D.create(fs, param.anisoParam);
-    
+
     END_CODE();
   }
 
   //! Apply the the odd-odd block onto a source vector
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 				      enum PlusMinus isign) const
   {
     LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
-    Complex phalf = 0.5 * fhparam.lambda;
+	Complex phalf = 0.5;// * fhparam.lambda;
 
     clov.apply(chi, psi, isign, 1);
 
-    tmp1[rb[1]] = Gamma(fhparam.op) * psi;
-      
+    //tmp1[rb[1]] = Gamma(fhparam.op) * psi;
+	tmp1[rb[1]] = psi;
+
     if( isign == PLUS ) {
       chi[rb[1]] += phalf * tmp1;
     }
@@ -72,18 +73,19 @@ namespace Chroma
 
 
   //! Apply the the even-even block onto a source vector
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					enum PlusMinus isign) const
   {
     LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
-    Complex phalf = 0.5 * fhparam.lambda;
+	Complex phalf = 0.5;// * fhparam.lambda;
 
     // Nuke for testing
     clov.apply(chi, psi, isign, 0);
 
-    tmp1[rb[0]] = Gamma(fhparam.op) * psi;
-      
+    //tmp1[rb[0]] = Gamma(fhparam.op) * psi;
+	tmp1[rb[0]] = psi;
+
     if( isign == PLUS ) {
       chi[rb[0]] += phalf * tmp1;
     }
@@ -93,13 +95,13 @@ namespace Chroma
   }
 
   //! Apply the inverse of the even-even block onto a source vector
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi,
 					   enum PlusMinus isign) const
   {
     invclov.apply(chi, psi, isign, 0);
   }
-  
+
 
   //! Apply even-odd linop component
   /*!
@@ -109,9 +111,9 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::evenOddLinOp(LatticeFermion& chi, 
-				       const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::evenOddLinOp(LatticeFermion& chi,
+				       const LatticeFermion& psi,
 				       enum PlusMinus isign) const
   {
     START_CODE();
@@ -120,7 +122,7 @@ namespace Chroma
 
     D.apply(chi, psi, isign, 0);
     chi[rb[0]] *= mhalf;
-  
+
     END_CODE();
   }
 
@@ -132,9 +134,9 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::oddEvenLinOp(LatticeFermion& chi, 
-				       const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::oddEvenLinOp(LatticeFermion& chi,
+				       const LatticeFermion& psi,
 				       enum PlusMinus isign) const
   {
     START_CODE();
@@ -143,7 +145,7 @@ namespace Chroma
 
     D.apply(chi, psi, isign, 1);
     chi[rb[1]] *= mhalf;
-  
+
     END_CODE();
   }
 
@@ -154,8 +156,8 @@ namespace Chroma
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
-  void EvenOddPrecSLRCFeynHellLinOp::operator()(LatticeFermion & chi, 
-					  const LatticeFermion& psi, 
+  void EvenOddPrecSLRCFeynHellLinOp::operator()(LatticeFermion & chi,
+					  const LatticeFermion& psi,
 					  enum PlusMinus isign) const
   {
     START_CODE();
@@ -163,7 +165,7 @@ namespace Chroma
     LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
     LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
     Real mquarter = -0.25;
-    Complex phalf = 0.5 * fhparam.lambda;
+	Complex phalf = 0.5; //* fhparam.lambda;
 
     //  tmp1_o  =  D_oe   A^(-1)_ee  D_eo  psi_o
     D.apply(tmp1, psi, isign, 0);
@@ -174,10 +176,12 @@ namespace Chroma
     clov.apply(chi, psi, isign, 1);
 
     chi[rb[1]] += mquarter*tmp1;
-    
+
     //    tmp1[rb[1]] = Gamma(fhparam.op) * psi;
-    tmp1 = Gamma(fhparam.op) * psi;
-      
+    //tmp1 = Gamma(fhparam.op) * psi;
+		tmp1[rb[1]] = psi;
+	tmp1 = psi;
+
     //    if( isign == PLUS ) {
     chi[rb[1]] += phalf * tmp1;
     //    }
@@ -190,9 +194,9 @@ namespace Chroma
 
 
   //! Apply the even-even block onto a source vector
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					     const LatticeFermion& chi, const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					     const LatticeFermion& chi, const LatticeFermion& psi,
 					     enum PlusMinus isign) const
   {
     START_CODE();
@@ -204,12 +208,12 @@ namespace Chroma
   }
 
   //! Apply the even-even block onto a source vector
-  void 
+  void
   EvenOddPrecSLRCFeynHellLinOp::derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
 						 enum PlusMinus isign) const
   {
     START_CODE();
-    
+
     invclov.derivTrLn(ds_u, isign, 0);
     getFermBC().zero(ds_u);
 
@@ -217,19 +221,19 @@ namespace Chroma
   }
 
   //! Apply the the even-odd block onto a source vector
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					    const LatticeFermion& chi, const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					    const LatticeFermion& chi, const LatticeFermion& psi,
 					    enum PlusMinus isign) const
   {
     START_CODE();
- 
+
     //temp variable for the fat force
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     // Dslash will resize this.
     ds_u.resize(Nd);
 
-    
+
     D.deriv(ds_tmp, chi, psi, isign, 0);
     for(int mu=0; mu < Nd; mu++) {
       ds_tmp[mu]  *= Real(-0.5);
@@ -242,11 +246,11 @@ namespace Chroma
 
     END_CODE();
   }
- 
+
   //! Apply the the odd-even block onto a source vector
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					    const LatticeFermion& chi, const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					    const LatticeFermion& chi, const LatticeFermion& psi,
 					    enum PlusMinus isign) const
   {
     START_CODE();
@@ -269,17 +273,17 @@ namespace Chroma
 
   // Inherit this
   //! Apply the the odd-odd block onto a source vector
-  void 
-  EvenOddPrecSLRCFeynHellLinOp::derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-					   const LatticeFermion& chi, const LatticeFermion& psi, 
+  void
+  EvenOddPrecSLRCFeynHellLinOp::derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u,
+					   const LatticeFermion& chi, const LatticeFermion& psi,
 					   enum PlusMinus isign) const
-  {   
+  {
     START_CODE();
 
     ds_u.resize(Nd);
     clov.deriv(ds_u, chi, psi, isign, 1);
     getFermBC().zero(ds_u);
-  
+
     END_CODE();
   }
 
