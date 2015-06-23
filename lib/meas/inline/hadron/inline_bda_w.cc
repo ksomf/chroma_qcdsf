@@ -325,7 +325,8 @@ namespace Chroma
         phases = new SftMom (params.param.mom2_max, t_srce, params.param.avg_equiv_mom, j_decay);
         break;
       case 3:
-        phases = new SftMom (params.param.moms, t_srce, j_decay);
+		// This was removed because the matching call to SftMom no longer exists
+        //phases = new SftMom (params.param.moms, t_srce, j_decay);
         break;
     }
 
