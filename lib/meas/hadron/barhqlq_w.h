@@ -9,7 +9,7 @@
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 
-namespace Chroma 
+namespace Chroma
 {
 
   //! Baryon 2pt contractions
@@ -50,18 +50,68 @@ namespace Chroma
     /*! \ingroup hadron */
     LatticeComplex sigmast2pt(const LatticePropagator& quark_propagator_1,
 			      const LatticePropagator& quark_propagator_2,
-			      const SpinMatrix& T, 
-			      const SpinMatrix& spSRC, 
+			      const SpinMatrix& T,
+			      const SpinMatrix& spSRC,
 			      const SpinMatrix& spSNK );
 
   }  // namespace  Baryon2PtContractions
 
 
+namespace Baryon2PtContractions_3prop
+  {
+       //! Sigma 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex sigma2pt(const LatticePropagator& quark_propagator_1,
+			    const LatticePropagator& quark_propagator_2,
+			    const LatticePropagator& quark_propagator_3,
+			    const SpinMatrix& T, const SpinMatrix& sp);
+
+    //!Sigma0 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex sigma0_2pt(const LatticePropagator& quark_propagator_1/*u*/,
+			    const LatticePropagator& quark_propagator_2/*d*/,
+			    const LatticePropagator& quark_propagator_3/*s*/,
+			    const SpinMatrix& T, const SpinMatrix& sp);
+
+	 LatticeComplex sigma_star(const LatticePropagator& u,
+			 const LatticePropagator& s,
+			 const LatticePropagator& d,
+			 const SpinMatrix& T, const SpinMatrix& sp);
+
+
+    LatticeComplex sigma_star_2pt(const LatticePropagator& u,
+			    const LatticePropagator& s,
+			    const LatticePropagator& d,
+			    const SpinMatrix& T, const SpinMatrix& sp);
+
+    //!Lambda_octet 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex lambda8_2pt(const LatticePropagator& u,
+			    const LatticePropagator& d,
+			    const LatticePropagator& s,
+			    const SpinMatrix& T, const SpinMatrix& sp);
+
+    //!Lambda_octet to sigma_0 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex lambda8_to_sigma0_2pt(const LatticePropagator& u,
+			    const LatticePropagator& d,
+			    const LatticePropagator& s,
+			    const SpinMatrix& T, const SpinMatrix& sp);
+
+    //!sigma_0 to Lambda_octet  2-pt
+    /*! \ingroup hadron */
+    LatticeComplex sigma0_lambda8_2pt(const LatticePropagator& u,
+			    const LatticePropagator& d,
+			    const LatticePropagator& s,
+			    const SpinMatrix& T, const SpinMatrix& sp);
+
+  }//End_Namespace::Baryon2PtContractions_3prop
+
   //! Heavy-light baryon 2-pt functions
   /*!
    * \ingroup hadron
    *
-   * This routine is specific to Wilson fermions! 
+   * This routine is specific to Wilson fermions!
    *
    * Construct baryon propagators for the Proton and the Delta^+ with
    * degenerate "u" and "d" quarks, as well as the Lambda for, in
@@ -83,8 +133,8 @@ namespace Chroma
    *
    */
 
-  void barhqlq(const LatticePropagator& propagator_1, 
-	       const LatticePropagator& propagator_2, 
+  void barhqlq(const LatticePropagator& propagator_1,
+	       const LatticePropagator& propagator_2,
 	       const SftMom& phases,
 	       int t0, int bc_spec, bool time_rev,
 	       XMLWriter& xml,
@@ -96,7 +146,7 @@ namespace Chroma
   /*!
    * \ingroup hadron
    *
-   * This routine is specific to Wilson fermions! 
+   * This routine is specific to Wilson fermions!
    *
    *###########################################################################
    * WARNING: No symmetrization over the spatial part of the wave functions   #
@@ -125,7 +175,7 @@ namespace Chroma
    *        ____
    *        \
    * b(t) =  >  < b(t_source, 0) b(t + t_source, x) >
-   *        /                    
+   *        /
    *        ----
    *          x
 
@@ -160,7 +210,7 @@ namespace Chroma
    * Therefore a spin-up quark in the Dirac basis corresponds to
    * 1/sqrt(2) * ( - q_1 - q_3 ) in this chiral basis. We shall neglect
    * the sign and the 1/sqrt(2) here.
-   * The projection on "spin_up" is done with S_proj. 
+   * The projection on "spin_up" is done with S_proj.
    */
 
   void barhqlq(const LatticePropagator& propagator_1,

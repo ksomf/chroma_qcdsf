@@ -27,6 +27,7 @@
 #include "inline_qqq_w.h"
 #include "inline_qqbar_w.h"
 #include "inline_bar3ptfn_w.h"
+#include "inline_bar3ptfn_qcdsf_w.h"
 #include "inline_building_blocks_w.h"
 #include "inline_noisy_building_blocks_w.h"
 //#include "inline_multipole_w.h"

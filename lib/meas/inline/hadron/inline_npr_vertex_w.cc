@@ -19,14 +19,14 @@
 #include "actions/ferm/fermstates/ferm_createstate_factory_w.h"
 #include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
 
-namespace Chroma 
-{ 
-  namespace InlineNprVertexEnv 
-  { 
+namespace Chroma
+{
+  namespace InlineNprVertexEnv
+  {
     namespace
     {
-      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					      const std::string& path) 
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in,
+					      const std::string& path)
       {
 	return new InlineNprVertex(InlineNprVertexParams(xml_in, path));
       }
@@ -38,9 +38,9 @@ namespace Chroma
     const std::string name = "NPR_VERTEX";
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	success &= CreateFermStateEnv::registerAll();
@@ -76,17 +76,17 @@ namespace Chroma
     else
       input.cfs = CreateFermStateEnv::nullXMLGroup();
 
-    switch (version) 
+    switch (version)
     {
     case 1:
       break;
 
     default :
-      QDPIO::cerr << InlineNprVertexEnv::name << ": input parameter version " 
+      QDPIO::cerr << InlineNprVertexEnv::name << ": input parameter version "
 		  << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
-    
+
     read(paramtop, "links_max", input.links_max);
     read(paramtop, "file_name", input.file_name);
   }
@@ -100,8 +100,15 @@ namespace Chroma
     int version = 1;
     write(xml, "version", version);
     write(xml, "links_max", input.links_max);
-    write(xml, "file_name", input.file_name);    
-    xml << input.cfs.xml;
+    write(xml, "file_name", input.file_name);
+
+    std::istringstream  is(input.cfs.xml);
+    XMLReader  fs(is);
+    std::ostringstream oss;
+    fs.print(oss);
+    xml << oss.str();
+
+    //  xml << input.cfs.xml; // caused problems, since <?xml> is included in input.cfs.xml
 
     pop(xml);
   }
@@ -130,9 +137,9 @@ namespace Chroma
   // Param stuff
   InlineNprVertexParams::InlineNprVertexParams() {frequency = 0;}
 
-  InlineNprVertexParams::InlineNprVertexParams(XMLReader& xml_in, const std::string& path) 
+  InlineNprVertexParams::InlineNprVertexParams(XMLReader& xml_in, const std::string& path)
   {
-    try 
+    try
     {
       XMLReader paramtop(xml_in, path);
 
@@ -148,12 +155,12 @@ namespace Chroma
       read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
-      if (paramtop.count("xml_file") != 0) 
+      if (paramtop.count("xml_file") != 0)
       {
 	read(paramtop, "xml_file", xml_file);
       }
     }
-    catch(const std::string& e) 
+    catch(const std::string& e)
     {
       QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
@@ -162,11 +169,11 @@ namespace Chroma
 
 
   void
-  InlineNprVertexParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlineNprVertexParams::write(XMLWriter& xml_out, const std::string& path)
   {
     push(xml_out, path);
-    
-    Chroma::write(xml_out, "Param", param); 
+
+    Chroma::write(xml_out, "Param", param);
     Chroma::write(xml_out, "NamedObject", named_obj);
     QDP::write(xml_out, "xml_file", xml_file);
 
@@ -184,15 +191,15 @@ namespace Chroma
   {
     DoThisPattern     = true;
     DoFurtherPatterns = true;
-    
+
     return;
   }
 
 
   // Function call
-  void 
+  void
   InlineNprVertex::operator()(unsigned long update_no,
-				   XMLWriter& xml_out) 
+				   XMLWriter& xml_out)
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
@@ -215,9 +222,9 @@ namespace Chroma
 
 
   // Function call
-  void 
+  void
   InlineNprVertex::func(unsigned long update_no,
-			     XMLWriter& XmlOut) 
+			     XMLWriter& XmlOut)
   {
     START_CODE();
 
@@ -266,29 +273,29 @@ namespace Chroma
 	std::istringstream  xml_s(params.param.cfs.xml);
 	XMLReader  fermtop(xml_s);
 
-	Handle<CreateFermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	Handle<CreateFermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >
 	  cfs(TheCreateFermStateFactory::Instance().createObject(params.param.cfs.id,
 								 fermtop,
 								 params.param.cfs.path));
 
-	Handle<FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	Handle<FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >
 	  state((*cfs)(U));
 
 	// Pull the u fields back out from the state since they might have been
 	// munged with fermBC's
 	U = state->getLinks();
       }
-    
+
     }
-    catch( std::bad_cast ) 
+    catch( std::bad_cast )
     {
-      QDPIO::cerr << InlineNprVertexEnv::name << ": caught dynamic cast error" 
+      QDPIO::cerr << InlineNprVertexEnv::name << ": caught dynamic cast error"
 		  << std::endl;
       QDP_abort(1);
     }
-    catch (const std::string& e) 
+    catch (const std::string& e)
     {
-      QDPIO::cerr << InlineNprVertexEnv::name << ": std::map call failed: " << e 
+      QDPIO::cerr << InlineNprVertexEnv::name << ": std::map call failed: " << e
 		  << std::endl;
       QDP_abort(1);
     }
@@ -324,7 +331,7 @@ namespace Chroma
     {
       // Snarf a copy
       F = TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
-	
+
       // Snarf the frwd prop info. This is will throw if the frwd prop id is not there
       XMLReader PropXML, PropRecordXML;
       TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(PropXML);
@@ -339,7 +346,7 @@ namespace Chroma
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification
       {
-	multi1d<Double> PropCheck = 
+	multi1d<Double> PropCheck =
 	  sumMulti( localNorm2( F ), phases_nomom.getSet() );
 
 	QDPIO::cout << "forward propagator check = " << PropCheck[0] << std::endl;
@@ -352,15 +359,15 @@ namespace Chroma
 	pop(XmlOut);
       }
     }
-    catch( std::bad_cast ) 
+    catch( std::bad_cast )
     {
-      QDPIO::cerr << InlineNprVertexEnv::name << ": caught dynamic cast error" 
+      QDPIO::cerr << InlineNprVertexEnv::name << ": caught dynamic cast error"
 		  << std::endl;
       QDP_abort(1);
     }
-    catch (const std::string& e) 
+    catch (const std::string& e)
     {
-      QDPIO::cerr << InlineNprVertexEnv::name << ": forward prop: error message: " << e 
+      QDPIO::cerr << InlineNprVertexEnv::name << ": forward prop: error message: " << e
 		  << std::endl;
       QDP_abort(1);
     }
@@ -389,7 +396,7 @@ namespace Chroma
     //#################################################################################//
     QDP::StopWatch swatch;
     swatch.reset();
-    
+
     XMLBufferWriter file_xml;
     push(file_xml, "NprVertex");
     write(file_xml, "Param", params.param);
@@ -398,11 +405,11 @@ namespace Chroma
     write(file_xml, "Config", gauge_xml);
     pop(file_xml);
 
-    QDPFileWriter qio_file(file_xml, params.param.file_name,QDPIO_SINGLEFILE, 
-			   QDPIO_SERIAL, QDPIO_OPEN); 
+    QDPFileWriter qio_file(file_xml, params.param.file_name,QDPIO_SINGLEFILE,
+			   QDPIO_SERIAL, QDPIO_OPEN);
 
 
-    //Fourier transform the propagator 
+    //Fourier transform the propagator
     QDPIO::cout << "Fourier Transforming propagator" << std::endl;
     swatch.start();
     multi1d<int> neg_mom(mom.size());
@@ -429,24 +436,24 @@ namespace Chroma
     swatch.start();
     NprVertex(F, U, params.param.links_max, AllLinkPatterns, qio_file);
     swatch.stop();
-      
+
     close(qio_file);
 
     QDPIO::cout << "finished calculating NprVertex"
 		<< "  time= "
-		<< swatch.getTimeInSeconds() 
+		<< swatch.getTimeInSeconds()
 		<< " secs" << std::endl;
 
     pop(XmlOut);   // NprVertex
 
     snoop.stop();
     QDPIO::cout << InlineNprVertexEnv::name << ": total time = "
-		<< snoop.getTimeInSeconds() 
+		<< snoop.getTimeInSeconds()
 		<< " secs" << std::endl;
 
     QDPIO::cout << InlineNprVertexEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
-  } 
+  }
 
 }

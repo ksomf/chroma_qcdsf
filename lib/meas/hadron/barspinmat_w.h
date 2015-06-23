@@ -8,15 +8,18 @@
 
 #include "chromabase.h"
 
-namespace Chroma 
+namespace Chroma
 {
 
   //! All the spin and projectors for 2 and 3-pts.
   /*! \ingroup hadron */
   namespace BaryonSpinMats
-  { 
+  {
     //! NR = (1/2)* ( 1 + g_4 )
     SpinMatrix NR();
+
+    //! (1/2)* g5 * ( 1 + g_4 )
+    SpinMatrix Tunpolg5();
 
     //! NRnegPar = (1/2)* ( 1 - g_4 )
     SpinMatrix NRnegPar();
@@ -62,7 +65,7 @@ namespace Chroma
     //! C gamma_- NR = CgmNR = C gamma_- (1/2)(1 + gamma_4)
     SpinMatrix CgmNR();
 
-   
+
     //! C gamma_+ = Cgp = (C gamma_+)^T
     SpinMatrix Cgp();
 
@@ -79,6 +82,12 @@ namespace Chroma
     //! T = (1 + gamma_4) / 2 = (1 - Gamma(8)) / 2
     SpinMatrix TunpolNegPar();
 
+    //! T = \Sigma_1 (1 + gamma_4) / 2
+    SpinMatrix Tpolx();
+
+    //! T = \Sigma_2 (1 + gamma_4) / 2
+    SpinMatrix Tpoly();
+
     //! T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2
     SpinMatrix Tpol();
 
@@ -88,11 +97,14 @@ namespace Chroma
     //! T = (1 + \Sigma_3)*(1 + gamma_4) / 2   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
     SpinMatrix Tmixed();
 
+    //! T = (1 - \Sigma_3)*(1 + gamma_4) / 2   = (1 + Gamma(8) + i G(3) + i G(11)) / 2
+    SpinMatrix Tmixedminus();
+
 
     //! T = (1 - \Sigma_3)*(1 - gamma_4) / 2   = (1 - Gamma(8) - i G(3) + i G(11)) / 2
     // Need to flip the spin for time reversal
     SpinMatrix TmixedNegPar();
-    
+
     //! T = (1 + i \gamma_5 \gamma_3 )/2 = 1/2 *( 1  - iG(11) )
     SpinMatrix TspinUp() ;
     //! T = (1 - i \gamma_5 \gamma_3 )/2 = 1/2 *( 1  + iG(11) )

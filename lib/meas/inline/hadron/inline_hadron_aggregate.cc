@@ -30,8 +30,14 @@
 #include "meas/inline/hadron/inline_propagator_ferm_w.h"
 #include "meas/inline/hadron/inline_multi_propagator_w.h"
 #include "meas/inline/hadron/inline_seqsource_w.h"
+#include "meas/inline/hadron/inline_seqsource_qcdsf_w.h"
+#include "meas/inline/hadron/inline_resmear_source_qcdsf_w.h"
+#include "meas/inline/hadron/inline_resmear_sink_qcdsf_w.h"
+#include "meas/inline/hadron/inline_rms_w.h"
 #include "meas/inline/hadron/inline_seqprop_test_w.h"
 #include "meas/inline/hadron/inline_hadspec_w.h"
+#include "meas/inline/hadron/inline_messpec_qcdsf_w.h"
+#include "meas/inline/hadron/inline_barspec_qcdsf_w.h"
 #include "meas/inline/hadron/inline_mesonspec_w.h"
 #include "meas/inline/hadron/inline_hadron_contract.h"
 #include "meas/inline/hadron/inline_stag_to_wils.h"
@@ -44,6 +50,7 @@
 #include "meas/inline/hadron/inline_building_blocks_w.h"
 #include "meas/inline/hadron/inline_noisy_building_blocks_w.h"
 #include "meas/inline/hadron/inline_bar3ptfn_w.h"
+#include "meas/inline/hadron/inline_bar3ptfn_qcdsf_w.h"
 //#include "meas/inline/hadron/inline_multipole_w.h"
 #include "meas/inline/hadron/inline_npr_vertex_w.h"
 #include "meas/inline/hadron/inline_npr_w.h"
@@ -67,6 +74,7 @@
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
 #include "meas/inline/hadron/inline_qqqNucNuc_w.h"
+#include "meas/inline/hadron/inline_bda_w.h"
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
 #include "meas/inline/hadron/inline_stoch_hadron_w.h"
@@ -95,9 +103,9 @@ namespace Chroma
     }
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	// Grab the fermacts
@@ -114,11 +122,17 @@ namespace Chroma
 
 	success &= InlineMultiPropagatorEnv::registerAll();  // save space
 	success &= InlineSeqSourceEnv::registerAll();
+	success &= InlineRMSEnv::registerAll();
+	success &= InlineSeqSourceQCDSFEnv::registerAll();
+	success &= InlineResmearSourceEnvQCDSF::registerAll();
+	success &= InlineResmearSinkEnvQCDSF::registerAll();
 #ifdef BUILD_LAPACK
 	success &= InlineLaplaceEigsEnv::registerAll();
 #endif
 	success &= InlineSeqPropTestEnv::registerAll();
 	success &= InlineHadSpecEnv::registerAll();
+	success &= InlineMesSpecEnvQCDSF::registerAll();
+	success &= InlineBarSpecEnvQCDSF::registerAll();
 	success &= InlineMesonSpecEnv::registerAll();
 	success &= InlineHadronContractEnv::registerAll();
 //	success &= InlineSpectrumEnv::registerAll();
@@ -137,6 +151,7 @@ namespace Chroma
 	success &= InlineBuildingBlocksEnv::registerAll();
 	success &= InlineNoisyBuildingBlocksEnv::registerAll();
 	success &= InlineBar3ptfnEnv::registerAll();
+	success &= InlineBar3ptfnEnvQCDSF::registerAll();
 //      success &= InlineMultipoleEnv::registerAll();  // not being used
 	success &= InlineNprVertexEnv::registerAll();
 	success &= InlineNprEnv::registerAll();
@@ -164,6 +179,7 @@ namespace Chroma
 	success &= InlineQpropQIOEnv::registerAll();
 	success &= InlineQpropAddEnv::registerAll();
 	success &= InlineQQQNucNucEnv::registerAll();
+	success &= InlineBDAEnv::registerAll ();
 	success &= InlineBarSpecEnv::registerAll();
 //	success &= InlineSpectrumQllEnv::registerAll();
 	success &= InlineStaticLightSpecEnv::registerAll();

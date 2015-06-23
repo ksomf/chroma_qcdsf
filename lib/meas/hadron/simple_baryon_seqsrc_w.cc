@@ -12,7 +12,7 @@
 #include "util/ft/sftmom.h"
 #include "io/xml_group_reader.h"
 
-namespace Chroma 
+namespace Chroma
 {
 
   // Read parameters
@@ -32,7 +32,7 @@ namespace Chroma
   //! Anonymous namespace
   /*! \ingroup hadron */
   namespace
-  { 
+  {
     /*! \ingroup hadron */
     struct SpinMatTsp_t
     {
@@ -103,7 +103,7 @@ namespace Chroma
   //! Baryon sequential sources
   /*! \ingroup hadron */
   namespace SimpleBaryonSeqSourceEnv
-  { 
+  {
 
     //! Initialize
     Params::Params()
@@ -123,13 +123,13 @@ namespace Chroma
       int version;
       read(paramtop, "version", version);
 
-      switch (version) 
+      switch (version)
       {
       case 1:
 	break;
 
       default:
-	QDPIO::cerr << __func__ << ": parameter version " << version 
+	QDPIO::cerr << __func__ << ": parameter version " << version
 		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
@@ -176,8 +176,8 @@ namespace Chroma
       LatticePropagator q2_tmp;
       LatticePropagator di_quark;
       LatticeColorMatrix col_mat;
-  
-      /* "\bar u O u" insertion in NR proton, ie. 
+
+      /* "\bar u O u" insertion in NR proton, ie.
        * "(u Cg5 d) u" */
       /* Some generic T */
 
@@ -211,7 +211,7 @@ namespace Chroma
 #endif
     }
 
-    
+
     // Compute the 2-pt at the sink
     Complex
     BarNuclUTCg5::twoPtSink(const multi1d<LatticeColorMatrix>& u,
@@ -224,8 +224,8 @@ namespace Chroma
       setBC(forward_headers);
 
       // Constructor the 2pt
-      LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0], 
-							      quark_propagators[1], 
+      LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0],
+							      quark_propagators[1],
 							      T, Cg5);
 
       // Constructor the 2pt
@@ -236,6 +236,86 @@ namespace Chroma
       // U-quark rescaling factor is 1 for this type of seqsource
       return Real(2) * hsum[0][getTSink()];
     }
+
+
+
+
+
+    //! Nucleon-Nucleon U piece with general projector and Cg5
+    LatticePropagator
+    BarNuclUDTCg5::operator()(const multi1d<LatticeColorMatrix>& u,
+			      const multi1d<ForwardProp_t>& forward_headers,
+			      const multi1d<LatticePropagator>& quark_propagators)
+    {
+      START_CODE();
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
+
+
+      check2Args("BarNuclUDTCg5", quark_propagators);
+
+      LatticePropagator src_prop_tmp;
+      LatticePropagator q1_tmp;
+      LatticePropagator q2_tmp;
+      LatticePropagator di_quark;
+      LatticeColorMatrix col_mat;
+
+      q1_tmp = quark_propagators[0] * Cg5;
+      q2_tmp = Cg5 * quark_propagators[1];
+
+      src_prop_tmp = traceSpin( quarkContract24(q1_tmp, q2_tmp) ) * T;
+
+      src_prop_tmp += quarkContract13(q1_tmp, q2_tmp) * T;
+
+      src_prop_tmp += T * quarkContract24(q1_tmp, q2_tmp);
+
+      q1_tmp = T * q1_tmp;
+      src_prop_tmp += quarkContract14(q1_tmp, q2_tmp);
+
+
+      END_CODE();
+
+      return projectBaryon(src_prop_tmp,
+			   forward_headers);
+
+#else
+      LatticePropagator q1_tmp;
+
+      q1_tmp = zero ;
+      return q1_tmp ;
+#endif
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex
+    BarNuclUDTCg5::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			    const multi1d<ForwardProp_t>& forward_headers,
+			    const multi1d<LatticePropagator>& quark_propagators,
+			    int gamma_insertion)
+    {
+      check2Args("BarNuclUTCg5", quark_propagators);
+      setTSrce(forward_headers);
+      setBC(forward_headers);
+
+      // Constructor the 2pt
+      LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0],
+							      quark_propagators[1],
+							      T, Cg5);
+
+      // Constructor the 2pt
+      SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
+      multi2d<DComplex> hsum;
+      hsum = sft.sft(b_prop);
+
+      // U-quark rescaling factor is 1 for this type of seqsource
+      return Real(2) * hsum[0][getTSink()];
+    }
+
+
 
 
     //! Nucleon-Nucleon D piece with general projector and Cg5
@@ -258,7 +338,7 @@ namespace Chroma
       LatticePropagator q1_tmp;
       LatticePropagator q2_tmp;
 
-      /* "\bar d O d" insertion in NR proton, ie. 
+      /* "\bar d O d" insertion in NR proton, ie.
        * "(u Cg5 d) u" */
       /* Some generic T */
 
@@ -283,7 +363,7 @@ namespace Chroma
       LatticePropagator q1_tmp;
 
       q1_tmp = zero ;
-      return q1_tmp ; 
+      return q1_tmp ;
 #endif
     }
 
@@ -299,8 +379,8 @@ namespace Chroma
       setBC(forward_headers);
 
       // Constructor the 2pt
-      LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0], 
-							      quark_propagators[1], 
+      LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0],
+							      quark_propagators[1],
 							      T, Cg5);
 
       // Extract the sink at the appropriate momenta
@@ -336,7 +416,7 @@ namespace Chroma
       LatticePropagator q2_tmp;
       LatticePropagator di_quark;
       LatticeColorMatrix col_mat;
-  
+
       /* "\bar u O u" insertion in Delta^+,
 	 ie. "2*(u sp d) u + (u sp u) d" */
       // generic T
@@ -394,8 +474,8 @@ namespace Chroma
       setBC(forward_headers);
 
       // Constructor the 2pt
-      LatticeComplex b_prop = Baryon2PtContractions::sigmast2pt(quark_propagators[0], 
-								quark_propagators[1], 
+      LatticeComplex b_prop = Baryon2PtContractions::sigmast2pt(quark_propagators[0],
+								quark_propagators[1],
 								T, sp);
 
       // Extract the sink at the appropriate momenta
@@ -472,8 +552,8 @@ namespace Chroma
       setBC(forward_headers);
 
       // Constructor the 2pt
-      LatticeComplex b_prop = Baryon2PtContractions::sigmast2pt(quark_propagators[0], 
-								quark_propagators[1], 
+      LatticeComplex b_prop = Baryon2PtContractions::sigmast2pt(quark_propagators[0],
+								quark_propagators[1],
 								T, sp);
 
       // Extract the sink at the appropriate momenta
@@ -505,7 +585,7 @@ namespace Chroma
 	// Determine the spin matrices
 	SpinMatTsp_t spin;
 	read(xml_in, path, spin);
-    
+
 	return new BarNuclUTCg5(Params(xml_in, path), spin.T, spin.sp);
       }
 
@@ -522,7 +602,7 @@ namespace Chroma
 	// Determine the spin matrices
 	SpinMatTsp_t spin;
 	read(xml_in, path, spin);
-    
+
 	return new BarNuclDTCg5(Params(xml_in, path), spin.T, spin.sp);
       }
 
@@ -532,7 +612,7 @@ namespace Chroma
        * \ingroup hadron
        *
        * C gamma_5 = Gamma(5) = - (C gamma_5)^T
-       * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 
+       * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclUUnpol(XMLReader& xml_in,
 							const std::string& path)
@@ -541,17 +621,53 @@ namespace Chroma
       }
 
 
+
+      HadronSeqSource<LatticePropagator>* barNuclUDUnpol(XMLReader& xml_in,
+							const std::string& path)
+      {
+	return new BarNuclUDTCg5(Params(xml_in, path), BaryonSpinMats::Tunpol(), BaryonSpinMats::Cg5());
+      }
+
+
       //! "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u"
       /*!
        * \ingroup hadron
        *
        * C gamma_5 = Gamma(5) = - (C gamma_5)^T
-       * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 
+       * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclDUnpol(XMLReader& xml_in,
 							const std::string& path)
       {
 	return new BarNuclDTCg5(Params(xml_in, path), BaryonSpinMats::Tunpol(), BaryonSpinMats::Cg5());
+      }
+
+
+      //! "\bar u O u" insertion in proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
+      /*!
+       * \ingroup hadron
+       *
+       * C g_5 = C gamma_5
+       * T = \Sigma_1 (1 + gamma_4) / 2
+       */
+      HadronSeqSource<LatticePropagator>* barNuclUPolx(XMLReader& xml_in,
+						      const std::string& path)
+      {
+	return new BarNuclUTCg5(Params(xml_in, path), BaryonSpinMats::Tpolx(), BaryonSpinMats::Cg5());
+      }
+
+
+      //! "\bar u O u" insertion in proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
+      /*!
+       * \ingroup hadron
+       *
+       * C g_5 = C gamma_5
+       * T = \Sigma_2 (1 + gamma_4) / 2
+       */
+      HadronSeqSource<LatticePropagator>* barNuclUPoly(XMLReader& xml_in,
+						      const std::string& path)
+      {
+	return new BarNuclUTCg5(Params(xml_in, path), BaryonSpinMats::Tpoly(), BaryonSpinMats::Cg5());
       }
 
 
@@ -569,12 +685,58 @@ namespace Chroma
       }
 
 
+
+      HadronSeqSource<LatticePropagator>* barNuclUDPolx(XMLReader& xml_in,
+						       const std::string& path)
+      {
+	return new BarNuclUDTCg5(Params(xml_in, path), BaryonSpinMats::Tpolx(), BaryonSpinMats::Cg5());
+      }
+      HadronSeqSource<LatticePropagator>* barNuclUDPoly(XMLReader& xml_in,
+						       const std::string& path)
+      {
+	return new BarNuclUDTCg5(Params(xml_in, path), BaryonSpinMats::Tpoly(), BaryonSpinMats::Cg5());
+      }
+      HadronSeqSource<LatticePropagator>* barNuclUDPol(XMLReader& xml_in,
+						       const std::string& path)
+      {
+	return new BarNuclUDTCg5(Params(xml_in, path), BaryonSpinMats::Tpol(), BaryonSpinMats::Cg5());
+      }
+
+
       //! "\bar u O u" insertion in proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
       /*!
        * \ingroup hadron
        *
        * C g_5 = C gamma_5
-       * T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 
+       * T = \Sigma_1 (1 + gamma_4) / 2
+       */
+      HadronSeqSource<LatticePropagator>* barNuclDPolx(XMLReader& xml_in,
+						      const std::string& path)
+      {
+	return new BarNuclDTCg5(Params(xml_in, path), BaryonSpinMats::Tpolx(), BaryonSpinMats::Cg5());
+      }
+
+
+      //! "\bar u O u" insertion in proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
+      /*!
+       * \ingroup hadron
+       *
+       * C g_5 = C gamma_5
+       * T = \Sigma_2 (1 + gamma_4) / 2
+       */
+      HadronSeqSource<LatticePropagator>* barNuclDPoly(XMLReader& xml_in,
+						      const std::string& path)
+      {
+	return new BarNuclDTCg5(Params(xml_in, path), BaryonSpinMats::Tpoly(), BaryonSpinMats::Cg5());
+      }
+
+
+      //! "\bar u O u" insertion in proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
+      /*!
+       * \ingroup hadron
+       *
+       * C g_5 = C gamma_5
+       * T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclDPol(XMLReader& xml_in,
 						      const std::string& path)
@@ -587,12 +749,18 @@ namespace Chroma
        * \ingroup hadron
        *
        * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
-       * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 
+       * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclUUnpolNR(XMLReader& xml_in,
 							  const std::string& path)
       {
 	return new BarNuclUTCg5(Params(xml_in, path), BaryonSpinMats::Tunpol(), BaryonSpinMats::Cg5NR());
+      }
+
+      HadronSeqSource<LatticePropagator>* barNuclUDUnpolNR(XMLReader& xml_in,
+							  const std::string& path)
+      {
+	return new BarNuclUDTCg5(Params(xml_in, path), BaryonSpinMats::Tunpol(), BaryonSpinMats::Cg5NR());
       }
 
 
@@ -601,7 +769,7 @@ namespace Chroma
        * \ingroup hadron
        *
        * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
-       * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 
+       * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclDUnpolNR(XMLReader& xml_in,
 							  const std::string& path)
@@ -615,7 +783,35 @@ namespace Chroma
        * \ingroup hadron
        *
        * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
-       * T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 
+       * T = \Sigma_1 (1 + gamma_4) / 2
+       */
+      HadronSeqSource<LatticePropagator>* barNuclUPolxNR(XMLReader& xml_in,
+							const std::string& path)
+      {
+	return new BarNuclUTCg5(Params(xml_in, path), BaryonSpinMats::Tpolx(), BaryonSpinMats::Cg5NR());
+      }
+
+
+      //! "\bar u O u" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
+      /*!
+       * \ingroup hadron
+       *
+       * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
+       * T = \Sigma_2 (1 + gamma_4) / 2
+       */
+      HadronSeqSource<LatticePropagator>* barNuclUPolyNR(XMLReader& xml_in,
+							const std::string& path)
+      {
+	return new BarNuclUTCg5(Params(xml_in, path), BaryonSpinMats::Tpoly(), BaryonSpinMats::Cg5NR());
+      }
+
+
+      //! "\bar u O u" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
+      /*!
+       * \ingroup hadron
+       *
+       * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
+       * T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclUPolNR(XMLReader& xml_in,
 							const std::string& path)
@@ -624,12 +820,57 @@ namespace Chroma
       }
 
 
+      HadronSeqSource<LatticePropagator>* barNuclUDPolxNR(XMLReader& xml_in,
+							 const std::string& path)
+      {
+	return new BarNuclUDTCg5(Params(xml_in, path), BaryonSpinMats::Tpolx(), BaryonSpinMats::Cg5NR());
+      }
+      HadronSeqSource<LatticePropagator>* barNuclUDPolyNR(XMLReader& xml_in,
+							 const std::string& path)
+      {
+	return new BarNuclUDTCg5(Params(xml_in, path), BaryonSpinMats::Tpoly(), BaryonSpinMats::Cg5NR());
+      }
+      HadronSeqSource<LatticePropagator>* barNuclUDPolNR(XMLReader& xml_in,
+							 const std::string& path)
+      {
+	return new BarNuclUDTCg5(Params(xml_in, path), BaryonSpinMats::Tpol(), BaryonSpinMats::Cg5NR());
+      }
+
+
       //! "\bar d O d" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
       /*!
        * \ingroup hadron
        *
        * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
-       * T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 
+       * T = \Sigma_1 (1 + gamma_4) / 2
+       */
+      HadronSeqSource<LatticePropagator>* barNuclDPolxNR(XMLReader& xml_in,
+							const std::string& path)
+      {
+	return new BarNuclDTCg5(Params(xml_in, path), BaryonSpinMats::Tpolx(), BaryonSpinMats::Cg5NR());
+      }
+
+
+      //! "\bar d O d" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
+      /*!
+       * \ingroup hadron
+       *
+       * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
+       * T = \Sigma_2 (1 + gamma_4) / 2
+       */
+      HadronSeqSource<LatticePropagator>* barNuclDPolyNR(XMLReader& xml_in,
+							const std::string& path)
+      {
+	return new BarNuclDTCg5(Params(xml_in, path), BaryonSpinMats::Tpoly(), BaryonSpinMats::Cg5NR());
+      }
+
+
+      //! "\bar d O d" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
+      /*!
+       * \ingroup hadron
+       *
+       * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
+       * T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclDPolNR(XMLReader& xml_in,
 							const std::string& path)
@@ -638,13 +879,13 @@ namespace Chroma
       }
 
 
-      //! \bar u O u" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" 
+      //! \bar u O u" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
       /*!
        * \ingroup hadron
-       * 
+       *
        * \f$C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )\f$
-       * 
-       * \f$T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+       *
+       * \f$T = (1 + \Sigma_3)*(1 + gamma_4) / 2
        *      = (1 + Gamma(8) - i G(3) - i G(11)) / 2\f$
        */
       HadronSeqSource<LatticePropagator>* barNuclUMixedNR(XMLReader& xml_in,
@@ -657,10 +898,10 @@ namespace Chroma
       //! "\bar d O d" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 + gamma_4)  d) u"
       /*!
        * \ingroup hadron
-       * 
+       *
        * C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
        *
-       * T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+       * T = (1 + \Sigma_3)*(1 + gamma_4) / 2
        *   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclDMixedNR(XMLReader& xml_in,
@@ -672,35 +913,35 @@ namespace Chroma
       //! "\bar u O u" insertion in negative parity NR proton
       /*!
        * \ingroup hadron
-       * 
-       * "\bar u O u" insertion in NR proton, ie. 
-       * "(u C gamma_5 (1/2)(1 - gamma_4)  d) u" 
-       * 
+       *
+       * "\bar u O u" insertion in NR proton, ie.
+       * "(u C gamma_5 (1/2)(1 - gamma_4)  d) u"
+       *
        * \f$C g_5 NR = (1/2)*C gamma_5 * ( 1 - g_4 )\f$
-       * 
-       * \f$T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
+       *
+       * \f$T = (1 + \Sigma_3)*(1 - gamma_4) / 2
        *      = (1 - Gamma(8) + i G(3) - i G(11)) / 2\f$
        */
       HadronSeqSource<LatticePropagator>* barNuclUMixedNRnegPar(XMLReader& xml_in,
 								const std::string& path)
       {
-	return new BarNuclUTCg5(Params(xml_in, path), 
+	return new BarNuclUTCg5(Params(xml_in, path),
 				BaryonSpinMats::TmixedNegPar(), BaryonSpinMats::Cg5NRnegPar());
       }
 
       //! "\bar d O d" insertion in negative parity NR proton
       /*!
        * \ingroup hadron
-       * 
+       *
        * C g_5 NR = (1/2)*C gamma_5 * ( 1 - g_4 )
        *
-       * T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
+       * T = (1 + \Sigma_3)*(1 - gamma_4) / 2
        *   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
        */
       HadronSeqSource<LatticePropagator>* barNuclDMixedNRnegPar(XMLReader& xml_in,
 								const std::string& path)
       {
-	return new BarNuclDTCg5(Params(xml_in, path), 
+	return new BarNuclDTCg5(Params(xml_in, path),
 				BaryonSpinMats::TmixedNegPar(), BaryonSpinMats::Cg5NRnegPar());
       }
 
@@ -709,17 +950,17 @@ namespace Chroma
       //! \bar d O d" insertion in NR proton
       /*!
        * \ingroup hadron
-       * 
-       * "\bar d O d" insertion in NR proton, ie. 
-       * "(s C gamma_5 (1/2)(1 + gamma_4)  d) s" 
-       * 
+       *
+       * "\bar d O d" insertion in NR proton, ie.
+       * "(s C gamma_5 (1/2)(1 + gamma_4)  d) s"
+       *
        * $C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )$
-       * 
-       * $T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+       *
+       * $T = (1 + \Sigma_3)*(1 + gamma_4) / 2
        *   = (1 + Gamma(8) - i G(3) - i G(11)) / 2$
-   
+
        * The d-quark insertion for a Xi baryon: primarily for the
-       * Xi- to Xi0 transision 
+       * Xi- to Xi0 transision
 
        * The Xi is just like the proton with up quark replaced with the strange
        * the single quark propagator passed in is just the strange quark propagator
@@ -729,7 +970,7 @@ namespace Chroma
       {
 	return new BarNuclDTCg5(Params(xml_in, path), BaryonSpinMats::Tmixed(), BaryonSpinMats::Cg5NR());
       }
-  
+
 
 
       //! "\bar u O u" insertion in delta-delta */
@@ -744,7 +985,7 @@ namespace Chroma
 	// Determine the spin matrices
 	SpinMatTsp_t spin;
 	read(xml_in, path, spin);
-    
+
 	return new BarDeltaUTsp(Params(xml_in, path), spin.T, spin.sp);
       }
 
@@ -761,7 +1002,7 @@ namespace Chroma
 	// Determine the spin matrices
 	SpinMatTsp_t spin;
 	read(xml_in, path, spin);
-    
+
 	return new BarDeltaDTsp(Params(xml_in, path), spin.T, spin.sp);
       }
 
@@ -769,7 +1010,7 @@ namespace Chroma
       //! "\bar u O u" insertion in Delta^+ "2*(u sp d) u + (u sp u) d" */
       /*!
        * \ingroup hadron
-       * 
+       *
        * C gamma_- = sp = (C gamma_-)^T
        * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2
        *
@@ -789,8 +1030,8 @@ namespace Chroma
       //! "\bar d O d" insertion in Delta^+ "2*(u sp d) u + (u sp u) d" */
       /*!
        * \ingroup hadron
-       * 
-       * C gamma_- = sp = (C gamma_-)^T 
+       *
+       * C gamma_- = sp = (C gamma_-)^T
        * T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2
        *
        *
@@ -814,49 +1055,97 @@ namespace Chroma
 
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	//! Register needed stuff
 	success &= BaryonSpinMatrixEnv::registerAll();
 
 	//! Register all the factories
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL-NUCL_U"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL-NUCL_U"),
 										      barNuclNuclU);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL-NUCL_D"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL-NUCL_D"),
 										      barNuclNuclD);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_UNPOL"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_UNPOL"),
 										      barNuclUUnpol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_UNPOL"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_UNPOL"),
+										      barNuclUDUnpol);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL"),
 										      barNuclDUnpol);
-      
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POL"),
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POLX"),
+										      barNuclUPolx);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POLY"),
+										      barNuclUPoly);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL"),
 										      barNuclUPol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POLX"),
+										      barNuclUDPolx);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POLY"),
+										      barNuclUDPoly);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POL"),
+										      barNuclUDPol);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POLX"),
+										      barNuclDPolx);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POLY"),
+										      barNuclDPoly);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL"),
 										      barNuclDPol);
-      
+
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_UNPOL_NONREL"),
 										      barNuclUUnpolNR);
-      
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_UNPOL_NONREL"),
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_UNPOL_NONREL"),
+										      barNuclUDUnpolNR);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL_NONREL"),
 										      barNuclDUnpolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POLX_NONREL"),
+										      barNuclUPolxNR);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POLY_NONREL"),
+										      barNuclUPolyNR);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL_NONREL"),
 										      barNuclUPolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POLX_NONREL"),
+										      barNuclUDPolNR);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POLY_NONREL"),
+										      barNuclUDPolNR);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_UD_POL_NONREL"),
+										      barNuclUDPolNR);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POLX_NONREL"),
+										      barNuclDPolxNR);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POLY_NONREL"),
+										      barNuclDPolyNR);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL_NONREL"),
 										      barNuclDPolNR);
-      
+
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_MIXED_NONREL"),
 										      barNuclUMixedNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_MIXED_NONREL"),  
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_MIXED_NONREL"),
 										      barNuclDMixedNR);
 
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_MIXED_NONREL_NEGPAR"),
@@ -865,19 +1154,19 @@ namespace Chroma
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_MIXED_NONREL_NEGPAR"),
 										      barNuclDMixedNRnegPar);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("XI_D_MIXED_NONREL"),   
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("XI_D_MIXED_NONREL"),
 										      barXiDMixedNR);
 
-      
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA-DELTA_U"), 
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA-DELTA_U"),
 										      barDeltaDeltaU);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA-DELTA_D"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA-DELTA_D"),
 										      barDeltaDeltaD);
 
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA_U_UNPOL"),
 										      barDeltaUUnpol);
-      
+
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA_D_UNPOL"),
 										      barDeltaDUnpol);
 
@@ -890,4 +1179,3 @@ namespace Chroma
 
 
 }  // end namespace Chroma
-

@@ -20,6 +20,8 @@
 #include "unprec_pdwf4d_linop_w.h"
 #include "unprec_ppdwf4d_linop_w.h"
 #include "unprec_clover_linop_w.h"
+#include "unprec_slrc_linop_w.h"
+#include "unprec_slrc_feynhell_linop_w.h"
 
 #include "eoprec_wilson_linop_w.h"
 #include "eoprec_clover_linop_w.h"
@@ -70,5 +72,3 @@
 #include "unprec_dwftransf_linop_w.h"
 
 #endif
-
-

@@ -5,7 +5,7 @@
 #include "chromabase.h"
 #include "meas/hadron/barspinmat_w.h"
 
-namespace Chroma 
+namespace Chroma
 {
 
   /*! \ingroup hadron */
@@ -16,6 +16,13 @@ namespace Chroma
     {
       SpinMatrix g_one = 1.0;
       return SpinMatrix(0.5 * (g_one + (g_one * Gamma(8))));
+    }
+
+    //! (1/2)* g5 * ( 1 + g_4 )
+    SpinMatrix Tunpolg5()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5 * ((g_one * Gamma(15)) + (g_one * Gamma(7))));
     }
 
     //! NRnegPar = (1/2)* ( 1 - g_4 )
@@ -50,7 +57,7 @@ namespace Chroma
     {
       SpinMatrix g_one = 1.0;
       SpinMatrix gt;
- 
+
       // NOTE: not being too careful about minus signs. Should check.
       // However, all current uses have these matrices coming as a square
       switch (k)
@@ -80,7 +87,7 @@ namespace Chroma
     {
       SpinMatrix g_one = 1.0;
       SpinMatrix gt;
- 
+
       //signs have been checked...
       switch (k)
       {
@@ -116,7 +123,7 @@ namespace Chroma
       SpinMatrix gt;
       //QDPIO::cout<<"CgmuTrans("<<k<<")"<<std::endl ;
       SpinMatrix gmu = Gamma(1<<k)*g_one ;
-      
+
       //signs have been checked...
       // Gamma(10) = gamma_2 gamma_4
       gt = Gamma(10)*transpose(gmu);
@@ -129,7 +136,7 @@ namespace Chroma
     {
       SpinMatrix g_one = 1.0;
       SpinMatrix gt;
- 
+
       // NOTE: not being too careful about minus signs. Should check.
       // However, all current uses have these matrices coming as a square
       switch (k)
@@ -178,7 +185,7 @@ namespace Chroma
     SpinMatrix Cg5NRnegPar()
     {
       SpinMatrix g_one = 1.0;
- 
+
       return SpinMatrix(Gamma(5) * NRnegPar());
     }
 
@@ -243,6 +250,22 @@ namespace Chroma
     }
 
 
+    //! T = \Sigma_1 (1 + gamma_4) / 2 = -i (Gamma(6) + Gamma(14)) / 2
+    SpinMatrix Tpolx()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5 * timesMinusI(Gamma(6)*g_one + Gamma(14)*g_one));
+    }
+
+
+    //! T = \Sigma_2 (1 + gamma_4) / 2 = i (Gamma(5) + Gamma(13)) / 2
+    SpinMatrix Tpoly()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5 * timesI(Gamma(5)*g_one + Gamma(13)*g_one));
+    }
+
+
     //! T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2
     SpinMatrix Tpol()
     {
@@ -263,6 +286,13 @@ namespace Chroma
     {
       SpinMatrix g_one = 1.0;
       return SpinMatrix(0.5*(g_one + Gamma(8)*g_one + timesMinusI(Gamma(3)*g_one + Gamma(11)*g_one)));
+    }
+
+    //! T = (1 - \Sigma_3)*(1 + gamma_4) / 2   = (1 + Gamma(8) + i G(3) + i G(11)) / 2
+    SpinMatrix Tmixedminus()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5*(g_one + Gamma(8)*g_one + timesI(Gamma(3)*g_one + Gamma(11)*g_one)));
     }
 
     //! T = (1 - \Sigma_3)*(1 - gamma_4) / 2   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
@@ -315,7 +345,7 @@ namespace Chroma
       return SpinMatrix(timesMinusI(tt));
     }
 #endif
-    
+
   }
 
 } // end namespace

@@ -19,13 +19,19 @@ namespace Chroma {
  * \param u            gauge configuration ( Modify )
  * \param file         path ( Read )
  * \param serpar       either QDPIO_SERIAL, QDPIO_PARALLEL ( Read )
- */    
+ */
 
-void readGauge(XMLReader& file_xml, 
+void readGauge(XMLReader& file_xml,
 	       XMLReader& record_xml,
-	       multi1d<LatticeColorMatrix>& u, 
-	       const std::string& file, 
+	       multi1d<LatticeColorMatrix>& u,
+	       const std::string& file,
 	       QDP_serialparallel_t serpar);
+
+void readGaugeILDG(XMLReader& file_xml,
+		   XMLReader& record_xml,
+		   multi1d<LatticeColorMatrix>& u,
+		   const std::string& file,
+		   QDP_serialparallel_t serpar);
 
 
 //! Write a gauge config in QIO format
@@ -38,13 +44,13 @@ void readGauge(XMLReader& file_xml,
  * \param cfg_file    path ( Read )
  * \param volfmt      either QDPIO_SINGLEFILE, QDPIO_MULTIFILE ( Read )
  * \param serpar      either QDPIO_SERIAL, QDPIO_PARALLEL ( Read )
- */    
+ */
 
 void writeGauge(XMLBufferWriter& file_xml,
-		XMLBufferWriter& record_xml, 
-		const multi1d<LatticeColorMatrix>& u, 
-		const std::string& file, 
-		QDP_volfmt_t volfmt, 
+		XMLBufferWriter& record_xml,
+		const multi1d<LatticeColorMatrix>& u,
+		const std::string& file,
+		QDP_volfmt_t volfmt,
 		QDP_serialparallel_t serpar);
 
 }  // end namespace Chroma

@@ -22,6 +22,7 @@
 
 #include "readszin.h"
 #include "qprop_io.h"
+#include "qprop_qcdsf_io.h"
 #include "szin_io.h"
 
 #include "writeszin.h"
