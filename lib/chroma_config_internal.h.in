@@ -105,6 +105,9 @@
 /* Enable Sloppy Precision in Bagel Wilson Dslash */
 #undef CHROMA_USE_SLOPPY_BAGEL_DSLASH
 
+/* compile with dd solver */
+#undef COMPILE_DDS
+
 /* Name of package */
 #undef PACKAGE
 
