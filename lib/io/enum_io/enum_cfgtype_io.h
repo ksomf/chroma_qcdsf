@@ -13,7 +13,7 @@
 
 
 namespace Chroma {
- 
+
   /*!
    * Types and structures
    *
@@ -36,11 +36,12 @@ namespace Chroma {
       CFG_TYPE_WEAK_FIELD,
       CFG_TYPE_CLASSICAL_SF,
       CFG_TYPE_WUPP,
+      CFG_TYPE_ILDG,
   };
 
 
-  namespace CfgTypeEnv { 
-    extern bool registered; 
+  namespace CfgTypeEnv {
+    extern bool registered;
     extern const std::string typeIDString;
     bool registerAll(void);   // Forward declaration
   }
@@ -52,7 +53,7 @@ namespace Chroma {
   void read(XMLReader& xml_in, const std::string& path, CfgType& t);
 
   //! write a configuration type enum
-  void write(XMLWriter& xml_out, const std::string& path, const CfgType& t); 
+  void write(XMLWriter& xml_out, const std::string& path, const CfgType& t);
 
   /*! @} */   // end of group io
 

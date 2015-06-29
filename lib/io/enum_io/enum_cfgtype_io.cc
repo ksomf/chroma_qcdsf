@@ -7,19 +7,20 @@
 #include <string>
 
 
-namespace Chroma { 
+namespace Chroma {
 
-  namespace CfgTypeEnv { 
+  namespace CfgTypeEnv {
 
-    bool registerAll(void) 
+    bool registerAll(void)
     {
-      bool success; 
+      bool success;
       success = theCfgTypeMap::Instance().registerPair(std::string("MILC"), CFG_TYPE_MILC );
       success &= theCfgTypeMap::Instance().registerPair(std::string("NERSC"), CFG_TYPE_NERSC);
       success &= theCfgTypeMap::Instance().registerPair( std::string("SCIDAC"), CFG_TYPE_SCIDAC );
       success &= theCfgTypeMap::Instance().registerPair( std::string("SZIN" ), CFG_TYPE_SZIN );
       success &= theCfgTypeMap::Instance().registerPair( std::string("SZINQIO"), CFG_TYPE_SZINQIO );
-      
+      success &= theCfgTypeMap::Instance().registerPair( std::string("ILDG"), CFG_TYPE_ILDG );
+
       success &= theCfgTypeMap::Instance().registerPair( std::string("KYU"), CFG_TYPE_KYU );
       success &= theCfgTypeMap::Instance().registerPair( std::string("WUP"), CFG_TYPE_WUPP);
       success &= theCfgTypeMap::Instance().registerPair( std::string("DISORDERED"), CFG_TYPE_DISORDERED );
@@ -28,7 +29,7 @@ namespace Chroma {
       success &= theCfgTypeMap::Instance().registerPair( std::string("CERN"), CFG_TYPE_CERN );
       success &= theCfgTypeMap::Instance().registerPair( std::string("WEAK_FIELD"), CFG_TYPE_WEAK_FIELD);
       success &= theCfgTypeMap::Instance().registerPair( std::string("CLASSICAL_SF"), CFG_TYPE_CLASSICAL_SF);
-      
+
       return success;
     }
 
@@ -41,7 +42,7 @@ namespace Chroma {
   void read(XMLReader& xml_in, const std::string& path, CfgType& t) {
     theCfgTypeMap::Instance().read(typeIDString, xml_in,path,t);
   }
-  
+
   void write(XMLWriter& xml_out, const std::string& path, const CfgType& t) {
     theCfgTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }

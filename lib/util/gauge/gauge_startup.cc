@@ -21,7 +21,7 @@
 
 #include "actions/gauge/gaugebcs/schr_nonpert_gaugebc.h"
 
-namespace Chroma 
+namespace Chroma
 {
 
   //! Initialize the gauge fields
@@ -42,7 +42,7 @@ namespace Chroma
 
     u.resize(Nd);
 
-    switch (cfg.cfg_type) 
+    switch (cfg.cfg_type)
     {
     case CFG_TYPE_SZIN :
       readSzin(gauge_xml, u, cfg.cfg_file);
@@ -53,10 +53,14 @@ namespace Chroma
       readGauge(gauge_file_xml, gauge_xml, u, cfg.cfg_file, QDPIO_SERIAL);
       break;
 
+    case CFG_TYPE_ILDG:
+      readGaugeILDG(gauge_file_xml, gauge_xml, u, cfg.cfg_file, QDPIO_SERIAL);
+      break;
+
     case CFG_TYPE_NERSC:
       readArchiv(gauge_xml, u, cfg.cfg_file);
       break;
-  
+
     case CFG_TYPE_MILC:
       readMILC(gauge_xml, u, cfg.cfg_file);
       break;
@@ -122,7 +126,7 @@ namespace Chroma
       gauge_file_xml.open(file_xml);
       gauge_xml.open(record_xml);
     }
-    break; 
+    break;
 
     case CFG_TYPE_WEAK_FIELD:
     {
@@ -139,7 +143,7 @@ namespace Chroma
       gauge_file_xml.open(file_xml);
       gauge_xml.open(record_xml);
     }
-    break; 
+    break;
 
     case CFG_TYPE_CLASSICAL_SF:
     {
@@ -149,7 +153,7 @@ namespace Chroma
       params.SchrPhiMult = 1;
       params.decay_dir   = Nd-1;
       SchrNonPertGaugeBC gaugebc(params);
-      
+
       u = gaugebc.SFBndFld();
 
       XMLBufferWriter file_xml, record_xml;
@@ -161,7 +165,7 @@ namespace Chroma
       gauge_file_xml.open(file_xml);
       gauge_xml.open(record_xml);
     }
-    break; 
+    break;
 
     default:
       QDPIO::cerr << __func__ << ": Configuration type is unsupported." << std::endl;
@@ -169,10 +173,10 @@ namespace Chroma
     }
 
     // Reunitarize gauge field (eg for Double prec?)
-    // This should get rid of those pesky big Delta H's 
+    // This should get rid of those pesky big Delta H's
     // going from single to double and they can't possibly hurt
     // in either single or double
-    for(int mu=0; mu < Nd; mu++){ 
+    for(int mu=0; mu < Nd; mu++){
       reunit(u[mu]);
     }
 
