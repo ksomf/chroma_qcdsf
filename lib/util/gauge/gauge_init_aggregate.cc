@@ -8,6 +8,7 @@
 #include "util/gauge/nersc_gauge_init.h"
 #include "util/gauge/szin_gauge_init.h"
 #include "util/gauge/szinqio_gauge_init.h"
+#include "util/gauge/ildg_gauge_init.h"
 #include "util/gauge/kyu_gauge_init.h"
 #include "util/gauge/disordered_gauge_init.h"
 #include "util/gauge/unit_gauge_init.h"
@@ -16,6 +17,10 @@
 #include "util/gauge/weak_gauge_init.h"
 #include "util/gauge/sf_gauge_init.h"
 #include "util/gauge/wupp_gauge_init.h"
+
+#ifdef QDP_USE_LEMON
+#include "util/gauge/ildg_lemon_gauge_init.h"
+#endif
 
 namespace Chroma
 {
@@ -27,9 +32,9 @@ namespace Chroma
     static bool registered = false;
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	// gauge initialization
@@ -37,6 +42,7 @@ namespace Chroma
 	success &= NERSCGaugeInitEnv::registerAll();
 	success &= SZINGaugeInitEnv::registerAll();
 	success &= SZINQIOGaugeInitEnv::registerAll();
+	success &= ILDGGaugeInitEnv::registerAll();
 	success &= KYUGaugeInitEnv::registerAll();
 	success &= DisorderedGaugeInitEnv::registerAll();
 	success &= UnitGaugeInitEnv::registerAll();
@@ -45,6 +51,10 @@ namespace Chroma
 	success &= WeakGaugeInitEnv::registerAll();
 	success &= SFGaugeInitEnv::registerAll();
 	success &= WUPPGaugeInitEnv::registerAll();
+
+        #ifdef QDP_USE_LEMON
+	success &= ILDGLemonGaugeInitEnv::registerAll();
+        #endif
 
 	registered = true;
       }
