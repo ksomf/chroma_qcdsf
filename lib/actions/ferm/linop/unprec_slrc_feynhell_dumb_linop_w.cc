@@ -70,6 +70,7 @@ namespace Chroma
 	{
 		chi += phalf
 			* fhparam.FHparam[i].lambda
+			* fhparam.FHparam[i].noise
 			* fhparam.FHparam[i].phases
 			* (Gamma(fhparam.FHparam[i].op) * psi);
 	}
@@ -155,6 +156,7 @@ namespace Chroma
 	{
 		chi += phalf
 			* fhparam.FHparam[i].lambda
+			* fhparam.FHparam[i].noise
 			* fhparam.FHparam[i].phases
 			* (Gamma(fhparam.FHparam[i].op) * psi);
 	}

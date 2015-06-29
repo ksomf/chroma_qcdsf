@@ -60,6 +60,25 @@ namespace Chroma
 		}
 		param.lambda = cmplx(lambdaReal,lambdaImag);
 
+		Real noise_real;
+		Real noise_imag;
+
+		if (paramtop.count("NoiseReal") != 0 && paramtop.count("NoiseImag") != 0)
+		{
+			read(paramtop, "NoiseReal", noise_real);
+			read(paramtop, "NoiseImag", noise_imag);
+			QDPIO::cout << "Found noise" << std::endl << std::flush;
+		}
+		else
+		{
+			noise_real = 1.0;
+			noise_imag = 0.0;
+			QDPIO::cout << "No noise found (or only one of real/imag part given)" << std::endl << std::flush;
+		}
+		param.noise = cmplx(noise_real,noise_imag);
+		QDPIO::cout << "Noise is " << param.noise << std::endl << std::flush;
+
+
 		if (paramtop.count("Operator") != 0)
 			read(paramtop, "Operator", param.op);
 		else
