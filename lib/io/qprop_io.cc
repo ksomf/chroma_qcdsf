@@ -205,6 +205,7 @@ namespace Chroma
     t_sink    = -1;
     sink_mom.resize(Nd-1);
     sink_mom = 0;
+    fix_operator = -1;
   }
 
 
@@ -762,12 +763,35 @@ namespace Chroma
 
     case 2:
     {
+        
       param.seqsrc = readXMLGroup(paramtop, "SeqSource", "SeqSourceType");
 
       XMLReader xml_tmp(paramtop, "SeqSource");
+        
+      int version2;
+      read(xml_tmp, "version", version2);
+        
       read(xml_tmp, "t_sink", param.t_sink);
       read(xml_tmp, "sink_mom", param.sink_mom);
       read(xml_tmp, "j_decay", param.j_decay);
+        
+        switch (version2)
+        {
+            case 1:
+            {}
+            break;
+                
+            case 2:
+            {
+                read(xml_tmp, "operator", param.fix_operator);
+            }
+            break;
+                
+            default:
+                QDPIO::cerr << "SeqSource parameter version " << version << " SeqSource version " << version2
+                << " unsupported." << std::endl;
+                QDP_abort(1);
+        }
     }
     break;
 
@@ -1120,6 +1144,9 @@ namespace Chroma
     read(paramtop, "ForwardProp", param.prop_header);
     read(paramtop, "PropSource", param.source_header);
     readGaugeHeader(paramtop, "Config_info", param.gauge_header);
+      //if (paramtop.count("/SeqSource") != 0)
+       //   {read(paramtop, "SeqSource", param.seqsource_header);}
+       //   else{}
   }
 
 
@@ -1364,6 +1391,8 @@ namespace Chroma
 
     int version = 2;
     write(xml, "version", version);
+    write(xml,"operator", param.fix_operator);
+    write(xml,"t_sink", param.t_sink);
     xml << param.seqsrc.xml;
 
     pop(xml);
@@ -1411,6 +1440,8 @@ namespace Chroma
     write(xml, "ForwardProp", param.prop_header);
     write(xml, "PropSource", param.source_header);
     write(xml, "Config_info", param.gauge_header);
+      
+    //write(xml, "SeqSource", param.seqsource_header);
 
 //    if( path != "." )
     pop(xml);

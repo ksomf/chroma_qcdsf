@@ -29,6 +29,7 @@ namespace Chroma
       multi1d<int>     sink_mom;        /*!< sink momentum */
       int              t_sink;          /*!< time slice of sink */
       int              j_decay;         /*!< Decay direction */
+      int              fix_operator;
     };
 
 
@@ -147,6 +148,62 @@ namespace Chroma
       multi1d<int>  t_srce;   /*<! Must come from propagator headers */
       Params  params;   /*!< Seqsource params */
     };
+      
+      class CurrentSeqSource : public MesonSeqSourceBase
+      {
+      public:
+          //! Full constructor
+          CurrentSeqSource(const Params& p) : params(p) {}
+          
+          //! Default destructor
+          ~CurrentSeqSource() {}
+          
+          //! Construct the source
+          /*!
+           * \param u                    gauge field ( Read )
+           * \param forward_props        array of quark propagators ( Read )
+           * \param forward_headers      corresponding array of quark propagators ( Read )
+           *
+           * \return \f$\gamma_5 * \Gamma(15)^dag * \gamma_5 * F * \gamma_5\$
+           */
+          LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+                                       const multi1d<ForwardProp_t>& forward_headers,
+                                       const multi1d<LatticePropagator>& forward_props);
+          
+          //! Compute the 2-pt at the sink
+          Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+                            const multi1d<ForwardProp_t>& forward_headers,
+                            const multi1d<LatticePropagator>& forward_props,
+                            int gamma_insertion);
+          
+      protected:
+          //! Set t_srce
+          multi1d<int>& getTSrce() {return t_srce;}
+          
+          //! Get t_srce
+          const multi1d<int>& getTSrce() const {return t_srce;}
+          
+          //! Get t_sink
+          int getTSink() const {return params.t_sink;}
+          
+          //! Get sink_mom
+          const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+          
+          //! Get decay_dir
+          const int getDecayDir() const {return params.j_decay;}
+          
+          //! Get fix_operator
+          const int getOperator() const {return params.fix_operator;}
+          
+      private:
+          //! Hide partial constructor
+          CurrentSeqSource() {}
+          
+      private:
+          multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+          Params  params;   /*!< Seqsource params */
+      };
+
 
   }  // end namespace
 

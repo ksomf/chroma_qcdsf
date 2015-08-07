@@ -95,6 +95,7 @@ namespace Chroma
     multi1d<int>     sink_mom;        /*!< sink momentum */
     int              t_sink;          /*!< time slice of sink */
     int              j_decay;         /*!< decay direction */
+    int              fix_operator;    /*!< operator */
   };
 
 
@@ -121,6 +122,7 @@ namespace Chroma
     PropSinkSmear_t     sink_header;
     ChromaProp_t        prop_header;
     PropSourceConst_t   source_header;
+    //SeqSource_t         seqsource_header;
     std::string         gauge_header;
   };
 

@@ -262,17 +262,49 @@ namespace Chroma
 	XMLBufferWriter record_xml;
 
 	// Construct an appropriate record_xml based on the input type
-	if (prop_record_xml.count("/Propagator") != 0)
+	if (prop_record_xml.count("/Propagator") != 0 || prop_record_xml.count("/SequentialProp") != 0)
 	{
-	  Propagator_t  orig_header;
-	  read(prop_record_xml, "/Propagator", orig_header);
-
-	  ForwardProp_t  new_header;
-	  new_header.sink_header      = params.param;
-	  new_header.prop_header      = orig_header.prop_header;
-	  new_header.source_header    = orig_header.source_header;
-	  new_header.gauge_header     = orig_header.gauge_header;
-	  write(record_xml, "SinkSmear", new_header);  
+        ForwardProp_t  new_header;
+        ForwardProp_t  new_header2;
+        Propagator_t  orig_header;
+        SequentialProp_t  orig_header2;
+        //SeqSource_t seq_header;
+        
+    if (prop_record_xml.count("/Propagator") != 0)
+        {
+            read(prop_record_xml, "/Propagator", orig_header);
+            new_header.prop_header      = orig_header.prop_header;
+            new_header.source_header    = orig_header.source_header;
+            new_header.sink_header      = params.param;
+            new_header.gauge_header     = orig_header.gauge_header;
+            write(record_xml, "SinkSmear", new_header);
+        }
+        else
+        {
+            read(prop_record_xml, "/SequentialProp", orig_header2);
+            
+            //put whole separate read here for the seqsource info
+            
+            //read(prop_record_xml, "/SequentialProp/SeqSource", seq_header);
+            new_header2.prop_header      = orig_header2.seqprop_header;
+            //new_header2.seqsource_header    = seq_header; //no conversion between SeqSource_t and PropSourceConst_t
+            /*new_header2.source_header = PropSourceConst_t();
+            new_header2.source_header.source    = orig_header2.seqsource_header.seqsrc;
+            new_header2.source_header.j_decay    = orig_header2.seqsource_header.j_decay;
+            new_header2.source_header.t_source    = orig_header2.seqsource_header.t_sink;*/
+            
+            new_header2.source_header    = orig_header2.forward_props[0].source_header;
+            new_header2.sink_header      = params.param;
+            new_header2.gauge_header     = orig_header2.gauge_header;
+            
+            write(record_xml, "SinkSmear", new_header2);
+            //write(record_xml, "SinkSmear", seq_header);
+            
+            //XMLBufferWriter smear_xml;
+            //push(smear_xml,"SmearSeqProp");
+            //write(smear_xml, "SeqProp", seq_header);
+            //pop(smear_xml);
+        }
 	} 
 	else
 	{

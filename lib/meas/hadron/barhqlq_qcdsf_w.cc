@@ -334,7 +334,7 @@ namespace Chroma
     // Setup the return stuff
     int num_baryons_help;
     if (!haveThird) num_baryons_help= 26;
-    else num_baryons_help=31;
+    else num_baryons_help=36;
 
     const int num_baryons=num_baryons_help;
     int num_mom = phases.numMom();
@@ -719,6 +719,45 @@ namespace Chroma
 	b_prop = Baryon2PtContractions_3prop::sigma_star_2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3,
 						  T_mixed, BaryonSpinMats::Cgm());
 	 break;
+
+ //Now do sequential source with fixed operator rather than fixed sink
+              
+     case 31:
+      //p->n
+              
+    b_prop = Baryon2PtContractions_3prop::p_to_n2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3, T_unpol, Cg5);
+     
+     case 32:
+     //p->n
+              
+    b_prop = Baryon2PtContractions_3prop::p_to_n2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3, Tpolx, Cg5);
+              
+              
+     case 33:
+     //p->n
+              
+     b_prop = Baryon2PtContractions_3prop::p_to_n2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3, Tpoly, Cg5);
+              
+              
+     case 34:
+     //p->n
+              
+     b_prop = Baryon2PtContractions_3prop::p_to_n2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3, Tpol, Cg5);
+              
+              
+     case 35:
+     //p->p, u quark unpol
+              
+      b_prop = Baryon2PtContractions_3prop::p_to_p_u2pt(quark_propagator_1, quark_propagator_2, quark_propagator_3, T_unpol, Cg5);
+              
+     break;
+          
+              
+              
+              
+              
+              
+              
       default:
 	QDP_error_exit("Unknown baryon", baryons);
       }

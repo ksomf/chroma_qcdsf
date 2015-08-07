@@ -229,6 +229,63 @@ namespace Chroma
       return (((Real)2.)*sigma2pt(d,s,u,T,sp)-((Real)2.)*sigma2pt(u,s,d,T,sp)
       -sigma2pt(d,u,s,T,sp)+sigma2pt(u,d,s,T,sp))/sqrt(12.);
     }
+      
+      
+      
+      //New stuff here
+      LatticeComplex p_to_n2pt(const LatticePropagator& quark_propagator_1,
+                              const LatticePropagator& quark_propagator_2,
+                              const LatticePropagator& quark_propagator_ud,
+                              const SpinMatrix& T, const SpinMatrix& Cg5)
+      {
+
+          //1 is u, 2 is d
+          
+          LatticeComplex tmp;
+          LatticePropagator q1_tmp = quark_propagator_2 * Cg5;
+          LatticePropagator q2_tmp = Cg5 * quark_propagator_1;
+          
+          tmp = traceColor(traceSpin(quarkContract24(q1_tmp, q2_tmp)) * traceSpin(T * quark_propagator_ud));
+          
+          tmp += trace(quarkContract13(q1_tmp, q2_tmp) * T * quark_propagator_ud);
+          
+          tmp += trace(T * quarkContract24(q1_tmp, q2_tmp) * quark_propagator_ud);
+          
+          q1_tmp = T * q1_tmp;
+          tmp += trace(quarkContract14(q1_tmp, q2_tmp) * quark_propagator_ud);
+          
+          return LatticeComplex(tmp);
+
+      }
+      
+      LatticeComplex p_to_p_u2pt(const LatticePropagator& quark_propagator_u,
+                               const LatticePropagator& quark_propagator_d,
+                               const LatticePropagator& quark_propagator_uu,
+                               const SpinMatrix& T, const SpinMatrix& Cg5)
+      {
+          
+          LatticeComplex tmp;
+          LatticePropagator q1_tmp = quark_propagator_u * Cg5;
+          LatticePropagator q2_tmp = Cg5 * quark_propagator_d;
+          LatticePropagator di_quark = quarkContract24(q1_tmp, q2_tmp);
+          
+          tmp = trace(T * di_quark * quark_propagator_uu);
+          
+          tmp += trace(traceSpin(di_quark) * T * quark_propagator_uu);
+          
+          q1_tmp = q2_tmp * Cg5;
+          q2_tmp = quark_propagator_u * T;
+          
+          tmp -= trace(quarkContract13(q1_tmp, q2_tmp) * quark_propagator_uu);
+          
+          tmp -= trace(transposeSpin(quarkContract12(q2_tmp, q1_tmp)) * quark_propagator_uu);
+          
+          return LatticeComplex(tmp);
+          
+      }
+
+
+      
 
   }//End_Namespace::Baryon2PtContractions_3prop
 

@@ -104,7 +104,18 @@ namespace Baryon2PtContractions_3prop
 			    const LatticePropagator& d,
 			    const LatticePropagator& s,
 			    const SpinMatrix& T, const SpinMatrix& sp);
+      
+    LatticeComplex p_to_n2pt(const LatticePropagator& quark_propagator_1,
+                               const LatticePropagator& quark_propagator_2,
+                               const LatticePropagator& quark_propagator_ud,
+                               const SpinMatrix& T, const SpinMatrix& Cg5);
 
+      
+    LatticeComplex p_to_p_u2pt(const LatticePropagator& quark_propagator_u,
+                               const LatticePropagator& quark_propagator_d,
+                               const LatticePropagator& quark_propagator_uu,
+                               const SpinMatrix& T, const SpinMatrix& Cg5);
+      
   }//End_Namespace::Baryon2PtContractions_3prop
 
   //! Heavy-light baryon 2-pt functions

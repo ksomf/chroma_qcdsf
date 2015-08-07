@@ -1046,8 +1046,8 @@ namespace Chroma
       {
 	return new BarDeltaDTsp(Params(xml_in, path), BaryonSpinMats::Tunpol(), BaryonSpinMats::Cgm());
       }
-
-
+        
+       
       //! Local registration flag
       bool registered = false;
 

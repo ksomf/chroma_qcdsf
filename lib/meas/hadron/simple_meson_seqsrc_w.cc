@@ -317,6 +317,14 @@ namespace Chroma
       {
 	return new PionPionSeqSource(Params(xml_in, path));
       }
+        
+        
+        //Put some comments here
+        
+      HadronSeqSource<LatticePropagator>* seqSrcCurrent(XMLReader& xml_in, const std::string& path)
+        {
+            return new CurrentSeqSource(Params(xml_in, path));
+        }
 
 
       //! Local registration flag
@@ -332,6 +340,7 @@ namespace Chroma
       t_sink  = -1;
       sink_mom.resize(Nd-1);
       sink_mom = 0;
+      fix_operator = -1;
     }
 
 
@@ -347,6 +356,10 @@ namespace Chroma
       {
       case 1:
 	break;
+              
+          case 2:
+          {read(paramtop, "operator", fix_operator);}
+              break;
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
@@ -365,8 +378,9 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 1;
-      write(xml, "version", version);
+      /*int version = 1;*/
+        
+        write(xml, "operator", fix_operator);
 
       write(xml, "j_decay", j_decay);
       write(xml, "t_sink", t_sink);
@@ -433,6 +447,8 @@ namespace Chroma
 
       return hsum[0][getTSink()];
     }
+      
+
 
 
     //! Construct the source
@@ -497,6 +513,50 @@ namespace Chroma
 
       return hsum[0][getTSink()];
     }
+      
+      
+      
+      //! Construct the source
+      LatticePropagator
+      CurrentSeqSource::operator()(const multi1d<LatticeColorMatrix>& u,
+                                    const multi1d<ForwardProp_t>& forward_headers,
+                                    const multi1d<LatticePropagator>& quark_propagators)
+      {
+          START_CODE();
+          
+          QDPIO::cout << "Fixed current sequential source" << std::endl;
+          setTSrce(forward_headers);
+          
+          if (quark_propagators.size() != 1)
+          {
+              QDPIO::cerr << __func__ << ": expect only 1 prop" << std::endl;
+              QDP_abort(1);
+          }
+          
+          //    LatticePropagator tmp = operator* quark_propagators[0];
+          
+          LatticePropagator tmp = Gamma(getOperator())*quark_propagators[0];
+          LatticeComplex     ph = conj(phases());
+          LatticePropagator fin = project(tmp * ph);
+          
+          END_CODE();
+          
+          return fin;
+      }
+      
+      
+      // Compute the 2-pt at the sink
+      Complex
+      CurrentSeqSource::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+                                   const multi1d<ForwardProp_t>& forward_headers,
+                                   const multi1d<LatticePropagator>& quark_propagators,
+                                   int gamma_insertion)
+      {
+          
+          return 1.;
+      }
+      
+      
 
 
     //! Register all the factories
@@ -560,6 +620,10 @@ namespace Chroma
 	// keep for historical purposes
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("pion"),
 										      mesPion1Pion1SeqSrc);
+          
+    //new
+    success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("SEQSRC_CURRENT"),
+                                                                                        seqSrcCurrent);
 
 	registered = true;
       }
