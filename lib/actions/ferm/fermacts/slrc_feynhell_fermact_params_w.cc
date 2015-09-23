@@ -76,8 +76,6 @@ namespace Chroma
 			QDPIO::cout << "No noise found (or only one of real/imag part given)" << std::endl << std::flush;
 		}
 		param.noise = cmplx(noise_real,noise_imag);
-		QDPIO::cout << "Noise is " << param.noise << std::endl << std::flush;
-
 
 		if (paramtop.count("Operator") != 0)
 			read(paramtop, "Operator", param.op);
@@ -110,8 +108,9 @@ namespace Chroma
 		//read(paramtop, "NoiseImag", noiseImag);
 		//param.noise = cmplx(noiseReal,noiseImag);
 		//
-		QDPIO::cout <<  "Lambda is " << param.lambda << " with op: " << param.op;
-		QDPIO::cout << " mom is " << param.mom[0] << ", " << param.mom[1] << ", " << param.mom[2] << ":" << param.noise << std::endl << std::flush;
+		QDPIO::cout << "Lambda is " << param.lambda << " with op: " << param.op << std::endl << std::flush;
+		QDPIO::cout << "Momentum is " << param.mom[0] << ", " << param.mom[1] << ", " << param.mom[2] << std::endl << std::flush;
+		QDPIO::cout << "Noise is " << param.noise << std::endl << std::flush;
 
 	}
 
