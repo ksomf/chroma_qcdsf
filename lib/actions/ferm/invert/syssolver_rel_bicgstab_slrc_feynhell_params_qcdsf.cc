@@ -12,12 +12,13 @@ namespace Chroma {
 						       const std::string& path)
   {
     QDPIO::cout << "Creating SysSolverReliableBiCGStabSlrcFeynHellParamsQCDSF" << std::endl;
+    QDPIO::cout << "XML path is " << path << std::endl;
 
     XMLReader paramtop(xml, path);
     read(paramtop, "MaxIter", MaxIter);
     read(paramtop, "RsdTarget", RsdTarget);
     read(paramtop, "CloverParams", clovParams);
-    read(paramtop, "FeynHellParams", fhParams);
+    read(paramtop, path, fhParams);
     read(paramtop, "Delta", Delta);
   }
 
@@ -38,7 +39,7 @@ namespace Chroma {
     write(xml, "MaxIter", p.MaxIter);
     write(xml, "RsdTarget", p.RsdTarget);
     write(xml, "CloverParams", p.clovParams);
-    write(xml, "FeynHellParams", p.fhParams);
+    write(xml, "FeynHellParam", p.fhParams);
     write(xml, "Delta", p.Delta);
     pop(xml);
 

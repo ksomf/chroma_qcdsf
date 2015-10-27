@@ -19,22 +19,36 @@ namespace Chroma
 
 	SLRCFeynHellFermActParams::SLRCFeynHellFermActParams(XMLReader& xml, const std::string& path)
 	{
-		XMLReader paramtop(xml, path);
+		// XMLReader paramtop(xml, path);
 
-		numParam = paramtop.count("FeynHellParam/elem");
-		QDPIO::cout << "Number of FeynHellParam elems is: " << numParam << std::endl << std::flush;
-		if(numParam == 0)
-		{
-			QDPIO::cerr << "ERROR: No FeynHellParam elems found " << std::endl << std::flush;
-			QDP_abort(1);
-		}
-		read(paramtop, "FeynHellParam", FHparam);
+		// numParam = paramtop.count("FeynHellParam/elem");
+		// QDPIO::cout << "In constructor, xml path is: " << path << std::endl;
+		// QDPIO::cout << "Number of FeynHellParam elems is: "
+		// 	    << numParam << std::endl << std::flush;
+		// if(numParam == 0)
+		// {
+		// 	QDPIO::cerr << "ERROR: No FeynHellParam elems found"
+		// 		    << std::endl << std::flush;
+		// 	QDP_abort(1);
+		// }
+		// read(paramtop, "FeynHellParam", FHparam);
+	  read(xml, path, *this);
 
 	}
 
 	void read(XMLReader& xml, const std::string& path, SLRCFeynHellFermActParams& param)
 	{
 		XMLReader paramtop(xml,path);
+		param.numParam = paramtop.count("FeynHellParam/elem");
+		QDPIO::cout << "In read, xml path is: " << path << std::endl;
+		QDPIO::cout << "Number of FeynHellParam elems is: "
+			    << param.numParam << std::endl << std::flush;
+		if(param.numParam == 0)
+		{
+			QDPIO::cerr << "ERROR: No FeynHellParam elems found " << std::endl << std::flush;
+			QDP_abort(1);
+		}
+		read(paramtop, "FeynHellParam", param.FHparam);
 	}
 
 	void read(XMLReader& xml, const std::string& path, SLRCFeynHellFermActParams::FHParam& param)
