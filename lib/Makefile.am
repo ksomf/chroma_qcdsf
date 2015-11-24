@@ -681,6 +681,7 @@ nobase_include_HEADERS += \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/hadron/npr_vertex_w.h \
+	meas/hadron/npr_vertex_nonlocal_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h \
         meas/schrfun/sfpcac_w.h \
@@ -933,6 +934,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_stoch_group_baryon_w.h \
 	meas/inline/hadron/inline_stoch_group_meson_w.h \
 	meas/inline/hadron/inline_npr_vertex_w.h \
+	meas/inline/hadron/inline_npr_vertex_nonlocal_w.h \
 	meas/inline/hadron/inline_npr_w.h \
 	meas/inline/hadron/inline_stag_to_wils.h \
 	meas/inline/hadron_s/hadron_s.h \
@@ -1647,6 +1649,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc \
+	meas/hadron/npr_vertex_nonlocal_w.cc \
 	meas/pbp/mespbp_w.cc \
         meas/schrfun/sfpcac_w.cc \
         meas/schrfun/sfcorr_w.cc \
@@ -1818,6 +1821,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_stoch_group_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_group_meson_w.cc \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
+	meas/inline/hadron/inline_npr_vertex_nonlocal_w.cc \
 	meas/inline/hadron/inline_npr_w.cc \
 	meas/inline/hadron/inline_stag_to_wils.cc \
 	meas/inline/hadron/inline_barspec_db_w.cc \
