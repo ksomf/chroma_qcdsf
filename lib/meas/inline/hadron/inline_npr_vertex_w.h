@@ -49,7 +49,6 @@ namespace Chroma
     std::string xml_file;  // Alternate XML file pattern
   };
 
-
   //! Inline measurement of NPR vertices
   /*! \ingroup inlinehadron */
   class InlineNprVertex : public AbsInlineMeasurement 
@@ -74,6 +73,13 @@ namespace Chroma
     InlineNprVertexParams params;
   };
 
+  DPropagator FTpropagator(const LatticePropagator& prop,
+			   const multi1d<int> mom,
+			   const multi1d<int> t_src);
+
+  void AllLinkPatterns( bool & DoThisPattern,
+						bool & DoFurtherPatterns,
+						multi1d< int > & LinkPattern );
 };
 
 #endif

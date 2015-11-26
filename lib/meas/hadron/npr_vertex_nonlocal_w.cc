@@ -6,24 +6,26 @@
 
 #include "util/ft/sftmom.h"
 #include "meas/hadron/npr_vertex_nonlocal_w.h"
+#include "meas/hadron/npr_vertex_w.h"
 
 namespace Chroma 
 {
 	
-	QDP::StandardOutputStream& operator<<(QDP::StandardOutputStream& s, const multi1d<int>& d)
-	{
-		if (d.size() > 0)
-		{
-			s << d[0];
-			for(int i=1; i < d.size(); ++i)
-				s << " " << d[i];
-		}
-		
-		return s;
-	}
+// 	// TODO (Stanislav Kazmin): change this routine to call from npr_vertex_w.cc
+// 	QDP::StandardOutputStream& operator<<(QDP::StandardOutputStream& s, const multi1d<int>& d)
+// 	{
+// 		if (d.size() > 0)
+// 		{
+// 			s << d[0];
+// 			for(int i=1; i < d.size(); ++i)
+// 				s << " " << d[i];
+// 		}
+// 		
+// 		return s;
+// 	}
 	
 	
-	void BkwdFrwd(const LatticePropagator&  B,
+	void BkwdFrwdNonlocal(const LatticePropagator&  B,
 				  const LatticePropagator&  F,
 			   QDPFileWriter& qio_file,
 			   int& GBB_NLinkPatterns,
@@ -76,109 +78,109 @@ namespace Chroma
 	// accumulate link operators                                                         //
 	//###################################################################################//
 	
-	void AddLinks(const LatticePropagator&  B,
-				  const LatticePropagator&  F,
-			   const multi1d< LatticeColorMatrix > & U,
-			   multi1d< int >&    LinkDirs,
-			   const int          MaxNLinks,
-			   BBLinkPattern      LinkPattern,
-			   const int          PreviousDir,
-			   const int          PreviousMu,
-			   QDPFileWriter&     qio_file,
-			   int&               GBB_NLinkPatterns)
-	{
-		StopWatch Timer;
-		Timer.reset();
-		Timer.start();
-		
-		const int NLinks = LinkDirs.size();
-		
-		if( NLinks == MaxNLinks )
-		{
-			return;
-		}
-		
-		LatticePropagator F_mu;
-		multi1d< int > NextLinkDirs( NLinks + 1 );
-		
-		for(int Link = 0; Link < NLinks; Link ++)
-		{
-			NextLinkDirs[ Link ] = LinkDirs[ Link ];
-		}
-		
-		// add link in forward mu direction
-		for( int mu = 0; mu < Nd; mu ++ )
-		{
-			// skip the double back
-			if( ( PreviousDir != -1 ) || ( PreviousMu != mu ) )
-			{
-				bool DoThisPattern = true;
-				bool DoFurtherPatterns = true;
-				
-				NextLinkDirs[ NLinks ] = mu;
-				
-				LinkPattern( DoThisPattern, DoFurtherPatterns, NextLinkDirs );
-				
-				if( DoFurtherPatterns == true )
-				{
-					// accumulate product of link fields
-					F_mu = shift( adj( U[ mu ] ) * F, BACKWARD, mu );
-				}
-				
-				if( DoThisPattern == true )
-				{
-					BkwdFrwd(B, F_mu, qio_file, GBB_NLinkPatterns, NextLinkDirs);
-				}
-				
-				if( DoFurtherPatterns == true )
-				{
-					// add another link
-					AddLinks(B, F_mu, U,
-							 NextLinkDirs, MaxNLinks, LinkPattern, 1, mu, 
-			  qio_file, GBB_NLinkPatterns);
-				}
-			}
-		}
-		
-		// add link in backward mu direction
-		for( int mu = 0; mu < Nd; mu ++ )
-		{
-			// skip the double back
-			if( ( PreviousDir != 1 ) || ( PreviousMu != mu ) )
-			{
-				bool DoThisPattern = true;
-				bool DoFurtherPatterns = true;
-				
-				NextLinkDirs[ NLinks ] = mu + Nd;
-				
-				LinkPattern( DoThisPattern, DoFurtherPatterns, NextLinkDirs );
-				
-				if( DoFurtherPatterns == true )
-				{
-					// accumulate product of link fields
-					F_mu = U[ mu ] * shift( F, FORWARD, mu );
-				}
-				
-				if( DoThisPattern == true )
-				{
-					BkwdFrwd(B, F_mu, qio_file, GBB_NLinkPatterns, NextLinkDirs);
-				}
-				
-				if( DoFurtherPatterns == true )
-				{
-					// add another link
-					AddLinks(B, F_mu, U, 
-							 NextLinkDirs, MaxNLinks, LinkPattern, -1, mu, 
-			  qio_file, GBB_NLinkPatterns);
-				}
-			}
-		}
-		
-		Timer.stop();
-		QDPIO::cout << __func__ << ": total time = " << Timer.getTimeInSeconds() << " seconds" << std::endl;
-		
-		return;
-	}
+// 	void AddLinks(const LatticePropagator&  B,
+// 				  const LatticePropagator&  F,
+// 			   const multi1d< LatticeColorMatrix > & U,
+// 			   multi1d< int >&    LinkDirs,
+// 			   const int          MaxNLinks,
+// 			   BBLinkPattern      LinkPattern,
+// 			   const int          PreviousDir,
+// 			   const int          PreviousMu,
+// 			   QDPFileWriter&     qio_file,
+// 			   int&               GBB_NLinkPatterns)
+// 	{
+// 		StopWatch Timer;
+// 		Timer.reset();
+// 		Timer.start();
+// 		
+// 		const int NLinks = LinkDirs.size();
+// 		
+// 		if( NLinks == MaxNLinks )
+// 		{
+// 			return;
+// 		}
+// 		
+// 		LatticePropagator F_mu;
+// 		multi1d< int > NextLinkDirs( NLinks + 1 );
+// 		
+// 		for(int Link = 0; Link < NLinks; Link ++)
+// 		{
+// 			NextLinkDirs[ Link ] = LinkDirs[ Link ];
+// 		}
+// 		
+// 		// add link in forward mu direction
+// 		for( int mu = 0; mu < Nd; mu ++ )
+// 		{
+// 			// skip the double back
+// 			if( ( PreviousDir != -1 ) || ( PreviousMu != mu ) )
+// 			{
+// 				bool DoThisPattern = true;
+// 				bool DoFurtherPatterns = true;
+// 				
+// 				NextLinkDirs[ NLinks ] = mu;
+// 				
+// 				LinkPattern( DoThisPattern, DoFurtherPatterns, NextLinkDirs );
+// 				
+// 				if( DoFurtherPatterns == true )
+// 				{
+// 					// accumulate product of link fields
+// 					F_mu = shift( adj( U[ mu ] ) * F, BACKWARD, mu );
+// 				}
+// 				
+// 				if( DoThisPattern == true )
+// 				{
+// 					BkwdFrwdNonlocal(B, F_mu, qio_file, GBB_NLinkPatterns, NextLinkDirs);
+// 				}
+// 				
+// 				if( DoFurtherPatterns == true )
+// 				{
+// 					// add another link
+// 					AddLinks(B, F_mu, U,
+// 							 NextLinkDirs, MaxNLinks, LinkPattern, 1, mu, 
+// 			  qio_file, GBB_NLinkPatterns);
+// 				}
+// 			}
+// 		}
+// 		
+// 		// add link in backward mu direction
+// 		for( int mu = 0; mu < Nd; mu ++ )
+// 		{
+// 			// skip the double back
+// 			if( ( PreviousDir != 1 ) || ( PreviousMu != mu ) )
+// 			{
+// 				bool DoThisPattern = true;
+// 				bool DoFurtherPatterns = true;
+// 				
+// 				NextLinkDirs[ NLinks ] = mu + Nd;
+// 				
+// 				LinkPattern( DoThisPattern, DoFurtherPatterns, NextLinkDirs );
+// 				
+// 				if( DoFurtherPatterns == true )
+// 				{
+// 					// accumulate product of link fields
+// 					F_mu = U[ mu ] * shift( F, FORWARD, mu );
+// 				}
+// 				
+// 				if( DoThisPattern == true )
+// 				{
+// 					BkwdFrwdNonlocal(B, F_mu, qio_file, GBB_NLinkPatterns, NextLinkDirs);
+// 				}
+// 				
+// 				if( DoFurtherPatterns == true )
+// 				{
+// 					// add another link
+// 					AddLinks(B, F_mu, U, 
+// 							 NextLinkDirs, MaxNLinks, LinkPattern, -1, mu, 
+// 			  qio_file, GBB_NLinkPatterns);
+// 				}
+// 			}
+// 		}
+// 		
+// 		Timer.stop();
+// 		QDPIO::cout << __func__ << ": total time = " << Timer.getTimeInSeconds() << " seconds" << std::endl;
+// 		
+// 		return;
+// 	}
 	
 	
 	//! NPR vertices
@@ -207,17 +209,17 @@ namespace Chroma
 		// calculate building blocks                                                       //
 		//#################################################################################//
 		
-		QDPIO::cout << __func__ << ": start BkwdFrwd" << std::endl;
+		QDPIO::cout << __func__ << ": start BkwdFrwdNonlocal" << std::endl;
 		
 		const int NLinks = 0;
 		multi1d< int > LinkDirs( 0 );
 		
 		LatticePropagator B = Gamma(15)*adj(F)*Gamma(15);
-		BkwdFrwd(B, F, qio_file, GBB_NLinkPatterns, LinkDirs);
+		BkwdFrwdNonlocal(B, F, qio_file, GBB_NLinkPatterns, LinkDirs);
 		
 		
 		Timer.stop();
-		QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdTr call) = "
+		QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdNonlocalTr call) = "
 		<< Timer.getTimeInSeconds() 
 		<< " seconds" << std::endl;
 		

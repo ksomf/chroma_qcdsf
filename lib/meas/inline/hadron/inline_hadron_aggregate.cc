@@ -53,6 +53,7 @@
 #include "meas/inline/hadron/inline_bar3ptfn_qcdsf_w.h"
 //#include "meas/inline/hadron/inline_multipole_w.h"
 #include "meas/inline/hadron/inline_npr_vertex_w.h"
+#include "meas/inline/hadron/inline_npr_vertex_nonlocal_w.h"
 #include "meas/inline/hadron/inline_npr_w.h"
 #include "meas/inline/hadron/inline_distillution_noise.h"
 #include "meas/inline/hadron/inline_prop_distillution_w.h"
@@ -154,6 +155,7 @@ namespace Chroma
 	success &= InlineBar3ptfnEnvQCDSF::registerAll();
 //      success &= InlineMultipoleEnv::registerAll();  // not being used
 	success &= InlineNprVertexEnv::registerAll();
+	success &= InlineNprVertexNonlocalEnv::registerAll();
 	success &= InlineNprEnv::registerAll();
 	success &= InlineDistillutionNoiseEnv::registerAll();
 	success &= InlinePropDistillutionEnv::registerAll();

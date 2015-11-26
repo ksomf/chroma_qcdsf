@@ -7,6 +7,7 @@
 #ifndef __inline_npr_nonlocal_vertex_h__
 #define __inline_npr_nonlocal_vertex_h__
 
+#include "meas/inline/hadron/inline_npr_vertex_w.h"
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"

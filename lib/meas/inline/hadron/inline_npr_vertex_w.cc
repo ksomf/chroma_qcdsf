@@ -185,14 +185,14 @@ namespace Chroma
   // Accept All Link Patterns                                                          //
   //###################################################################################//
 
-  void AllLinkPatterns( bool &                          DoThisPattern,
-			bool &                          DoFurtherPatterns,
-			multi1d< int > & LinkPattern )
+	void AllLinkPatterns( bool & DoThisPattern,
+						bool & DoFurtherPatterns,
+						multi1d< int > & LinkPattern )
   {
-    DoThisPattern     = true;
-    DoFurtherPatterns = true;
-
-    return;
+	  DoThisPattern     = true;
+	  DoFurtherPatterns = true;
+	  
+	  return;
   }
 
 
