@@ -9,25 +9,21 @@
 
 #include "chromabase.h"
 
-namespace Chroma 
+namespace Chroma
 {
-	//! Used to Set Requested Link Patterns
-	/*! \ingroup hadron */
-	typedef void (*BBLinkPattern)(bool &                          DoThisPattern,
-								  bool &                          DoFurtherPatterns,
-							   multi1d< int > & LinkPattern);
-	
-	//! NPR vertices
-	/*! \ingroup hadron */
-	void NprVertexNonlocal(const LatticePropagator &             F,
-						   const multi1d< LatticeColorMatrix > & U,
-						const unsigned short int              MaxNLinks,
-						const BBLinkPattern                   LinkPattern,
-						QDPFileWriter& qio_file);
-	
+//! Used to Set Requested Link Patterns
+/*! \ingroup hadron */
+typedef void (*BBLinkPattern)(bool& DoThisPattern, bool& DoFurtherPatterns, multi1d< int >& LinkPattern);
+
+//! NPR vertices
+/*! \ingroup hadron */
+void NprVertexNonlocal(const LatticePropagator& F,
+					   const multi1d<LatticeColorMatrix>& U,
+					   const unsigned short int MaxNLinks,
+					   const BBLinkPattern LinkPattern,
+					   QDPFileWriter& qio_file);
+
 }  // end namespace Chroma
 
 #endif // __npr_vertex_nonlocal_w_h__
 
-//###################################################################################//
-//###################################################################################//
