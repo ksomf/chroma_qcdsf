@@ -22,23 +22,25 @@ namespace Chroma
 		StopWatch TotalTime;
 		TotalTime.reset();
 		TotalTime.start();
-		for(int i = 0; i < Ns * Ns; ++i) // go though all gamma operators = 16 possibilities
+		// calculate one link operator
+		for(int mu = 0; mu < Ns; ++mu) // go though all directions
 		{
+			int gamma = 1 << mu; // get right gamma value from bits-shift of 1. Here we don't insert gamma 5 and insert it afterwards in the equation.
 			XMLBufferWriter record_xml;
 			push(record_xml, "Vertex");
-			QDPIO::cout << __func__ << ": LinkDirs = " << LinkDirs << "  gamma = " << i << std::endl;
+			QDPIO::cout << __func__ << ": LinkDirs = " << LinkDirs << "  gamma = " << gamma << std::endl;
 			write(record_xml, "linkDirs", LinkDirs);   // link pattern
-			write(record_xml, "gamma", i);
+			write(record_xml, "gamma", gamma);
 			// counts number of link patterns
 			GBB_NLinkPatterns++;
 			// Compute the single site propagator and write it
 			DPropagator prop;
-			// assumes any Gamma5 matrices have already been absorbed into B
-			// TODO (S. Kazmin): what does this mean?
-			LatticePropagator tmp = B * Gamma(i) * F;
+			// A_mu (x) = 1/2 * (φ^adj_x * γ_5 * γ_μ * U_μ * φ_{x+μ} + φ^adj_{x+mu} * γ_5 * γ_μ * U^adj_μ + φ_x)
+			// TODO (S. Kazmin): gamma 5 in B or not? U Adjungation!!!
+			LatticePropagator tmp = 0.5 * (B * Gamma(15) * Gamma(gamma) * U[mu] * shift(F, FORWARD, mu) + shift(B, FORWARD, mu) * Gamma(15) * Gamma(gamma) * Gamma(15) * adj(U[mu]) * F);
 			// The site's worth of data of interest
-			// TODO (S. Kazmin): have we to sum? We have only one propagator anyway
-			prop = sum(tmp) / Double(Layout::vol()); // and normalize by the volume
+			// sum is over the volume at each site
+			prop = sum(tmp) / Double(Layout::vol()); // and normalize by the volume -> mean value of the prop at at sites
 			// append to xml file
 			pop(record_xml);
 			write(qio_file, record_xml, prop);
@@ -48,7 +50,6 @@ namespace Chroma
 		QDPIO::cout << __func__ << ": total time = " << TotalTime.getTimeInSeconds() << " seconds" << std::endl;
 		return;
 	}
-
 //! NPR vertices
 	void NprVertexNonlocal(const LatticePropagator& F,
 						   const multi1d< LatticeColorMatrix >& U,
@@ -68,7 +69,8 @@ namespace Chroma
 		QDPIO::cout << __func__ << ": start BkwdFrwdNonlocal" << std::endl;
 		const int NLinks = 0;
 		multi1d<int> LinkDirs(0);
-		LatticePropagator B = Gamma(15) * adj(F) * Gamma(15); // backward propagator
+		// TODO (S. Kazmin): should the gamma stay here? Adjungation!!!
+		LatticePropagator B = Gamma(15) * adj(F); // backward propagator
 		BkwdFrwdNonlocal(B, F, U, qio_file, GBB_NLinkPatterns, LinkDirs);
 		Timer.stop();
 		QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdNonlocalTr call) = " << Timer.getTimeInSeconds() << " seconds" << std::endl;
@@ -83,5 +85,4 @@ namespace Chroma
 //	QDPIO::cout << __func__ << ": total time = " << TotalTime.getTimeInSeconds() << " seconds" << std::endl;
 		return;
 	}
-
 }  // end namespace Chroma
