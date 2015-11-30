@@ -193,7 +193,7 @@ namespace Chroma
 		//###############################################################################//
 		// Read Gauge Field                                                              //
 		//###############################################################################//
-		QDPIO::cout << "Attempt to initialize the gauge field" << std::endl << std::flush ;
+		QDPIO::cout << "Attempt to initialize the gauge field" << std::endl << std::flush;
 		// Grab the gauge field
 		multi1d<LatticeColorMatrix> U;
 		XMLBufferWriter gauge_xml;

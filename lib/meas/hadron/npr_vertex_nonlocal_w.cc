@@ -13,6 +13,7 @@ namespace Chroma
 
 	void BkwdFrwdNonlocal(const LatticePropagator& B,
 						  const LatticePropagator& F,
+						  const multi1d<LatticeColorMatrix>& U,
 						  QDPFileWriter& qio_file,
 						  int& GBB_NLinkPatterns,
 						  const multi1d<int>& LinkDirs)// TODO (S. Kazmin): linkDirs is not used, do we need it? write it because npr routine need it
@@ -21,7 +22,7 @@ namespace Chroma
 		StopWatch TotalTime;
 		TotalTime.reset();
 		TotalTime.start();
-		for(int i = 0; i < Ns * Ns; ++i) // go though all gamma * gamma operators = 16 possibilities
+		for(int i = 0; i < Ns * Ns; ++i) // go though all gamma operators = 16 possibilities
 		{
 			XMLBufferWriter record_xml;
 			push(record_xml, "Vertex");
@@ -68,7 +69,7 @@ namespace Chroma
 		const int NLinks = 0;
 		multi1d<int> LinkDirs(0);
 		LatticePropagator B = Gamma(15) * adj(F) * Gamma(15); // backward propagator
-		BkwdFrwdNonlocal(B, F, qio_file, GBB_NLinkPatterns, LinkDirs);
+		BkwdFrwdNonlocal(B, F, U, qio_file, GBB_NLinkPatterns, LinkDirs);
 		Timer.stop();
 		QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdNonlocalTr call) = " << Timer.getTimeInSeconds() << " seconds" << std::endl;
 //	// (S. Kazmin) this part do nothing anyway because linkDirs size is zero comment out for future usage
