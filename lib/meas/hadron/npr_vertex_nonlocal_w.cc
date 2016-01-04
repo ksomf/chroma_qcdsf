@@ -25,7 +25,8 @@ namespace Chroma
 		// calculate one link operator
 		for(int mu = 0; mu < Ns; ++mu) // go though all directions
 		{
-			int gamma = 1 << mu; // get right gamma value from bits-shift of 1. Here we don't insert gamma 5 and insert it afterwards in the equation.
+			int gamma = 1 << mu; // get gamma value from bits-shift of 1.
+			gamma = 15 - gamma; // get the gamma index of the according γ_μ γ_5 operator
 			XMLBufferWriter record_xml;
 			push(record_xml, "Vertex");
 			QDPIO::cout << __func__ << ": LinkDirs = " << LinkDirs << "  gamma = " << gamma << std::endl;
@@ -35,9 +36,9 @@ namespace Chroma
 			GBB_NLinkPatterns++;
 			// Compute the single site propagator and write it
 			DPropagator prop;
-			// A_mu (x) = 1/2 * (φ^adj_x * γ_5 * γ_μ * U_μ * φ_{x+μ} + φ^adj_{x+mu} * γ_5 * γ_μ * U^adj_μ + φ_x)
+			// A_mu (x) = 1/2 * (ψ^adj_x * γ_5 * γ_μ * U_μ * ψ_{x+μ} + ψ^adj_{x+mu} * γ_5 * γ_μ * U^adj_μ * ψ_x)
 			// TODO (S. Kazmin): gamma 5 in B or not? U Adjungation!!!
-			LatticePropagator tmp = 0.5 * (B * Gamma(15) * Gamma(gamma) * U[mu] * shift(F, FORWARD, mu) + shift(B, FORWARD, mu) * Gamma(15) * Gamma(gamma) * Gamma(15) * adj(U[mu]) * F);
+			LatticePropagator tmp = 0.5 * (B * Gamma(gamma) * U[mu] * shift(F, FORWARD, mu) + shift(B, FORWARD, mu) * Gamma(gamma) * adj(U[mu]) * F);
 			// The site's worth of data of interest
 			// sum is over the volume at each site
 			prop = sum(tmp) / Double(Layout::vol()); // and normalize by the volume -> mean value of the prop at at sites
@@ -69,8 +70,8 @@ namespace Chroma
 		QDPIO::cout << __func__ << ": start BkwdFrwdNonlocal" << std::endl;
 		const int NLinks = 0;
 		multi1d<int> LinkDirs(0);
-		// TODO (S. Kazmin): should the gamma stay here? Adjungation!!!
-		LatticePropagator B = Gamma(15) * adj(F); // backward propagator
+		// TODO (S. Kazmin): gamm15 or gamma0?
+		LatticePropagator B = Gamma(15) * adj(F) * Gamma(15); // backward propagator
 		BkwdFrwdNonlocal(B, F, U, qio_file, GBB_NLinkPatterns, LinkDirs);
 		Timer.stop();
 		QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdNonlocalTr call) = " << Timer.getTimeInSeconds() << " seconds" << std::endl;
