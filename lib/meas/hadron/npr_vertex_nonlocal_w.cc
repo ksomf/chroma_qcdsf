@@ -41,7 +41,7 @@ namespace Chroma
 			LatticePropagator tmp = 0.5 * (B * Gamma(gamma) * U[mu] * shift(F, FORWARD, mu) + shift(B, FORWARD, mu) * Gamma(gamma) * adj(U[mu]) * F);
 			// The site's worth of data of interest
 			// sum is over the volume at each site
-			prop = sum(tmp) / Double(Layout::vol()); // and normalize by the volume -> mean value of the prop at at sites
+			prop = sum(tmp) / Double(Layout::vol()); // and normalize by the volume -> mean value of the prop at all sites
 			// append to xml file
 			pop(record_xml);
 			write(qio_file, record_xml, prop);
@@ -70,7 +70,7 @@ namespace Chroma
 		QDPIO::cout << __func__ << ": start BkwdFrwdNonlocal" << std::endl;
 		const int NLinks = 0;
 		multi1d<int> LinkDirs(0);
-		// TODO (S. Kazmin): gamm15 or gamma0?
+		// TODO (S. Kazmin): Backward Propagator should be with different source and sink !?
 		LatticePropagator B = Gamma(15) * adj(F) * Gamma(15); // backward propagator
 		BkwdFrwdNonlocal(B, F, U, qio_file, GBB_NLinkPatterns, LinkDirs);
 		Timer.stop();

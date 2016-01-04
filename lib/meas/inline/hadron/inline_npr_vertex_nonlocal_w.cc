@@ -179,7 +179,7 @@ namespace Chroma
 		write(XmlOut, "update_no", update_no);
 		QDPIO::cout << " ExampleNprVertexNonlocal" << std::endl;
 		QDPIO::cout << "     volume: " << QDP::Layout::lattSize()[0];
-		for(int i = 1; i < Nd; ++i) {
+		for(int i = 0; i < Nd; ++i) {
 			QDPIO::cout << " x " << QDP::Layout::lattSize()[i];
 		}
 		QDPIO::cout << std::endl;
