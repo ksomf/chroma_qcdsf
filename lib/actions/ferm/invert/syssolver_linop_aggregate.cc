@@ -20,6 +20,7 @@
 #include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
 #include "actions/ferm/invert/syssolver_linop_safe.h"
+#include "actions/ferm/invert/syssolver_linop_fgmres_dr.h"
 
 
 #ifdef COMPILE_DDS
@@ -79,11 +80,12 @@ namespace Chroma
 	success &= LinOpSysSolverReliableBiCGStabSlrcEnvQCDSF::registerAll();
 	success &= LinOpSysSolverReliableBiCGStabSlrcFeynHellEnvQCDSF::registerAll();
 	success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
-    success &= LinOpSysSolverSafeEnv::registerAll();
+	success &= LinOpSysSolverSafeEnv::registerAll();
 
 #ifdef COMPILE_DDS
-    success &= LinOpSysSolverDDSEnv::registerAll();
+	success &= LinOpSysSolverDDSEnv::registerAll();
 #endif
+	success &= LinOpSysSolverFGMRESDREnv::registerAll();
 
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();

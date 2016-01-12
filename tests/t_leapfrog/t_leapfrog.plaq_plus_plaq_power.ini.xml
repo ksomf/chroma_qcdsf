@@ -5,9 +5,10 @@
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
-	  <Name>PLAQ_PLUS_ADJOINT_GAUGEACT</Name>
-	  <beta_F>0</beta_F>
-	  <beta_A>5</beta_A>
+	  <Name>PLAQ_PLUS_PLAQ_POWER_GAUGEACT</Name>
+	  <beta>-2.4104</beta>
+	  <gamma>200.0</gamma>
+	  <q>10</q>
           <GaugeBC>
 	    <Name>PERIODIC_GAUGEBC</Name>
           </GaugeBC>
@@ -32,7 +33,7 @@
    </MDIntegrator>
 
    <GaugeStartup>
-	<cfg_type>WEAK_FIELD</cfg_type>
+	<cfg_type>UNIT</cfg_type>
 	<cfg_file>DUMMY</cfg_file>
    </GaugeStartup>
    <nrow>4 4 4 4</nrow>

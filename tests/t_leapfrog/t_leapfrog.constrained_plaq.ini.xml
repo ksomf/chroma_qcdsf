@@ -5,9 +5,10 @@
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
-	  <Name>PLAQ_PLUS_ADJOINT_GAUGEACT</Name>
-	  <beta_F>0</beta_F>
-	  <beta_A>5</beta_A>
+	  <Name>CONSTRAINED_PLAQ_GAUGEACT</Name>
+	  <beta>0</beta>
+	  <gamma>4.0</gamma>
+	  <q>2</q>
           <GaugeBC>
 	    <Name>PERIODIC_GAUGEBC</Name>
           </GaugeBC>
