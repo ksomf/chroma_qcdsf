@@ -3,6 +3,7 @@
  *  \date 2015-11-24
  *  \brief NPR vertex calculations for the non local axial current.
  */
+#include <iomanip>      // std::setprecision
 
 #include "meas/inline/hadron/inline_npr_vertex_nonlocal_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
@@ -177,9 +178,9 @@ namespace Chroma
 		snoop.start();
 		push(XmlOut, "NprVertexNonlocal");
 		write(XmlOut, "update_no", update_no);
-		QDPIO::cout << " ExampleNprVertexNonlocal" << std::endl;
-		QDPIO::cout << "     volume: " << QDP::Layout::lattSize()[0];
-		for(int i = 0; i < Nd; ++i) {
+		QDPIO::cout << "\tExampleNprVertexNonlocal" << std::endl;
+		QDPIO::cout << "\tvolume: " << QDP::Layout::lattSize()[0];
+		for(int i = 1; i < Nd; ++i) {
 			QDPIO::cout << " x " << QDP::Layout::lattSize()[i];
 		}
 		QDPIO::cout << std::endl;
@@ -248,6 +249,25 @@ namespace Chroma
 		{
 			// Snarf a copy
 			F = TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+			for (int ind = 0; ind < Layout::vol(); ++ ind)
+			{
+			std::cout << std::setprecision(2);
+			std::cout << "place = " << ind  << "\n";
+			// F OUTPUT
+			std::cout << "F = \n";
+			for(int i=0; i<12; i++)
+			{
+				for(int j=0; j<12; j++)
+				{
+					std::cout << "(";
+					std::cout << F.elem(ind).elem(i % 4, j % 4).elem(i / 4, j / 4).real();
+					std::cout << " ";
+					std::cout << F.elem(ind).elem(i % 4, j % 4).elem(i / 4, j / 4).imag();
+					std::cout << ")";
+				}
+				std::cout << "\n";
+			}
+			}
 			// Snarf the frwd prop info. This is will throw if the frwd prop id is not there
 			XMLReader PropXML, PropRecordXML;
 			TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(PropXML);
