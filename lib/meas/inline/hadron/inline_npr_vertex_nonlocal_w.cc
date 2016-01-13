@@ -1,8 +1,8 @@
 /*! \file inline_npr_vertex_nonlocal_w.cc
- *  \author Stanislav Kazmin (University Leipzig)
- *  \date 2015-11-24
- *  \brief NPR vertex calculations for the non local axial current.
- */
+* \author Stanislav Kazmin (University Leipzig)
+* \date 2016-01-13 10:42:28
+ * \brief NPR vertex calculations for the non local axial current.
+*/
 #include <iomanip>      // std::setprecision
 
 #include "meas/inline/hadron/inline_npr_vertex_nonlocal_w.h"
@@ -249,25 +249,27 @@ namespace Chroma
 		{
 			// Snarf a copy
 			F = TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+			// TODO(S. Kazmin): TEST the propagator entries. Must be removed before big runs.
 			for (int ind = 0; ind < Layout::vol(); ++ ind)
 			{
-			std::cout << std::setprecision(2);
-			std::cout << "place = " << ind  << "\n";
-			// F OUTPUT
-			std::cout << "F = \n";
-			for(int i=0; i<12; i++)
-			{
-				for(int j=0; j<12; j++)
+				std::cout << std::setprecision(2);
+				std::cout << "place = " << ind  << "\n";
+				// F OUTPUT
+				std::cout << "F = \n";
+				for(int i=0; i<12; i++)
 				{
-					std::cout << "(";
-					std::cout << F.elem(ind).elem(i % 4, j % 4).elem(i / 4, j / 4).real();
-					std::cout << " ";
-					std::cout << F.elem(ind).elem(i % 4, j % 4).elem(i / 4, j / 4).imag();
-					std::cout << ")";
+					for(int j=0; j<12; j++)
+					{
+						std::cout << "(";
+						std::cout << F.elem(ind).elem(i % 4, j % 4).elem(i / 4, j / 4).real();
+						std::cout << " ";
+						std::cout << F.elem(ind).elem(i % 4, j % 4).elem(i / 4, j / 4).imag();
+						std::cout << ")";
+					}
+					std::cout << "\n";
 				}
-				std::cout << "\n";
 			}
-			}
+			//// END TEST
 			// Snarf the frwd prop info. This is will throw if the frwd prop id is not there
 			XMLReader PropXML, PropRecordXML;
 			TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(PropXML);
