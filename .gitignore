@@ -10,4 +10,7 @@ other_libs/Makefile.in
 lib/chroma_config_internal.h.in
 lib/chroma_config_internal.h.in~
 autom4te.cache
+build_scalar
+docs
+tests
 
