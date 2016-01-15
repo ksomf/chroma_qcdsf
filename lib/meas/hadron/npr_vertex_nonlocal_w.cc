@@ -26,7 +26,7 @@ namespace Chroma
 			gamma = 15 - gamma; // get the gamma index of the according γ_μ γ_5 operator
 			XMLBufferWriter record_xml;
 			push(record_xml, "Vertex");
-			QDPIO::cout << __func__ << ": LinkDirs = " << LinkDirs << "  gamma = " << gamma << std::endl;
+			QDPIO::cout << __func__ << " calculate point split operator A_mu  for gamma = " << gamma << std::endl;
 			write(record_xml, "linkDirs", LinkDirs);   // link pattern
 			write(record_xml, "gamma", gamma);
 			// counts number of link patterns
@@ -58,13 +58,13 @@ namespace Chroma
 		Timer.start();
 		int GBB_NLinkPatterns;
 		// calculate building blocks
-		QDPIO::cout << __func__ << ": start BkwdFrwdNonlocal" << std::endl;
+		QDPIO::cout << __func__ << ": start BkwdFrwdNonlocal (split point operator A_mu)" << std::endl;
 		const int NLinks = 0;
 		multi1d<int> LinkDirs(0);
 		//// (S. Kazmin): Backward propagator is calculated in BkwdFrwdNonlocal function
 		BkwdFrwdNonlocal(F, U, qio_file, GBB_NLinkPatterns, LinkDirs);
 		Timer.stop();
-		QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdNonlocalTr call) = " << Timer.getTimeInSeconds() << " seconds" << std::endl;
+		QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdNonlocal call) = " << Timer.getTimeInSeconds() << " seconds" << std::endl;
 		return;
 	}
 }  // end namespace Chroma
