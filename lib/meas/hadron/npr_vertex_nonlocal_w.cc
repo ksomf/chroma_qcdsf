@@ -40,6 +40,7 @@ namespace Chroma
 			+ adj(U[mu] * shift(B, FORWARD, mu)) * Gamma(gamma)  * F;
 			//// The site's worth of data of interest
 			//// sum is over the volume at each site
+			//// TODO (S. Kazmin): will try to implement the full local divergence and ZA calculation here for test reasons
 			Amu_x_mean = 0.5 * sum(Amu_x) / Double(Layout::vol()); // and normalize by the volume -> mean value of the prop at all sites
 			//// append to xml file
 			pop(record_xml);
