@@ -10,7 +10,7 @@
 
 namespace Chroma
 {
-	
+
 	void BkwdFrwdNonlocal(const LatticePropagator& F, const multi1d<LatticeColorMatrix>& U, QDPFileWriter& qio_file, int& GBB_NLinkPatterns, const multi1d<int>& LinkDirs)
 	//// (S. Kazmin): linkDirs is not used, do we need it? write it because npr routine need it
 	{
@@ -19,6 +19,9 @@ namespace Chroma
 		TotalTime.reset();
 		TotalTime.start();
 		LatticePropagator B = Gamma(15) * F * Gamma(15); //// (S. Kazmin): backwards propagator NOT adj.
+
+
+		LatticePropagator Diff_A_x = Complex(0.0); 		//// create lattice propagator dA(x)
 		// calculate one link operator in each direction
 		for(int mu = 0; mu < Nd; ++mu) // go though all directions
 		{
@@ -32,19 +35,26 @@ namespace Chroma
 			// counts number of link patterns
 			GBB_NLinkPatterns++;
 			DPropagator Amu_x_mean;
-			//// (S. Kazmin): Amu_x is forward directed and is placed at x
+			//// (S. Kazmin): Amu_x_for is forward directed and is placed at x
 			//// (S. Kazmin): A_μ(x) = 1/2 *( B(x) γ_μ γ_5 U_μ(x) F(x+μ) + B(x+μ) adj(U_μ(x)) γ_μ γ_5  F(x))
 			//// (S. Kazmin): the 1/2 factor is shifted to later calculations to reduce thew number of used factor*matrix operations
-			LatticePropagator Amu_x =
+			LatticePropagator Amu_x_for =
 			adj(B) * Gamma(gamma) * (U[mu] * shift(F, FORWARD, mu))
 			+ adj(U[mu] * shift(B, FORWARD, mu)) * Gamma(gamma)  * F;
-			//// The site's worth of data of interest
+			//// (S. Kazmin): Amu_x_back is forward directed and is placed at x
+			//// (S. Kazmin): A_μ(x-mu) = 1/2 *( B(x-mu) γ_μ γ_5 U_μ(x-mu) F(x) + B(x) adj(U_μ(x-mu)) γ_μ γ_5  F(x-mu))
+			//// (S. Kazmin): the 1/2 factor is shifted to later calculations to reduce thew number of used factor*matrix operations
+			LatticePropagator Amu_x_back =
+			shift(adj(B), BACKWARD, mu) * Gamma(gamma) * (shift(U[mu], BACKWARD, mu) * F)
+			+ adj(shift(U[mu], BACKWARD, mu) * B) * Gamma(gamma) * shift(F, BACKWARD, mu);
+
 			//// sum is over the volume at each site
-			//// TODO (S. Kazmin): will try to implement the full local divergence and ZA calculation here for test reasons
-			Amu_x_mean = 0.5 * sum(Amu_x) / Double(Layout::vol()); // and normalize by the volume -> mean value of the prop at all sites
+			Amu_x_mean = 0.5 * sum(Amu_x_for) / Double(Layout::vol()); // and normalize by the volume -> mean value of the prop at all sites
 			//// append to xml file
 			pop(record_xml);
 			write(qio_file, record_xml, Amu_x_mean);
+			// calculate the dA operator
+			Diff_A_x += (A_mu_for - A_mu_back);
 		}
 		// print elapsed time
 		TotalTime.stop();
