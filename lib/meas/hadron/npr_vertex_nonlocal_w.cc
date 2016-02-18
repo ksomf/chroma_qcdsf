@@ -8,6 +8,9 @@
 #include "meas/hadron/npr_vertex_nonlocal_w.h"
 #include "meas/hadron/npr_vertex_w.h"
 
+#include <vector>
+#include <cmath>
+
 namespace Chroma
 {
 
@@ -54,8 +57,63 @@ namespace Chroma
 			pop(record_xml);
 			write(qio_file, record_xml, Amu_x_mean);
 			// calculate the dA operator
-			Diff_A_x += (A_mu_for - A_mu_back);
+			Diff_A_x += (Amu_x_for - Amu_x_back);
+			// std::cout << "testing " << "\t for  " << Amu_x_for.elem(0).elem(0,0).elem(0,0).real() << std::endl;
+			// std::cout << "testing " << "\t back " << Amu_x_back.elem(0).elem(0,0).elem(0,0).real() << std::endl;
+			// std::cout << "testing " << "\t diff " << Diff_A_x.elem(0).elem(0,0).elem(0,0).real() << std::endl;
 		}
+		//// for testing reason add the momentum array manually
+		multi1d<int> nrow(4);
+		nrow[0] = 4; nrow[1] = 4; nrow[2] = 4; nrow[3] = 8;
+
+		multi1d<int> tmpMom(4);
+		std::vector<multi1d<int>> mom;
+		// tmpMom[0] = 0; tmpMom[1] = 0; tmpMom[2] = 0; tmpMom[3] = 0;
+		// mom.push_back(tmpMom);
+		// tmpMom[0] = 0; tmpMom[1] = 0; tmpMom[2] = 0; tmpMom[3] = 1;
+		// mom.push_back(tmpMom);
+		// tmpMom[0] = 1; tmpMom[1] = 0; tmpMom[2] = 0; tmpMom[3] = 0;
+		// mom.push_back(tmpMom);
+		// tmpMom[0] = 1; tmpMom[1] = 1; tmpMom[2] = 0; tmpMom[3] = 0;
+		// mom.push_back(tmpMom);
+		// tmpMom[0] = 1; tmpMom[1] = 1; tmpMom[2] = 1; tmpMom[3] = 0;
+		// mom.push_back(tmpMom);
+		for (int i = 1; i < 9; ++i)
+		{
+			tmpMom[0] = i; tmpMom[1] = i; tmpMom[2] = i; tmpMom[3] = 2*i;
+			mom.push_back(tmpMom);
+		}
+		// for (auto iter : mom)
+		// {
+		// 	std::cout << iter[0] << iter[1] << iter[2] << iter[3] << "\n";
+		// }
+		//// calculate the sin^2(p) values
+		std::vector<double> sin2p;
+		for (auto iter : mom)
+		{
+			double sin2pValue = 0.0;
+			for (int mu = 0; mu < Nd; ++mu)
+			{
+				sin2pValue += pow(sin(iter[mu] * 2. * M_PI / (double)(nrow[mu])), 2.0);
+			}
+			sin2p.push_back(sin2pValue);
+			// std::cout << iter[0] << iter[1] << iter[2] << iter[3] << " : sin^2(p) = ";
+			// std::cout << sin2pValue << "\n";
+		}
+		//// go through all momenta
+		for (auto iter : mom)
+		{
+			
+		}
+
+
+
+
+		// // check the matrix
+		// for(int i = 0; i < Layout::vol(); ++i)
+		// {
+		// 	std::cout << "site " << i << "\t Diff_A_x(0,0) = " << Diff_A_x.elem(i).elem(0,0).elem(0,0).real() << std::endl;
+		// }
 		// print elapsed time
 		TotalTime.stop();
 		QDPIO::cout << __func__ << ": total time = " << TotalTime.getTimeInSeconds() << " seconds" << std::endl;
