@@ -35,14 +35,13 @@ namespace Chroma
 			//// (S. Kazmin): Amu_x is forward directed and is placed at x
 			//// (S. Kazmin): A_μ(x) = 1/2 *( B(x) γ_μ γ_5 U_μ(x) F(x+μ) + B(x+μ) adj(U_μ(x)) γ_μ γ_5  F(x))
 			//// (S. Kazmin): the 1/2 factor is shifted to later calculations to reduce thew number of used factor*matrix operations
-
-			//// TODO (S. Kazmin): test with U[mu] = Id
-// 			LatticePropagator Amu_x =
-// 			adj(B) * Gamma(gamma) * (U[mu] * shift(F, FORWARD, mu))
-// 			+ adj(U[mu] * shift(B, FORWARD, mu)) * Gamma(gamma)  * F;
 			LatticePropagator Amu_x =
-			adj(B) * Gamma(gamma) * (shift(F, FORWARD, mu))
-			+ adj(shift(B, FORWARD, mu)) * Gamma(gamma)  * F;
+			adj(B) * Gamma(gamma) * (U[mu] * shift(F, FORWARD, mu))
+			+ adj(U[mu] * shift(B, FORWARD, mu)) * Gamma(gamma)  * F;
+// //// TODO (S. Kazmin): test with U[mu] = Id
+// 			LatticePropagator Amu_x =
+// 			adj(B) * Gamma(gamma) * (shift(F, FORWARD, mu))
+// 			+ adj(shift(B, FORWARD, mu)) * Gamma(gamma)  * F;
 			//// The site's worth of data of interest
 			//// sum is over the volume at each site
 			Amu_x_mean = 0.5 * sum(Amu_x) / Double(Layout::vol()); // and normalize by the volume -> mean value of the prop at all sites
