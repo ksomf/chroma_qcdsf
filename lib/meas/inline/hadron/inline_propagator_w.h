@@ -38,6 +38,9 @@ namespace Chroma
       std::string     gauge_id;
       std::string     source_id;
       std::string     prop_id;
+      std::string     initial_guess_id;          //Psi(0)    Initial guess = Psi(0)
+      std::string     prior_perturbed_guess_id;  //Psi(b)
+      double          prior_perturbed_factor;    //a         Initial guess = Psi(0) + a*(Psi(b) - Psi(0))
     } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern

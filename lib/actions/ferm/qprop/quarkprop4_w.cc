@@ -64,20 +64,18 @@ namespace Chroma
       break;
     }
 
-//  LatticeFermion psi = zero;  // note this is ``zero'' and not 0
 
     // This version loops over all color and spin indices
     for(int color_source = 0; color_source < Nc; ++color_source)
     {
       for(int spin_source = start_spin; spin_source < end_spin; ++spin_source)
       {
-	LatticeFermion psi = zero;  // note this is ``zero'' and not 0
+	LatticeFermion psi;
 	LatticeFermion chi;
 
 	// Extract a fermion source
 	PropToFerm(q_src, chi, color_source, spin_source);
-
-	// Use the last initial guess as the current initial guess
+        PropToFerm(q_sol, psi, color_source, spin_source);
 
 	/* 
 	 * Normalize the source in case it is really huge or small - 
@@ -90,10 +88,11 @@ namespace Chroma
 
 	// Rescale
 	chi *= fact;
+        psi *= fact;
 
 	// Compute the propagator for given source color/spin.
 	{
-	  SystemSolverResults_t result = (*qprop)(psi,chi);
+	  SystemSolverResults_t result  = (*qprop)(psi,chi);
 	  ncg_had += result.n_count;
 
 	  push(xml_out,"Qprop");

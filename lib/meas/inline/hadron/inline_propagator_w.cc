@@ -58,6 +58,13 @@ namespace Chroma
     read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "source_id", input.source_id);
     read(inputtop, "prop_id", input.prop_id);
+    if( inputtop.count("initial_guess_id") != 0 ){
+      read(inputtop, "initial_guess_id", input.initial_guess_id);
+    }
+    if( inputtop.count("prior_perturbed_guess_id") != 0 ){
+      read(inputtop, "prior_perturbed_guess_id", input.prior_perturbed_guess_id);
+      read(inputtop, "prior_perturbed_factor", input.prior_perturbed_factor);
+    }
   }
 
   //! Propagator output
@@ -68,7 +75,13 @@ namespace Chroma
     write(xml, "gauge_id", input.gauge_id);
     write(xml, "source_id", input.source_id);
     write(xml, "prop_id", input.prop_id);
-
+    if( input.initial_guess_id.length() ){
+      write(xml, "initial_guess_id", input.initial_guess_id);
+    }
+    if( input.prior_perturbed_guess_id.length() ){
+      write(xml, "prior_perturbed_guess_id", input.prior_perturbed_guess_id);
+      write(xml, "prior_perturbed_factor", input.prior_perturbed_factor);
+    }
     pop(xml);
   }
 
@@ -213,6 +226,7 @@ namespace Chroma
     bool seqsourceP = false;
 
     QDPIO::cout << "Snarf the source from a named buffer" << std::endl;
+    QDPIO::cout << "FIND INITIAL GUESS PROPAGATOR" << std::endl;
     try
     {
       // Try the cast to see if this is a valid source
@@ -309,6 +323,21 @@ namespace Chroma
     // Cast should be valid now
     LatticePropagator& quark_propagator = 
       TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+    if( params.named_obj.prior_perturbed_guess_id.length() ){
+      QDPIO::cout << "Using initial inversion guess:" << params.named_obj.initial_guess_id << std::endl;
+      QDPIO::cout << "Using shift  inversion guess:" << params.named_obj.prior_perturbed_guess_id << std::endl;
+      QDPIO::cout << "   - Shift Factor for guess:" << params.named_obj.prior_perturbed_factor << std::endl;
+      quark_propagator = LatticePropagator( TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.initial_guess_id) );
+      LatticePropagator perturbed = LatticePropagator( TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prior_perturbed_guess_id ) );
+      double perturbation_difference = params.named_obj.prior_perturbed_factor;
+      quark_propagator += perturbation_difference * ( perturbed - quark_propagator );
+    }else if( params.named_obj.initial_guess_id.length() ){
+      QDPIO::cout << "Using initial inversion guess:" << params.named_obj.initial_guess_id << std::endl;
+      quark_propagator = LatticePropagator(
+        TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.initial_guess_id) );
+    }else{
+      QDPIO::cout << "Using initial inversion guess of zero" << std::endl;
+    }
     int ncg_had = 0;
 
     //
