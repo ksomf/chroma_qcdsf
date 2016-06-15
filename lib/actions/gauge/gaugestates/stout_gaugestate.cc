@@ -9,14 +9,14 @@
 
 namespace Chroma
 {
- 
-  namespace CreateStoutGaugeStateEnv 
-  { 
-    CreateGaugeState<multi1d<LatticeColorMatrix>, 
-		     multi1d<LatticeColorMatrix> >* createCreator(XMLReader& xml, 
-								  const std::string& path) 
+
+  namespace CreateStoutGaugeStateEnv
+  {
+    CreateGaugeState<multi1d<LatticeColorMatrix>,
+		     multi1d<LatticeColorMatrix> >* createCreator(XMLReader& xml,
+								  const std::string& path)
     {
-      return new CreateStoutGaugeState<multi1d<LatticeColorMatrix>, 
+      return new CreateStoutGaugeState<multi1d<LatticeColorMatrix>,
 	multi1d<LatticeColorMatrix> >(GaugeTypeGaugeBCEnv::reader(xml, path),
 				      StoutFermStateParams(xml, path));
     }
@@ -27,9 +27,39 @@ namespace Chroma
     static bool registered = false;
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
+      if (! registered)
+      {
+	success &= TheCreateGaugeStateFactory::Instance().registerObject(name, createCreator);
+	registered = true;
+      }
+      return success;
+    }
+  }
+
+
+  namespace CreateMomentumGaugeStateEnv
+  {
+    CreateGaugeState<multi1d<LatticeColorMatrix>,
+		     multi1d<LatticeColorMatrix> >* createCreator(XMLReader& xml,
+								  const std::string& path)
+    {
+      return new CreateMomentumGaugeState<multi1d<LatticeColorMatrix>,
+	multi1d<LatticeColorMatrix> >(GaugeTypeGaugeBCEnv::reader(xml, path),
+				      MomentumFermStateParams(xml, path));
+    }
+
+    const std::string name = "Momentum_GAUGE_STATE";
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll()
+    {
+      bool success = true;
       if (! registered)
       {
 	success &= TheCreateGaugeStateFactory::Instance().registerObject(name, createCreator);
@@ -40,4 +70,3 @@ namespace Chroma
   }
 
 }
-

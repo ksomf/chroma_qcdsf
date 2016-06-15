@@ -23,9 +23,9 @@ namespace Chroma
     static bool registered = false;
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	// Register all gauge BCs
@@ -35,6 +35,7 @@ namespace Chroma
 	success &= CreatePeriodicGaugeStateEnv::registerAll();
 	success &= CreateSimpleGaugeStateEnv::registerAll();
 	success &= CreateStoutGaugeStateEnv::registerAll();
+	success &= CreateMomentumGaugeStateEnv::registerAll();
 
 	registered = true;
       }
@@ -43,8 +44,8 @@ namespace Chroma
 
 
     // Helper function for the GaugeAction readers
-    Handle< CreateGaugeState< multi1d<LatticeColorMatrix>, 
-			      multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 
+    Handle< CreateGaugeState< multi1d<LatticeColorMatrix>,
+			      multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in,
 								     const std::string& path)
     {
       XMLReader top(xml_in, path);
@@ -60,12 +61,12 @@ namespace Chroma
       {
 //	QDPIO::cerr << "Error: GaugeState group not found" << std::endl;
 //	QDP_abort(1);
-	
+
 	gaugestate_path = ".";
 	gaugestate = Chroma::CreateSimpleGaugeStateEnv::name;
       }
 
-      Handle< CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+      Handle< CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >
 	cgs(TheCreateGaugeStateFactory::Instance().createObject(gaugestate,
 								top,
 								gaugestate_path));
