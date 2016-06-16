@@ -206,20 +206,20 @@ namespace Chroma
 
           default:
             QDPIO::cerr << __func__ << ": parameter version " << version
-                        << " unsupported." << endl;
+                        << " unsupported." << std::endl;
             QDP_abort(1);
           }
       }
     catch(const std::string& e)
       {
-        QDPIO::cout << "Failed to read stout action XML:" << e << endl;
+        QDPIO::cout << "Failed to read stout action XML:" << e << std::endl;
       }
 
 
     // Sanity check
     if (smear_in_this_dirP.size() != Nd)
       {
-        QDPIO::cerr << __func__ << ": invalid size of smear_in_this_dirP, expecting size=Nd" << endl;
+        QDPIO::cerr << __func__ << ": inalid size of smear_in_this_dirP, expecting size=Nd" << std::endl;
         QDP_abort(1);
       }
 
