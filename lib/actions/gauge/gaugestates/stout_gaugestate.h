@@ -323,9 +323,11 @@ namespace Chroma
       // Copy thin links into smeared_links[0]
       for(int mu=0; mu < Nd; mu++) {
            Real theta = 0;
-           theta = params.momk[mu]* Chroma::twopi/QDP::Layout::lattSize()[mu];
-           if(mu == 3 && params.momk[mu] == 0 ) continue;
-	(smeared_links[0])[mu] = u_[mu]*cmplx(cos(theta),sin(theta));
+           theta = params.momk[mu] * Chroma::twopi / QDP::Layout::lattSize()[mu];
+           if(mu == 3 && params.momk[mu] == 0 )
+             continue;
+           // (smeared_links[0])[mu] = u_[mu]*cmplx(cos(theta),sin(theta));
+           (smeared_links[0])[mu] = u_[mu]*(2*cos(theta));
       }
 
 ///////////////////////////////////////////////////////////////////////////
