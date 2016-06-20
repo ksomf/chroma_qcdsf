@@ -41,7 +41,7 @@ namespace Chroma
 
     int            n_smear;
     Real           sm_fact;
-    multi1d<Real>   momk;
+    multi1d<float>   momk;
   };
 
   void read(XMLReader& xml, const std::string& path, MomentumFermStateParams& p);
