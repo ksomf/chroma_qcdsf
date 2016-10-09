@@ -326,7 +326,7 @@ namespace Chroma
            theta = params.momk[mu] * Chroma::twopi / QDP::Layout::lattSize()[mu];
            if(mu == 3 && (params.momk[mu] <= 1e-5) )
              continue;
-           (smeared_links[0])[mu] = u_[mu]*cmplx(cos(theta),sin(theta));
+           (smeared_links[0])[mu] = u_[mu]*cmplx(cos(theta),-1.0*sin(theta));
            // (smeared_links[0])[mu] = u_[mu]*(2*cos(theta));
       }
 
