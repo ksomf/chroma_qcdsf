@@ -11,17 +11,17 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 
-namespace Chroma 
-{ 
+namespace Chroma
+{
   /*! \ingroup inlinehadron */
-  namespace InlineQpropAddEnv 
+  namespace InlineQpropAddEnv
   {
     extern const std::string name;
     bool registerAll();
 
     //! Parameter structure
     /*! \ingroup inlinehadron */
-    struct Params 
+    struct Params
     {
       Params();
       Params(XMLReader& xml_in, const std::string& path);
@@ -31,18 +31,18 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	Real             factorA;
-	std::string      propA;    
-	Real             factorB;
-	std::string      propB;   
-	std::string      propApB; 
+	Complex          factorA;
+	std::string      propA;
+	Complex          factorB;
+	std::string      propB;
+	std::string      propApB;
       } named_obj;
     };
 
 
     //! Inline measurement of to add two props
     /*! \ingroup inlinehadron */
-    class InlineMeas : public AbsInlineMeasurement 
+    class InlineMeas : public AbsInlineMeasurement
     {
     public:
       ~InlineMeas() {}
@@ -53,7 +53,7 @@ namespace Chroma
 
       //! Do the measurement
       void operator()(const unsigned long update_no,
-		      XMLWriter& xml_out); 
+		      XMLWriter& xml_out);
 
     private:
       Params params;

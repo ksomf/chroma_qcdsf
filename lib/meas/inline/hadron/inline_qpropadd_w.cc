@@ -9,16 +9,33 @@
 
 #include "meas/inline/io/named_objmap.h"
 
-namespace Chroma 
-{ 
+namespace Chroma
+{
   //! Propagator parameters
   void read(XMLReader& xml, const std::string& path, InlineQpropAddEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "factorA", input.factorA);
+    XMLReader factorAtop(xml, path + "/factorA");
+    XMLReader factorBtop(xml, path + "/factorB");
+
+    if (factorAtop.count("re") == 1 && factorAtop.count("im") == 1)
+      read(inputtop, "factorA", input.factorA);
+    else {
+      Real tmp;
+      read(inputtop, "factorA", tmp);
+      input.factorA = tmp;
+    }
+
+    if (factorBtop.count("re") == 1 && factorBtop.count("im") == 1)
+      read(inputtop, "factorB", input.factorB);
+    else {
+      Real tmp;
+      read(inputtop, "factorB", tmp);
+      input.factorB = tmp;
+    }
+
     read(inputtop, "propA", input.propA);
-    read(inputtop, "factorB", input.factorB);
     read(inputtop, "propB", input.propB);
     read(inputtop, "propApB", input.propApB);
   }
@@ -38,12 +55,12 @@ namespace Chroma
   }
 
 
-  namespace InlineQpropAddEnv 
-  { 
+  namespace InlineQpropAddEnv
+  {
     namespace
     {
-      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					      const std::string& path) 
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in,
+					      const std::string& path)
       {
 	return new InlineMeas(Params(xml_in, path));
       }
@@ -55,9 +72,9 @@ namespace Chroma
     const std::string name = "QPROPADD";
 
     //! Register all the factories
-    bool registerAll() 
+    bool registerAll()
     {
-      bool success = true; 
+      bool success = true;
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
@@ -70,9 +87,9 @@ namespace Chroma
     // Param stuff
     Params::Params() { frequency = 0; }
 
-    Params::Params(XMLReader& xml_in, const std::string& path) 
+    Params::Params(XMLReader& xml_in, const std::string& path)
     {
-      try 
+      try
       {
 	XMLReader paramtop(xml_in, path);
 
@@ -85,7 +102,7 @@ namespace Chroma
 	// Read in the output propagator/source configuration info
 	read(paramtop, "NamedObject", named_obj);
       }
-      catch(const std::string& e) 
+      catch(const std::string& e)
       {
 	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
@@ -94,10 +111,10 @@ namespace Chroma
 
 
     void
-    Params::writeXML(XMLWriter& xml_out, const std::string& path) 
+    Params::writeXML(XMLWriter& xml_out, const std::string& path)
     {
       push(xml_out, path);
-    
+
       // Write out the output propagator/source configuration info
       write(xml_out, "NamedObject", named_obj);
 
@@ -108,9 +125,9 @@ namespace Chroma
 
 
     // Function call
-    void 
+    void
     InlineMeas::operator()(unsigned long update_no,
-			   XMLWriter& xml_out) 
+			   XMLWriter& xml_out)
     {
       START_CODE();
 
@@ -124,9 +141,9 @@ namespace Chroma
 
       //
       // Read in the source along with relevant information.
-      // 
+      //
       XMLReader propA_file_xml, propA_record_xml;
-    
+
       LatticePropagator propA ;
       LatticePropagator propB ;
       LatticePropagator propApB ;
@@ -140,14 +157,14 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(params.named_obj.propA).getRecordXML(propA_record_xml);
 
 	propB = TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.propB);
-      }    
+      }
       catch (std::bad_cast)
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" 
+	QDPIO::cerr << name << ": caught dynamic cast error"
 		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const std::string& e) 
+      catch (const std::string& e)
       {
 	QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
 	QDP_abort(1);
@@ -176,11 +193,11 @@ namespace Chroma
       }
       catch (std::bad_cast)
       {
-	QDPIO::cerr << name << ": dynamic cast error" 
+	QDPIO::cerr << name << ": dynamic cast error"
 		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const std::string& e) 
+      catch (const std::string& e)
       {
 	QDPIO::cerr << name << ": error storing seqsource: " << e << std::endl;
 	QDP_abort(1);
@@ -188,7 +205,7 @@ namespace Chroma
 
 
       pop(xml_out);   // qpropadd
-        
+
       QDPIO::cout << "QpropAdd ran successfully" << std::endl;
 
       END_CODE();
@@ -196,4 +213,4 @@ namespace Chroma
 
   }
 
-}  
+}
