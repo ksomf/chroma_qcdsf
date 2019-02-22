@@ -33,6 +33,14 @@ namespace Chroma
 
       read(paramtop, "rho", sm_fact);
       read(paramtop, "n_smear", n_smear);
+      if( paramtop.count( "FeynHellParam" ) == 1 ){
+        QDPIO::cout << "[INFO] Found source modification params within Feyn Hell" << std::endl;
+        read(paramtop, "FeynHellParam", fh_params.FHparam);
+        doing_fh = true;
+      }else{
+        QDPIO::cout << "[INFO] No FeynHell params found" << std::endl;
+        doing_fh = false;
+      }
 
       switch (version) 
       {
@@ -118,6 +126,8 @@ namespace Chroma
 	}
       }
     }
+
+
   }
 
   void read(XMLReader& xml, const std::string& path, StoutFermStateParams& p)
@@ -134,6 +144,7 @@ namespace Chroma
     write(xml, "rho", p.sm_fact);
     write(xml, "n_smear", p.n_smear);
     write(xml, "smear_in_this_dirP", p.smear_in_this_dirP);
+    write(xml, "FeynHellContainer", p.fh_params);
     pop(xml);
   }
 

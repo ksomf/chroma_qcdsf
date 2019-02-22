@@ -172,6 +172,36 @@ namespace Chroma
       // ANTIPERIODIC BCs only -- modify only top level smeared thing
       fat_links_with_bc.resize(Nd);
       fat_links_with_bc = smeared_links[params.n_smear];
+
+      //-- THIS CODE DOES A CONSERVED CURRENT --//
+      if( params.doing_fh ){
+        SLRCFeynHellFermActParams fh_params = params.fh_params;
+        for( int fh_num = 0; fh_num < fh_params.FHparam.size(); ++fh_num ){
+          QDPIO::cout << "[DEBUG] DOING FEYN HELL MODIFICATION " << fh_num << " / " << fh_params.FHparam.size() << endl << flush;
+          int     direction = fh_params.FHparam[fh_num].op; //-- OPERATOR IS NOW NUMBER FOR DIRECTION --//
+          Complex lambda    = fh_params.FHparam[fh_num].lambda;
+          
+          //-- CUSTOM CODE FOR EXPONENTIATING A COMPLEX EXPONENT --//
+          LatticeComplex source_mod_exponent = lambda * fh_params.FHparam[fh_num].phases; 
+          LatticeReal    source_mod_exponent_real = real(source_mod_exponent);
+          LatticeReal    source_mod_exponent_imag = imag(source_mod_exponent);
+          LatticeComplex source_mod_exponential_imagpart = cmplx( cos(source_mod_exponent_imag), sin(source_mod_exponent_imag) ); 
+          LatticeReal    source_mod_exponential_realpart = exp(source_mod_exponent_real);
+          LatticeComplex source_mod_exponential = source_mod_exponential_realpart * source_mod_exponential_imagpart;
+
+          QDPIO::cout << "[DEBUG] Multiplying in feynman hellmann link modification = " << lambda << " in direction mu = " << direction << endl << flush;
+          fat_links_with_bc[ direction ] = fat_links_with_bc[ direction ] * source_mod_exponential;
+
+          //LatticeComplex llambda  = lambda;
+          //LatticeReal    lam_imag = imag(llambda);
+          ////QDPIO::cout << "[DEBUG] Using exponent" << endl << flush;
+          //LatticeComplex exponential = cmplx( cos(lam_imag), -sin(lam_imag) );
+          ////QDPIO::cout << "[DEBUG] Giving Exponential" << endl << flush;
+          //fat_links_with_bc[ direction ] = fat_links_with_bc[ direction ] * exponential; 
+          ////QDPIO::cout << "[DEBUG] Link Multiplied" << endl << flush;
+        }
+      }
+
       fbc->modify(fat_links_with_bc);
       
       

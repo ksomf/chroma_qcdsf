@@ -7,6 +7,7 @@
 #define _stout_fermstate_params_h_
 
 #include "chromabase.h"
+#include "actions/ferm/fermacts/slrc_feynhell_fermact_params_w.h"
 
 namespace Chroma 
 {
@@ -23,6 +24,9 @@ namespace Chroma
 
     int            n_smear;
     Real           sm_fact;
+
+    bool                      doing_fh;
+    SLRCFeynHellFermActParams fh_params;
   };
 
   void read(XMLReader& xml, const std::string& path, StoutFermStateParams& p);
