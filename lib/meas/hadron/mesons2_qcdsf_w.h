@@ -76,6 +76,20 @@ namespace Chroma {
 		    MesonsQCDSF_t& mesons);
 
 
+  void concur2qcdsf(const multi1d<LatticeColorMatrix>& u,
+		    const LatticePropagator& quark_prop_1,
+		    const LatticePropagator& quark_prop_2,
+		    const SftMom& phases,
+		    int t0,
+		    MesonsQCDSF_t& mesons);
+
+  void mesons2qcdsfsmall(const LatticePropagator& quark_prop_1,
+			 const LatticePropagator& quark_prop_2,
+			 const SftMom& phases,
+			 int t0,
+			 Mesons_gamma2_QCDSF_t& mesons);
+
+
 
 
 

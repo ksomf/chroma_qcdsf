@@ -132,6 +132,7 @@ namespace Chroma
 	success &= InlineSeqPropTestEnv::registerAll();
 	success &= InlineHadSpecEnv::registerAll();
 	success &= InlineMesSpecEnvQCDSF::registerAll();
+	success &= InlineMesSpecEnvQCDSFsmall::registerAll();
 	success &= InlineBarSpecEnvQCDSF::registerAll();
 	success &= InlineMesonSpecEnv::registerAll();
 	success &= InlineHadronContractEnv::registerAll();

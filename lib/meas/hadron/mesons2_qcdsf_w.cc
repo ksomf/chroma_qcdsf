@@ -79,6 +79,7 @@
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "meas/hadron/mesons2_qcdsf_w.h"
+#include "meas/glue/mesfield.h"
 
 namespace Chroma {
 
@@ -206,6 +207,340 @@ namespace Chroma {
   }
 
 
+  void concur2qcdsf(const multi1d<LatticeColorMatrix>& u, 
+		    const LatticePropagator& quark_prop_1,
+		    const LatticePropagator& quark_prop_2,
+		    const SftMom& phases,
+		    int t0,
+		    MesonsQCDSF_t& mesons)
+  {
+    START_CODE();
+
+    // Length of lattice in decay direction
+    int length = phases.numSubsets();
+
+    LatticePropagator tmp_prop1;
+    LatticePropagator tmp_prop2;
+    LatticePropagator tmp_prop3;
+    LatticeReal psi_sq;
+    LatticeReal chi_sq;
+    multi1d<LatticeColorMatrix> tfmunu;
+
+    // Construct the anti-quark propagator from quark_prop_2
+    int G5 = Ns*Ns-1;
+    LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
+
+    // This variant uses the function SftMom::sft() to do all the work
+    // computing the Fourier transform of the meson correlation function
+    // inside the class SftMom where all the of the Fourier phases and
+    // momenta are stored.  It's primary disadvantage is that it
+    // requires more memory because it does all of the Fourier transforms
+    // at the same time.
+
+    // Loop over gamma matrix insertions
+
+    mesons.gamma_value.resize(Ns*Ns);
+
+    for (int gamma2=0; gamma2 < (Ns*Ns); ++gamma2)
+      {
+	mesons.gamma_value[gamma2].gamma_value.resize(Ns*Ns);
+
+	int mu, tgamma, tgamma2, offset;
+
+	switch(gamma2){
+	case  1:
+	case 14:
+	  mu = 0;
+	  tgamma=gamma2;
+	  break;
+	case  2:
+	case 13:
+	  mu = 1;
+	  tgamma=gamma2;
+	  break;
+	case  4:
+	case 11:
+	  mu = 2;
+	  tgamma=gamma2;
+	  break;
+	case  8:
+	case  7:
+	  mu = 3;
+	  tgamma=gamma2;
+	  break;
+	case 9:
+	  mu = 0;
+	  tgamma=14;
+	  break;
+	case 10:
+	  mu = 1;
+	  tgamma=13;
+	  break;
+	case 12:
+	  mu = 2;
+	  tgamma=11;
+	  break;
+	case  3:
+	  mu = 3;
+	  tgamma=7;
+	  break;
+	default:
+	  mu = -1;
+	}
+
+	switch(gamma2){
+	case 14:
+	case 13:
+	case 11:
+	case 7:
+	  tgamma2=15;
+	  break;
+	default:
+	  tgamma2=0;
+	}
+
+	switch(gamma2){
+	case  1:
+	case 14:
+	case  2:
+	case 13:
+	case  4:
+	case 11:
+	case  8:
+	case  7:
+	  tmp_prop1 = u[mu] * shift(quark_prop_1, FORWARD, mu);
+	  tmp_prop2 = 0.5 * adj(anti_quark_prop) * ( Gamma(tgamma2) * tmp_prop1  + Gamma(tgamma) * tmp_prop1 );
+
+	  tmp_prop1 = u[mu] * shift(anti_quark_prop, FORWARD, mu);
+	  
+	  tmp_prop2 -= 0.5 * adj(tmp_prop1) * ( Gamma(tgamma2) * quark_prop_1  - Gamma(tgamma) * quark_prop_1 );
+	  break;
+
+	case 9:
+	case 10:
+	case 12:
+	case  3:
+	  tmp_prop1 = u[mu] * shift(quark_prop_1, FORWARD, mu);
+	  tmp_prop2 = 0.5 * adj(anti_quark_prop) * Gamma(tgamma) * tmp_prop1;
+
+	  tmp_prop1 = u[mu] * shift(anti_quark_prop, FORWARD, mu);
+	  
+	  tmp_prop2 += 0.5 * adj(tmp_prop1) * Gamma(tgamma) * quark_prop_1;
+	  break;
+
+	case 5:
+	  // Wilson term
+	case 6:
+	  if (gamma2==5) {
+	    tmp_prop2 = 0;
+	  }
+	  else if (gamma2==6) {
+	    tmp_prop2 = 
+	      8. * adj(anti_quark_prop) * Gamma(15) * quark_prop_1;
+	  }
+	  for (int nu=0; nu < Nd ; ++nu) 
+	    {	 
+	      if (gamma2==5) {
+		
+		if (nu==0)  tgamma=14;
+		else if (nu==1) tgamma=13;
+		else if (nu==2) tgamma=11;
+		else if (nu==3) tgamma=7;
+	      }
+	      else if (gamma2==6) tgamma=15;
+
+	      tmp_prop1 = u[nu] * shift(quark_prop_1, FORWARD, nu);
+	      if (gamma2==5) {
+		tmp_prop2 += 0.5 * adj(anti_quark_prop) * Gamma(tgamma) * tmp_prop1;
+	      }
+	      else if (gamma2==6) {
+		tmp_prop2 -= 0.5 * adj(anti_quark_prop) * Gamma(tgamma) * tmp_prop1;
+	      }
+
+	      tmp_prop1 = u[nu] * shift(anti_quark_prop, FORWARD, nu);
+	      if (gamma2==5) {
+		tmp_prop2 += 0.5 * adj(tmp_prop1) * Gamma(tgamma) * quark_prop_1;
+	      }
+	      else if (gamma2==6) {
+		tmp_prop2 -= 0.5 * adj(tmp_prop1) * Gamma(tgamma) * quark_prop_1;
+	      }
+
+	      tmp_prop1 = shift(u[nu], BACKWARD, nu) * quark_prop_1;
+	      tmp_prop2 -= 0.5 * adj(shift(anti_quark_prop, BACKWARD, nu)) * Gamma(tgamma) * tmp_prop1;
+
+	      tmp_prop1 = shift(u[nu], BACKWARD, nu) * anti_quark_prop;
+	      tmp_prop2 -= 0.5 * adj(tmp_prop1) * Gamma(tgamma) * shift(quark_prop_1, BACKWARD, nu);
+	    }
+
+	  break;
+	  //Clover term (not yet coded, just scalar for now)
+	case 0:
+	  mesField(tfmunu, u);
+
+	  offset = 0;
+	  tmp_prop2 = 0;
+	  // -2 *( CSW * Sum_mu<nu (sigmamunu*Fmunu) / 4 )
+	  // sigmamunu = 2*gammamu*gammanu
+	  //NOTE: TODO: Remove this extra factor of 2 (i.e. want O_C not 2*O_C)
+	  for(int imu=0; imu < Nd-1; ++imu)
+	    {
+	      int nmu = 1 << imu;
+	      for(int inu=imu+1; inu < Nd; ++inu)
+		{
+		  int nnu = 1 << inu;
+
+		  tmp_prop2 -= adj(anti_quark_prop) * Gamma(15) * Gamma(nmu) * Gamma(nnu) * tfmunu[offset]* quark_prop_1;
+
+		  ++offset;
+		}
+	    }
+	  tmp_prop2 *= 2.65;
+	  break;
+
+	  //Pseudoscalar term
+	case 15:
+	  tmp_prop2 = adj(anti_quark_prop) * Gamma(gamma2) * quark_prop_1;
+	  break;
+	}
+
+	for (int gamma1=0; gamma1 < (Ns*Ns); ++gamma1)
+	  {
+	    // push(xml_gamma);     // next array element
+	    // write(xml_gamma, "gamma_value", gamma2);
+	    // write(xml_gamma, "gamma_value", gamma1);
+
+	    // Construct the meson correlation function
+	    LatticeComplex corr_fn;
+	    corr_fn = trace( tmp_prop2 * Gamma(gamma1));
+
+	    multi2d<DComplex> hsum;
+	    hsum = phases.sft(corr_fn);
+
+	    // Loop over sink momenta
+	    // XMLArrayWriter xml_sink_mom(xml_gamma,phases.numMom());
+	    // push(xml_sink_mom, "momenta");
+
+	    mesons.gamma_value[gamma2].gamma_value[gamma1].momentum.resize(phases.numMom());
+
+	    for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
+	      {
+		// push(xml_sink_mom);
+		// write(xml_sink_mom, "sink_mom_num", sink_mom_num);
+		// write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num));
+
+		mesons.gamma_value[gamma2].gamma_value[gamma1].momentum[sink_mom_num].correlator.resize(length);
+		//mesons.gamma_value[gamma2].gamma_value[gamma1].momentum[sink_mom_num].insert_mom = phases.numToMom(sink_mom_num);
+
+		//multi1d<DComplex> mesprop(length);
+		for (int t=0; t < length; ++t) 
+		  {
+		    int t_eff = (t - t0 + length) % length;
+		    //mesprop[t_eff] = hsum[sink_mom_num][t];
+		    mesons.gamma_value[gamma2].gamma_value[gamma1].momentum[sink_mom_num].correlator[t_eff] = hsum[sink_mom_num][t];
+		  }
+
+		//write(xml_sink_mom, "mesprop", mesprop);
+		//pop(xml_sink_mom);
+
+	      } // end for(sink_mom_num)
+ 
+	    //pop(xml_sink_mom);
+	    //pop(xml_gamma);
+	  } // end for(gamma_value)
+      }
+    //pop(xml_gamma);
+
+    END_CODE();
+  }
+
+
+  void mesons2qcdsfsmall(const LatticePropagator& quark_prop_1,
+			 const LatticePropagator& quark_prop_2,
+			 const SftMom& phases,
+			 int t0,
+			 Mesons_gamma2_QCDSF_t& mesons)
+  {
+    START_CODE();
+    
+    int ngamma=20;
+
+    // list of gammas to loop over
+    multi1d<int>     gammalist1(ngamma);
+    multi1d<int>     gammalist2(ngamma);
+
+    gammalist1[0]=15; gammalist2[0]=15;
+    gammalist1[1]=15; gammalist2[1]=7;
+    gammalist1[2]=7;  gammalist2[2]=15;
+    gammalist1[3]=7;  gammalist2[3]=7;
+    gammalist1[4]=1;  gammalist2[4]=1;
+    gammalist1[5]=1;  gammalist2[5]=2;
+    gammalist1[6]=1;  gammalist2[6]=4;
+    gammalist1[7]=1;  gammalist2[7]=8;
+    gammalist1[8]=2;  gammalist2[8]=1;
+    gammalist1[9]=2;  gammalist2[9]=2;
+    gammalist1[10]=2; gammalist2[10]=4;
+    gammalist1[11]=2; gammalist2[11]=8;
+    gammalist1[12]=4; gammalist2[12]=1;
+    gammalist1[13]=4; gammalist2[13]=2;
+    gammalist1[14]=4; gammalist2[14]=4;
+    gammalist1[15]=4; gammalist2[15]=8;
+    gammalist1[16]=8; gammalist2[16]=1;
+    gammalist1[17]=8; gammalist2[17]=2;
+    gammalist1[18]=8; gammalist2[18]=4;
+    gammalist1[19]=8; gammalist2[19]=8;
+
+    // Length of lattice in decay direction
+    int length = phases.numSubsets();
+
+    // Construct the anti-quark propagator from quark_prop_2
+    int G5 = Ns*Ns-1;
+    LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
+
+    // This variant uses the function SftMom::sft() to do all the work
+    // computing the Fourier transform of the meson correlation function
+    // inside the class SftMom where all the of the Fourier phases and
+    // momenta are stored.  It's primary disadvantage is that it
+    // requires more memory because it does all of the Fourier transforms
+    // at the same time.
+
+    // Loop over gamma matrix insertions
+
+    mesons.gamma_value.resize(ngamma);
+
+    for (int igamma=0; igamma < ngamma; ++igamma)
+      {
+	int gamma1=gammalist1[igamma];
+	int gamma2=gammalist2[igamma];
+
+	// Construct the meson correlation function
+	LatticeComplex corr_fn;
+	corr_fn = trace(adj(anti_quark_prop) * (Gamma(gamma2) *
+						quark_prop_1 * Gamma(gamma1)));
+
+	multi2d<DComplex> hsum;
+	hsum = phases.sft(corr_fn);
+
+	// Loop over sink momenta
+
+	mesons.gamma_value[igamma].momentum.resize(phases.numMom());
+
+	for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
+	  {
+	    
+	    mesons.gamma_value[igamma].momentum[sink_mom_num].correlator.resize(length);
+
+	    for (int t=0; t < length; ++t) 
+	      {
+		int t_eff = (t - t0 + length) % length;
+		mesons.gamma_value[igamma].momentum[sink_mom_num].correlator[t_eff] = hsum[sink_mom_num][t];
+	      }
+
+	  } // end for(sink_mom_num)
+ 
+      } // end for(gamma_value)
+
+    END_CODE();
+  }
 
 
 }  // end namespace Chroma
