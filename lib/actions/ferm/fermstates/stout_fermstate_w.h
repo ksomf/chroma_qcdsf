@@ -177,7 +177,7 @@ namespace Chroma
       if( params.doing_fh ){
         SLRCFeynHellFermActParams fh_params = params.fh_params;
         for( int fh_num = 0; fh_num < fh_params.FHparam.size(); ++fh_num ){
-          QDPIO::cout << "[DEBUG] DOING FEYN HELL MODIFICATION " << fh_num << " / " << fh_params.FHparam.size() << endl << flush;
+          QDPIO::cout << "[DEBUG] DOING FEYN HELL MODIFICATION " << fh_num << " / " << fh_params.FHparam.size() << std::endl << std::flush;
           int     direction = fh_params.FHparam[fh_num].op; //-- OPERATOR IS NOW NUMBER FOR DIRECTION --//
           Complex lambda    = fh_params.FHparam[fh_num].lambda;
           
@@ -189,7 +189,7 @@ namespace Chroma
           LatticeReal    source_mod_exponential_realpart = exp(source_mod_exponent_real);
           LatticeComplex source_mod_exponential = source_mod_exponential_realpart * source_mod_exponential_imagpart;
 
-          QDPIO::cout << "[DEBUG] Multiplying in feynman hellmann link modification = " << lambda << " in direction mu = " << direction << endl << flush;
+          QDPIO::cout << "[DEBUG] Multiplying in feynman hellmann link modification = " << lambda << " in direction mu = " << direction << std::endl << std::flush;
           fat_links_with_bc[ direction ] = fat_links_with_bc[ direction ] * source_mod_exponential;
 
           //LatticeComplex llambda  = lambda;
