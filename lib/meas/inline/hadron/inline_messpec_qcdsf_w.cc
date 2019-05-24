@@ -51,6 +51,35 @@ namespace Chroma
     }
   }
 
+  namespace InlineMesSpecEnvQCDSFsmall
+  {
+    namespace
+    {
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in,
+					      const std::string& path)
+      {
+	return new InlineMesSpecQCDSFsmall(InlineMesSpecParamsQCDSF(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    const std::string name = "MESON_SPECTRUM-QCDSF-SMALL";
+
+    //! Register all the factories
+    bool registerAll()
+    {
+      bool success = true;
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
 
   //! Reader for parameters
@@ -82,6 +111,16 @@ namespace Chroma
     } else
       param.xml = true;
 
+    if (paramtop.count("linkops") != 0){
+      read(paramtop, "linkops", param.linkops);
+    } else
+      param.linkops = false;
+
+    if (paramtop.count("traceflag") != 0){
+      read(paramtop, "traceflag", param.traceflag);
+    } else
+      param.traceflag = false;
+
 
     read(paramtop, "mom2_max", param.mom2_max);
     read(paramtop, "avg_equiv_mom", param.avg_equiv_mom);
@@ -98,6 +137,7 @@ namespace Chroma
 
     write(xml, "mom2_max", param.mom2_max);
     write(xml, "avg_equiv_mom", param.avg_equiv_mom);
+    write(xml, "linkops", param.linkops);
 
     pop(xml);
   }
@@ -147,13 +187,13 @@ namespace Chroma
 
   // Param stuff
   InlineMesSpecParamsQCDSF::InlineMesSpecParamsQCDSF()
-  {
-    frequency = 0;
+  { 
+    frequency = 0; 
   }
 
-  InlineMesSpecParamsQCDSF::InlineMesSpecParamsQCDSF(XMLReader& xml_in, const std::string& path)
+  InlineMesSpecParamsQCDSF::InlineMesSpecParamsQCDSF(XMLReader& xml_in, const std::string& path) 
   {
-    try
+    try 
     {
       XMLReader paramtop(xml_in, path);
 
@@ -169,18 +209,18 @@ namespace Chroma
       read(paramtop, "NamedObject", named_obj);
 
 
-      if (paramtop.count("lime_file") != 0)
+      if (paramtop.count("lime_file") != 0) 
       {
 	read(paramtop, "lime_file", lime_file);
       }
 
-      if (paramtop.count("xml_file") != 0)
+      if (paramtop.count("xml_file") != 0) 
       {
 	read(paramtop, "xml_file", xml_file);
       }
 
     }
-    catch(const std::string& e)
+    catch(const std::string& e) 
     {
       QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
@@ -189,10 +229,10 @@ namespace Chroma
 
 
   void
-  InlineMesSpecParamsQCDSF::write(XMLWriter& xml_out, const std::string& path)
+  InlineMesSpecParamsQCDSF::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
-
+    
     Chroma::write(xml_out, "Param", param);
     Chroma::write(xml_out, "NamedObject", named_obj);
 
@@ -202,21 +242,21 @@ namespace Chroma
 
 
   // Anonymous namespace
-  namespace
+  namespace 
   {
     //! Useful structure holding sink props
     struct SinkPropContainer_t
     {
       ForwardProp_t prop_header;
-	  std::string quark_propagator_id;
+      std::string quark_propagator_id;
       Real Mass;
-
-      multi1d<int> bc;
-
-	  std::string source_type;
-	  std::string source_disp_type;
-	  std::string sink_type;
-	  std::string sink_disp_type;
+    
+      multi1d<int> bc; 
+    
+      std::string source_type;
+      std::string source_disp_type;
+      std::string sink_type;
+      std::string sink_disp_type;
     };
 
 
@@ -234,23 +274,23 @@ namespace Chroma
       try
       {
 	// Try a cast to see if it succeeds
-	const LatticePropagator& foo =
+	const LatticePropagator& foo = 
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(id);
 
 	// Snarf the data into a copy
 	s.quark_propagator_id = id;
-
+	
 	// Snarf the prop info. This is will throw if the prop_id is not there
 	XMLReader prop_file_xml, prop_record_xml;
 	TheNamedObjMap::Instance().get(id).getFileXML(prop_file_xml);
 	TheNamedObjMap::Instance().get(id).getRecordXML(prop_record_xml);
-
+   
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	{
-		std::string xpath;
+	  std::string xpath;
 	  read(prop_record_xml, "/SinkSmear", s.prop_header);
-
+	  
 	  read(prop_record_xml, "/SinkSmear/PropSource/Source/SourceType", s.source_type);
 	  xpath = "/SinkSmear/PropSource/Source/Displacement/DisplacementType";
 	  if (prop_record_xml.count(xpath) != 0)
@@ -266,15 +306,15 @@ namespace Chroma
 	    s.sink_disp_type = NoQuarkDisplacementEnv::getName();
 	}
       }
-      catch( std::bad_cast )
+      catch( std::bad_cast ) 
       {
-	QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": caught dynamic cast error"
+	QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": caught dynamic cast error" 
 		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const std::string& e)
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": error message: " << e
+	QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": error message: " << e 
 		    << std::endl;
 	QDP_abort(1);
       }
@@ -293,15 +333,15 @@ namespace Chroma
       // only thing that the BC are affecting.
       s.bc.resize(Nd);
       s.bc = 0;
-
+    
       try
       {
 	s.bc = getFermActBoundary(s.prop_header.prop_header.fermact);
       }
-      catch (const std::string& e)
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineMesSpecEnvQCDSF::name
-		    << ": caught exception. No BC found in these headers. Will assume dirichlet: " << e
+	QDPIO::cerr << InlineMesSpecEnvQCDSF::name 
+		    << ": caught exception. No BC found in these headers. Will assume dirichlet: " << e 
 		    << std::endl;
       }
 
@@ -311,7 +351,7 @@ namespace Chroma
 
 
     //! Read all sinks
-    void readAllSinks(AllSinkProps_t& s,
+    void readAllSinks(AllSinkProps_t& s, 
 		      InlineMesSpecParamsQCDSF::NamedObject_t::Props_t sink_pair)
     {
       QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.first_id << std::endl;
@@ -328,7 +368,7 @@ namespace Chroma
 
 
   // Function call
-  void
+  void 
   InlineMesSpecQCDSF::operator()(unsigned long update_no,
 				 XMLWriter& xml_out)
   {
@@ -348,13 +388,13 @@ namespace Chroma
 	    QDPIO::cerr << "Error!! lime_file must be declared! " << std::endl;
 	    QDP_abort(1);
 	  }
-      }
+      } 
 
     if (params.param.xml)
       {
 	if (params.xml_file != "")
 	  {
-		  std::string xml_file = makeXMLFileName(params.xml_file, update_no);
+	    std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	    push(xml_out, "messpec");
 	    write(xml_out, "update_no", update_no);
@@ -377,9 +417,9 @@ namespace Chroma
 
 
 
-  void
+  void 
   InlineMesSpecQCDSF::func_xml(unsigned long update_no,
-			       XMLWriter& xml_out)
+			       XMLWriter& xml_out) 
   {
     START_CODE();
 
@@ -394,19 +434,19 @@ namespace Chroma
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
       TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
     }
-    catch( std::bad_cast )
+    catch( std::bad_cast ) 
     {
-      QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": caught dynamic cast error"
+      QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": caught dynamic cast error" 
 		  << std::endl;
       QDP_abort(1);
     }
-    catch (const std::string& e)
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": map call failed: " << e
+      QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": map call failed: " << e 
 		  << std::endl;
       QDP_abort(1);
     }
-    const multi1d<LatticeColorMatrix>& u =
+    const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     push(xml_out, "messpec");
@@ -462,7 +502,7 @@ namespace Chroma
 	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	}
-	if (all_sinks.sink_prop_2.prop_header.source_header.t_source !=
+	if (all_sinks.sink_prop_2.prop_header.source_header.t_source != 
 	    all_sinks.sink_prop_1.prop_header.source_header.t_source)
 	{
 	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << std::endl;
@@ -502,9 +542,9 @@ namespace Chroma
       // Use this for any possible verification
       push(xml_out, "Forward_prop_correlator");
       {
-	const LatticePropagator& sink_prop_1 =
+	const LatticePropagator& sink_prop_1 = 
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-	const LatticePropagator& sink_prop_2 =
+	const LatticePropagator& sink_prop_2 = 
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
 
 	write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
@@ -534,14 +574,14 @@ namespace Chroma
 
 
       // References for use later
-      const LatticePropagator& sink_prop_1 =
+      const LatticePropagator& sink_prop_1 = 
 	TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-      const LatticePropagator& sink_prop_2 =
+      const LatticePropagator& sink_prop_2 = 
 	TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
 
 
       // Construct group name for output
-	  std::string src_type;
+      std::string src_type;
       if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
 	src_type = "Point";
       else if (all_sinks.sink_prop_1.source_type == "SF_POINT_SOURCE")
@@ -566,7 +606,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-	  std::string snk_type;
+      std::string snk_type;
       if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
 	snk_type = "Point";
       else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
@@ -583,7 +623,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-	  std::string source_sink_type = src_type + "_" + snk_type;
+      std::string source_sink_type = src_type + "_" + snk_type;
       QDPIO::cout << "Source type = " << src_type << std::endl;
       QDPIO::cout << "Sink type = "   << snk_type << std::endl;
 
@@ -597,13 +637,13 @@ namespace Chroma
 
     snoop.stop();
     QDPIO::cout << InlineMesSpecEnvQCDSF::name << ": total time = "
-		<< snoop.getTimeInSeconds()
+		<< snoop.getTimeInSeconds() 
 		<< " secs" << std::endl;
 
     QDPIO::cout << InlineMesSpecEnvQCDSF::name << ": ran successfully" << std::endl;
 
     END_CODE();
-  }
+  } 
 
 
 
@@ -613,7 +653,7 @@ namespace Chroma
 
 
 
-  void
+  void 
   InlineMesSpecQCDSF::func_lime(unsigned long update_no,
 				std::string& lime_file)
   {
@@ -630,19 +670,19 @@ namespace Chroma
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
       TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
     }
-    catch( std::bad_cast )
+    catch( std::bad_cast ) 
     {
-      QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": caught dynamic cast error"
+      QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": caught dynamic cast error" 
 		  << std::endl;
       QDP_abort(1);
     }
-    catch (const std::string& e)
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": map call failed: " << e
+      QDPIO::cerr << InlineMesSpecEnvQCDSF::name << ": map call failed: " << e 
 		  << std::endl;
       QDP_abort(1);
     }
-    const multi1d<LatticeColorMatrix>& u =
+    const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     XMLBufferWriter xml_qcdsf;
@@ -719,7 +759,7 @@ namespace Chroma
 	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	}
-	if (all_sinks.sink_prop_2.prop_header.source_header.t_source !=
+	if (all_sinks.sink_prop_2.prop_header.source_header.t_source != 
 	    all_sinks.sink_prop_1.prop_header.source_header.t_source)
 	{
 	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << std::endl;
@@ -792,14 +832,14 @@ namespace Chroma
 
 
       // References for use later
-      const LatticePropagator& sink_prop_1 =
+      const LatticePropagator& sink_prop_1 = 
 	TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-      const LatticePropagator& sink_prop_2 =
+      const LatticePropagator& sink_prop_2 = 
 	TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
 
 
       // Construct group name for output
-	  std::string src_type;
+      std::string src_type;
       if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
 	src_type = "Point";
       else if (all_sinks.sink_prop_1.source_type == "SF_POINT_SOURCE")
@@ -824,7 +864,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-	  std::string snk_type;
+      std::string snk_type;
       if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
 	snk_type = "Point";
       else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
@@ -841,7 +881,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-	  std::string source_sink_type = src_type + "_" + snk_type;
+      std::string source_sink_type = src_type + "_" + snk_type;
       QDPIO::cout << "Source type = " << src_type << std::endl;
       QDPIO::cout << "Sink type = "   << snk_type << std::endl;
 
@@ -852,9 +892,12 @@ namespace Chroma
       limewriter.setRecordHeader( "meta-xml" , hdrsize , 0 , 0 );
       limewriter.write( (void *)( xml_pair.str().c_str() ) , hdrsize );
       limewriter.endRecord();
-
+      
       MesonsQCDSF_t mesons;
-      mesons2qcdsf(sink_prop_1, sink_prop_2, phases, t0 , mesons);
+      if (params.param.linkops)
+	concur2qcdsf(u, sink_prop_1, sink_prop_2, phases, t0 , mesons);
+      else
+	mesons2qcdsf(sink_prop_1, sink_prop_2, phases, t0 , mesons);
 
       BinaryBufferWriter mes_bin;
       write( mes_bin , mesons );
@@ -863,22 +906,318 @@ namespace Chroma
       limewriter.setRecordHeader( "mesons-bin" , hdrsize , 0 , lastSinkPair ? 1:0 );
       limewriter.write( (void *)( mes_bin.str().c_str() ) , hdrsize );
       limewriter.endRecord();
-
+      
       //pop(xml_pair);  // array element
     }
 
     //pop(xml_out);  // Wilson_spectroscopy
 
-    //
+    // 
 
     snoop.stop();
     QDPIO::cout << InlineMesSpecEnvQCDSF::name << ": total time = "
-		<< snoop.getTimeInSeconds()
+		<< snoop.getTimeInSeconds() 
 		<< " secs" << std::endl;
 
     QDPIO::cout << InlineMesSpecEnvQCDSF::name << ": ran successfully" << std::endl;
 
     END_CODE();
+  } 
+
+  // Function call
+  void 
+  InlineMesSpecQCDSFsmall::operator()(unsigned long update_no,
+				 XMLWriter& xml_out)
+  {
+    if (params.lime_file != "")
+      {
+	push(xml_out, "messpec");
+	write(xml_out, "update_no", update_no);
+	write(xml_out, "lime_file", params.lime_file);
+	pop(xml_out);
+	
+	func_lime(update_no, params.lime_file);
+      }
+    else
+      {
+	QDPIO::cerr << "Error!! lime_file must be declared! " << std::endl;
+	QDP_abort(1);
+      }
   }
+
+  void 
+  InlineMesSpecQCDSFsmall::func_lime(unsigned long update_no,
+				     std::string& lime_file)
+  {
+    START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineMesSpecEnvQCDSFsmall::name << ": caught dynamic cast error" 
+		  << std::endl;
+      QDP_abort(1);
+    }
+    catch (const std::string& e) 
+    {
+      QDPIO::cerr << InlineMesSpecEnvQCDSFsmall::name << ": map call failed: " << e 
+		  << std::endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+
+    XMLBufferWriter xml_qcdsf;
+
+    push(xml_qcdsf, "qcdsfDir");
+    write(xml_qcdsf, "type", "messpecsmallfn");
+    write(xml_qcdsf, "update_no", update_no);
+
+    QDPIO::cout <<         " MESSPEC-QCDSF-SMALL: Spectroscopy for Wilson-like fermions" << std::endl;
+    QDPIO::cout << std::endl << "            Gauge group: SU(" << Nc << ")" << std::endl;
+    QDPIO::cout << "     volume: " << Layout::lattSize()[0];
+    for (int i=1; i<Nd; ++i) {
+      QDPIO::cout << " x " << Layout::lattSize()[i];
+    }
+    QDPIO::cout << std::endl;
+
+    proginfo(xml_qcdsf);    // Print out basic program info
+
+    // Write out the input
+    params.write(xml_qcdsf, "Input");
+
+    // Write out the config info
+    write(xml_qcdsf, "Config_info", gauge_xml);
+
+    push(xml_qcdsf, "Output_version");
+    write(xml_qcdsf, "out_version", 15);
+    pop(xml_qcdsf);
+
+
+    // First calculate some gauge invariant observables just for info.
+    MesPlq(xml_qcdsf, "Observables", u);
+
+    // Keep an array of all the xml output buffers
+    // push(xml_qcdsf, "Wilson_hadron_measurements");
+
+    pop(xml_qcdsf);  // hadspec
+
+
+
+    QLimeWriter limewriter( params.lime_file.c_str() );
+
+    QDPIO::cout << "writing LIME QCDSF header" << std::endl;
+    uint64_t hdrsize = xml_qcdsf.str().length();
+    limewriter.setRecordHeader( "qcdsfDir" , hdrsize , 1 , 0 );
+    limewriter.write( (void *)( xml_qcdsf.str().c_str() ) , hdrsize );
+    limewriter.endRecord();
+
+
+
+
+    // Now loop over the various fermion pairs
+    for(int lpair=0; lpair < params.named_obj.sink_pairs.size(); ++lpair)
+    {
+      bool lastSinkPair = (lpair == params.named_obj.sink_pairs.size()-1);
+      XMLBufferWriter xml_pair;
+
+      push( xml_pair , "sink_pair" );
+
+      const InlineMesSpecParamsQCDSF::NamedObject_t::Props_t named_obj = params.named_obj.sink_pairs[lpair];
+
+      AllSinkProps_t all_sinks;
+      readAllSinks(all_sinks, named_obj);
+
+      // Derived from input prop
+      multi1d<int> t_srce
+                  = all_sinks.sink_prop_1.prop_header.source_header.getTSrce();
+      int j_decay = all_sinks.sink_prop_1.prop_header.source_header.j_decay;
+      int t0      = all_sinks.sink_prop_1.prop_header.source_header.t_source;
+
+      // Sanity checks
+      {
+	if (all_sinks.sink_prop_2.prop_header.source_header.j_decay != j_decay)
+	{
+	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
+	  QDP_abort(1);
+	}
+	if (all_sinks.sink_prop_2.prop_header.source_header.t_source != 
+	    all_sinks.sink_prop_1.prop_header.source_header.t_source)
+	{
+	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << std::endl;
+	  QDP_abort(1);
+	}
+	if (all_sinks.sink_prop_1.source_type != all_sinks.sink_prop_2.source_type)
+	{
+	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << std::endl;
+	  QDP_abort(1);
+	}
+	if (all_sinks.sink_prop_1.sink_type != all_sinks.sink_prop_2.sink_type)
+	{
+	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << std::endl;
+	  QDP_abort(1);
+	}
+      }
+
+
+      // Initialize the slow Fourier transform phases
+      SftMom phases(params.param.mom2_max, t_srce, params.param.avg_equiv_mom,
+                    j_decay);
+
+      // Keep a copy of the phases with NO momenta
+      SftMom phases_nomom(0, true, j_decay);
+
+      // Masses
+      write(xml_pair, "Mass_1", all_sinks.sink_prop_1.Mass);
+      write(xml_pair, "Mass_2", all_sinks.sink_prop_2.Mass);
+      write(xml_pair, "t0", t0);
+
+      // Save prop input
+      push(xml_pair, "Forward_prop_headers");
+      write(xml_pair, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
+      write(xml_pair, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
+      pop(xml_pair);
+
+      // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+      // Use this for any possible verification
+      push(xml_pair, "Forward_prop_correlator");
+      {
+	const LatticePropagator& sink_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	const LatticePropagator& sink_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+
+	write(xml_pair, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
+	write(xml_pair, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
+      }
+      pop(xml_pair);
+
+
+      push(xml_pair, "SourceSinkType");
+      {
+	QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << std::endl;
+	QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << std::endl;
+	QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << std::endl;
+	QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << std::endl;
+
+	write(xml_pair, "source_type_1", all_sinks.sink_prop_1.source_type);
+	write(xml_pair, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
+	write(xml_pair, "sink_type_1", all_sinks.sink_prop_1.sink_type);
+	write(xml_pair, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
+
+	write(xml_pair, "source_type_2", all_sinks.sink_prop_2.source_type);
+	write(xml_pair, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
+	write(xml_pair, "sink_type_2", all_sinks.sink_prop_2.sink_type);
+	write(xml_pair, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
+      }
+      pop(xml_pair);
+
+
+      // References for use later
+      const LatticePropagator& sink_prop_1 = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+      const LatticePropagator& sink_prop_2 = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+
+
+      // Construct group name for output
+      std::string src_type;
+      if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
+	src_type = "Point";
+      else if (all_sinks.sink_prop_1.source_type == "SF_POINT_SOURCE")
+	src_type = "Point";
+      else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
+	src_type = "Shell";
+      else if (all_sinks.sink_prop_1.source_type == "NORM_SHELL_SOURCE")
+	src_type = "Shell";
+      else if (all_sinks.sink_prop_1.source_type == "SF_SHELL_SOURCE")
+	src_type = "Shell";
+      else if (all_sinks.sink_prop_1.source_type == "RESMEAR_SOURCE-QCDSF")
+ 	src_type = "Shell";
+      else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
+	src_type = "Wall";
+      else if (all_sinks.sink_prop_1.source_type == "SF_WALL_SOURCE")
+	src_type = "Wall";
+      else if (all_sinks.sink_prop_1.source_type == "RAND_ZN_WALL_SOURCE")
+	src_type = "Wall";
+      else
+      {
+	QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << std::endl;
+	QDP_abort(1);
+      }
+
+      std::string snk_type;
+      if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
+	snk_type = "Point";
+      else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
+	snk_type = "Shell";
+      else if (all_sinks.sink_prop_1.sink_type == "NORM_SHELL_SINK")
+	snk_type = "Shell";
+      else if (all_sinks.sink_prop_1.sink_type == "RESMEAR_SINK-QCDSF")
+ 	src_type = "Shell";
+      else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
+	snk_type = "Wall";
+      else
+      {
+	QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << std::endl;
+	QDP_abort(1);
+      }
+
+      std::string source_sink_type = src_type + "_" + snk_type;
+      QDPIO::cout << "Source type = " << src_type << std::endl;
+      QDPIO::cout << "Sink type = "   << snk_type << std::endl;
+
+      pop( xml_pair );
+
+      hdrsize = xml_pair.str().length();
+      QDPIO::cout << "writing LIME record xml" << std::endl;
+      limewriter.setRecordHeader( "meta-xml" , hdrsize , 0 , 0 );
+      limewriter.write( (void *)( xml_pair.str().c_str() ) , hdrsize );
+      limewriter.endRecord();
+      
+      Mesons_gamma2_QCDSF_t mesons;
+      if (params.param.linkops)
+	{
+	  QDPIO::cerr << "Linkops unsupported in MESSPEC-SMALL. Use standard MESSPEC"<< std::endl;
+	  QDP_abort(1);
+	}
+	//	concur2qcdsf(u, sink_prop_1, sink_prop_2, phases, t0 , mesons);
+      else
+	mesons2qcdsfsmall(sink_prop_1, sink_prop_2, phases, t0 , mesons);
+
+      BinaryBufferWriter mes_bin;
+      write( mes_bin , mesons );
+      hdrsize = mes_bin.str().length();
+      QDPIO::cout << "writing LIME binary data" << std::endl;
+      limewriter.setRecordHeader( "mesons-bin" , hdrsize , 0 , lastSinkPair ? 1:0 );
+      limewriter.write( (void *)( mes_bin.str().c_str() ) , hdrsize );
+      limewriter.endRecord();
+      
+      //pop(xml_pair);  // array element
+    }
+
+    //pop(xml_out);  // Wilson_spectroscopy
+
+    // 
+
+    snoop.stop();
+    QDPIO::cout << InlineMesSpecEnvQCDSFsmall::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << std::endl;
+
+    QDPIO::cout << InlineMesSpecEnvQCDSFsmall::name << ": ran successfully" << std::endl;
+
+    END_CODE();
+  } 
 
 };
