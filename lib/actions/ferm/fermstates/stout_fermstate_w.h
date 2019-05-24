@@ -180,9 +180,26 @@ namespace Chroma
           QDPIO::cout << "[DEBUG] DOING FEYN HELL MODIFICATION " << fh_num << " / " << fh_params.FHparam.size() << std::endl << std::flush;
           int     direction = fh_params.FHparam[fh_num].op; //-- OPERATOR IS NOW NUMBER FOR DIRECTION --//
           Complex lambda    = fh_params.FHparam[fh_num].lambda;
-          
+          multi1d<int> mom     = fh_params.FHparam[fh_num].mom;
+          multi1d<int> source  = fh_params.FHparam[fh_num].source;
+    
+          //-- CUSTOM CODE FOR THIS OFFSET PHASE --//
+          LatticeComplex phase;
+          if( mom[ 0 ] == 0 && mom[ 1 ] == 0 && mom[ 2 ] == 0 ){
+            phase = 1.0;
+          }else{
+            LatticeReal pdotx = zero;
+            for( int mu = 0; mu < Nd-1; ++mu ){
+              pdotx += (Layout::latticeCoordinate(mu) - source[mu]) * mom[mu] * twopi / Real(Layout::lattSize()[mu]);
+              if( mu == direction ){
+                pdotx += 0.5 * mom[mu] * twopi / Real(Layout::lattSize()[mu]);
+              }   
+            }   
+            phase = cmplx(cos(pdotx),sin(pdotx));
+          }   
           //-- CUSTOM CODE FOR EXPONENTIATING A COMPLEX EXPONENT --//
-          LatticeComplex source_mod_exponent = lambda * fh_params.FHparam[fh_num].phases; 
+          //LatticeComplex source_mod_exponent = lambda * fh_params.FHparam[fh_num].phases; 
+          LatticeComplex source_mod_exponent = lambda * phase;
           LatticeReal    source_mod_exponent_real = real(source_mod_exponent);
           LatticeReal    source_mod_exponent_imag = imag(source_mod_exponent);
           LatticeComplex source_mod_exponential_imagpart = cmplx( cos(source_mod_exponent_imag), sin(source_mod_exponent_imag) ); 
